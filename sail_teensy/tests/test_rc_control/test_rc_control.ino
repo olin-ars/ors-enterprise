@@ -12,14 +12,14 @@ Currently, just has the switchOn and within functions.
 #define RC_MAX_SIGNAL       1950  // Result of pulseIn on PWM
 #define RC_MID_SIGNAL       1500  // Result of pulseIn on PWM
 #define RC_MIN_SIGNAL       1100  // Result of pulseIn on PWM
-#define MIN_POSITION        200  // Millimeters
-#define MAX_POSITION        400  // Millimeters
+#define MIN_POSITION        240  // Millimeters
+#define MAX_POSITION        460  // Millimeters
 
 Servo jaguar;
 
 // Data for the 3Y Sharp IRs (see Rocco/Eric for details)
 const int IR_DATA_LENGTH = 12;
-int ir_distance[IR_DATA_LENGTH] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200}
+int ir_distance[IR_DATA_LENGTH] = {100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200};
 float ir_voltage[IR_DATA_LENGTH] = {2.63, 2.57, 1.94, 1.49, 1.18, 0.99, 0.85, 0.71, 0.61, 0.55, 0.49, 0.45};
 
 
@@ -42,16 +42,18 @@ void loop(){
     goal_distance = map(rc_signal, RC_MIN_SIGNAL, RC_MAX_SIGNAL,
                         MIN_POSITION, MAX_POSITION);
 
-    if (abs(distance_to_motor - goal_distance) < 50) {
+    if (abs(distance_to_motor - goal_distance) < 10) {
         Serial.println("Close enough!");
         jaguar.write(90);
     } else if (distance_to_motor < goal_distance) {
         Serial.println("Not far enough, moving out!");
-        jaguar.write(100);
+        jaguar.write(130);
     } else if (distance_to_motor > goal_distance) {
         Serial.println("Too far, moving back");
-        jaguar.write(80);
+        jaguar.write(50);
     }
+    Serial.print("\tCurrent Distance: "); Serial.println(distance_to_motor);
+    Serial.print("\tGoal Distance: "); Serial.println(goal_distance);
 
     delay(10);
 }
@@ -66,12 +68,12 @@ int getActuatorPosition() {
 // Takes a Sharp IR voltage value and converts that reading to
 // millimeters (+- 10 mm)
 int sharpIRVoltageToMillimeters(float voltage) {
-    int i;
     int index = 0;
     int index_found = 0;
+    int i;
     for (i = 0; i < IR_DATA_LENGTH; i++) {
         if (ir_voltage[i] < voltage && !index_found) {
-            int index_found = 1;
+            index_found = 1;
             if (i == 0) {
                 index = 0;
             } else {
