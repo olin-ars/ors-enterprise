@@ -30,6 +30,7 @@ void setup() {
 
 void loop() {
 
+	// Uncomment the ports you want to test
     // port3 = pulseIn(3, HIGH);
     // port4 = pulseIn(4, HIGH);
     // port5 = pulseIn(5, HIGH);
