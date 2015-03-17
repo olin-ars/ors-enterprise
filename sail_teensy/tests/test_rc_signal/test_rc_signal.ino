@@ -3,13 +3,26 @@ testing out the RC controllers w/ teensy code!
 -matt
 */
 
-/* // Commenting it out to make this a more general test thing.
-int rc_position = 0;
+
+int port3;
+int port4;
+int port5;
+int port6;
+int port7; //not PWM
+int port9;
+int port10;
+int MID_SIGNAL = 1500;
+
 
 void setup() {
-    
-    pinMode(3, OUTPUT); 
-    pinMode(4, INPUT); // 4 takes input from the rc receiver; 3 is the output to the jaguar
+
+    pinMode(3, INPUT);
+    pinMode(4, INPUT);
+    pinMode(5, INPUT);
+    pinMode(6, INPUT);
+    pinMode(7, INPUT);
+    pinMode(9, INPUT);
+    pinMode(10, INPUT);
 
     Serial.begin(9600);
 
@@ -17,55 +30,54 @@ void setup() {
 
 void loop() {
 
-    rc_position = pulseIn(4, HIGH);
-    Serial.println(rc_position);
+    // port3 = pulseIn(3, HIGH);
+    // port4 = pulseIn(4, HIGH);
+    // port5 = pulseIn(5, HIGH);
+    // port6 = pulseIn(6, HIGH);
+    // port7 = pulseIn(7, HIGH);
+    // port9 = pulseIn(9, HIGH);
+    // port10 = pulseIn(10, HIGH);
 
-    //int value_to_write = map(rc_position, )
+    // Serial.print("Port 3: "); Serial.println(port3);
+    // Serial.print("Port 4: "); Serial.println(port4);
+    // Serial.print("Port 5: "); Serial.println(port5);
+    // Serial.print("Port 6: "); Serial.println(port6);
+    // Serial.print("Port 7: "); Serial.println(port7);
+    // Serial.print("Port 9: "); Serial.println(port9);
+    // Serial.print("Port 10: "); Serial.println(port10);
+
+    // Serial.print("Switch is:"); Serial.println(switchOn(3));
+    Serial.print("Throttle is within 100 of 1500: "); Serial.println(within(pulseIn(3, HIGH), 1500, 100));
 }
+
+
+/*
+File contains functions/etc to interpret RC input.
+Currently, just has the switchOn and within functions.
+-Matt
 */
 
-	int port3;
-	int port4;
-	int port5;
-	int port6;
-	int port7; //not PWM
-	int port9;
-	int port10;
-
-void setup() {
-
-	pinMode(3, INPUT);
-	pinMode(4, INPUT);
-	pinMode(5, INPUT);
-	pinMode(6, INPUT);
-	pinMode(7, INPUT);
-	pinMode(9, INPUT);
-	pinMode(10, INPUT);
-
-	Serial.begin(9600);
-
+bool switchOn(int switchPin) {
+//Returns true if the pulse_length of the switchPin is greater than predefined MID_SIGNAL.
+    int pulse_length = pulseIn(switchPin, HIGH);
+    if (pulse_length > MID_SIGNAL) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 
-void loop() {
 
-	port3 = pulseIn(3, HIGH);
-	port4 = pulseIn(4, HIGH);
-	port5 = pulseIn(5, HIGH);
-	port6 = pulseIn(6, HIGH);
-	port7 = pulseIn(7, HIGH);
-	port9 = pulseIn(9, HIGH);
-	port10 = pulseIn(10, HIGH);
-
-	Serial.print("Port 3: "); Serial.println(port3);
-	Serial.print("Port 4: "); Serial.println(port4);
-	Serial.print("Port 5: "); Serial.println(port5);
-	Serial.print("Port 6: "); Serial.println(port6);
-	Serial.print("Port 7: "); Serial.println(port7);
-	Serial.print("Port 9: "); Serial.println(port9);
-	Serial.print("Port 10: "); Serial.println(port10);
-
+bool within(int value, int band_center, int band_radius) {
+//Returns true if value is within band_radius of band_center; false otherwise.
+    if ((band_center + band_radius > value) && (band_center - band_radius < value)) {
+        return true;
+    }
+    else {
+        return false;
+    }
 }
-
 
 /*
 Pulses to Parameters:
