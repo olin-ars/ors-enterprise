@@ -8,8 +8,7 @@ void setup(){
 }
 
 void loop(){
-  val = analogRead(ir_pin);
-  voltage = val*3.3/1024;
+  voltage = analogRead(ir_pin) * 3.3 / 1024;
   Serial.println(voltage);
   delay(100);
 }
