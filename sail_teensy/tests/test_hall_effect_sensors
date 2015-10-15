@@ -1,0 +1,76 @@
+#define arrayLength 7 //used everywhere except line 14, I couldn;t figure out how to make that line better
+int hallVals[] = {0, 0, 0, 0, 0, 0, 0}; //used to store which hall eefect sensors are currently active
+int lastHallVals[] = {0, 0, 0, 0, 0, 0, 0}; //used to store which hall was last active
+int dir = -1; //used to store the linear actuator direction
+
+void setup() {
+  Serial.begin(9600);
+}
+
+void loop() {
+  readHalls();
+  printHallAndDirection();
+  
+  if(hallVals[0] !=0 || hallVals[1] !=0 || hallVals[2] !=0 || hallVals[3] !=0 || hallVals[4] !=0 || hallVals[5] !=0 || hallVals[6] !=0){
+    //this if is to check if there is an active hall sensor, if there isn't then we don't want to change the array holding the last active one
+    memcpy(hallVals, lastHallVals, arrayLength); //must be after both readHalls() and returnDirection()
+  }
+  delay(5);
+}
+
+void readHalls(){ //reads all the hall sensors, if any are active (giving a value of more than 800) it stores a 1 in that sensors position in the active array
+  for(int i = 0; i < arrayLength; i++){
+    hallVals[i] = analogRead(i);
+    if(hallVals[i] > 800){
+      hallVals[i] = 1;
+    }
+    else{
+      hallVals[i] = 0;
+    }
+  }
+}
+
+int returnActiveHall(){ //looks through the active array and says which is active. if none are active it returns -1
+  int activeHall = -1;
+  for(int i = 0; i < arrayLength; i++){
+    if(hallVals[i] == 1){
+      activeHall = i;
+    }
+  }
+  return activeHall;
+}
+
+int returnLastActiveHall(){ //same as returnActiveHall() but looks through the last active array instead
+  int lastActiveHall = -1;
+  for(int i = 0; i < arrayLength; i++){
+    if(lastHallVals[i] == 1){
+      lastActiveHall = i;
+    }
+  }
+  return lastActiveHall;
+}
+
+int returnDirection(){ //will return 1 if moving forward, 0 if moving backwards, -1 if no direction yet established
+  if(returnActiveHall() > -1){
+    if (returnActiveHall() > returnLastActiveHall()){
+      dir = 1;
+    }
+    if (returnActiveHall() < returnLastActiveHall()){
+      dir = 0;
+    }
+  }
+  return dir;
+}
+
+void printHallAndDirection(){ //if there's and active hall, this prints which is active and the direction. If none are active it prints the direction.
+  if(returnActiveHall() > -1){
+    Serial.print("Hall Sensor ");
+    Serial.print(returnActiveHall());
+    Serial.print("is activated, Direction is ");
+    Serial.println(returnDirection());
+  }
+  else{
+    Serial.print("No hall sensor is currently active, direction is ");
+    Serial.println(returnDirection());
+  }
+}
