@@ -66,7 +66,7 @@ void moveServo(){
         ((movementDirection == -1) && currentPos <= lastCommanded)){
         // We have reached our target
         myservo.write(SERVO_CENTER);
-        movementDirection == 0;
+        movementDirection = 0;
     }
     dir_msg.data = movementDirection;
     direction_chn.publish( &dir_msg );
