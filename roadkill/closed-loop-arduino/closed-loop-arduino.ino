@@ -17,7 +17,7 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 88;
+int SERVO_CENTER = 87;
 int lastCommanded = -1;
 bool newCommand = false;
 
@@ -27,6 +27,9 @@ std_msgs::Int16 dir_msg;
 ros::Publisher direction_chn("rudderMotorDirection", &dir_msg);
 
 void commandCB(const std_msgs::Int16& command){
+    if(command.data <= 0 || command.data >= 360){
+        return;
+    }
     lastCommanded = command.data;
     newCommand = true;
 }
@@ -47,7 +50,7 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-    const int power = 3;
+    const int power = 5;
 
     if (newCommand){
         // A command has just been recieved
