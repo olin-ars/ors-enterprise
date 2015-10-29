@@ -73,9 +73,13 @@ void moveServo(){
     direction_chn.publish( &dir_msg );
 }
 
+float readPot(){
+    return 360 - analogRead(potpin) * (360.0 / 1024);  
+}
+
 void loop()
 {
-  currentPos = analogRead(potpin);            // reads the value of the potentiometer (value between 0 and 1023) 
+  currentPos = readPot();          // reads the value of the potentiometer (value between 0 and 1023) 
 
   pot_msg.data = currentPos;
   potentiometer.publish( &pot_msg );
