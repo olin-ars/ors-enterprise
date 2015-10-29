@@ -41,12 +41,13 @@ void setup()
   nh.subscribe(commands);
 
   myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
+  myservo.write(SERVO_CENTER);
 }
 
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-    const int power = 5;
+    const int power = 3;
 
     if (newCommand){
         // A command has just been recieved
@@ -82,5 +83,5 @@ void loop()
   moveServo();
 
   nh.spinOnce();
-  delay(100);
+  delay(10);
 }
