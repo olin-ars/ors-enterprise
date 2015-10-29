@@ -17,7 +17,7 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 87;
+int SERVO_CENTER = 86;
 int lastCommanded = -1;
 bool newCommand = false;
 
