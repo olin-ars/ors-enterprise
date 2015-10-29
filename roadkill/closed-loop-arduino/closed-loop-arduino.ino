@@ -19,6 +19,7 @@ int currentPos;    // variable to read the value from the analog pin
 
 int SERVO_CENTER = 86;
 int lastCommanded = -1;
+bool newCommand = false;
 
 std_msgs::Int16 pot_msg;
 ros::Publisher potentiometer("rudderSensor", &pot_msg);
@@ -27,6 +28,7 @@ ros::Publisher direction_chn("rudderMotorDirection", &dir_msg);
 
 void commandCB(const std_msgs::Int16& command){
     lastCommanded = command.data;
+    newCommand = true;
 }
 ros::Subscriber<std_msgs::Int16> commands("rudderCommands", &commandCB);
 
@@ -44,17 +46,12 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-    const int power = 30;
-    static int currentTarget = lastCommanded;
-    if(lastCommanded < 0){
-        myservo.write(SERVO_CENTER);
-        return;
-    }
+    const int power = 5;
 
-    if (currentTarget != lastCommanded){
+    if (newCommand){
         // A command has just been recieved
-        currentTarget = lastCommanded;
-        if (currentTarget > currentPos){
+        newCommand = false;
+        if (lastCommanded > currentPos){
             myservo.write(SERVO_CENTER + power);
             movementDirection = 1;
         }
@@ -65,9 +62,9 @@ void moveServo(){
     }
 
     if(
-        ((movementDirection == 1) && currentPos >= currentTarget) ||
-        ((movementDirection == -1) && currentPos <= currentTarget)){
-
+        ((movementDirection == 1) && currentPos >= lastCommanded) ||
+        ((movementDirection == -1) && currentPos <= lastCommanded)){
+        // We have reached our target
         myservo.write(SERVO_CENTER);
         movementDirection == 0;
     }
