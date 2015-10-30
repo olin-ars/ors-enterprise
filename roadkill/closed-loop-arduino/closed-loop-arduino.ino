@@ -1,6 +1,10 @@
 /*
- * rosserial Publisher Example
- * Prints "hello world!"
+ * ORS demonstration of closed-loop motor control
+ * When run on a teensy connected to a computer with rosserial,
+ * this code accepts commands from the topic rudderCommands and 
+ * initiates a motion of the connected motor to the setpoint specified
+ * by the command. Feedback is provided through an analog potentiometer,
+ * and all work is done in degrees 0-360.
  */
 
  #include <ros.h>
