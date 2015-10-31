@@ -4,7 +4,7 @@
 
 import subprocess
 import os.path
-import time.sleep
+from time import sleep
 activeShells = {};
 
 def getIP():
@@ -14,40 +14,51 @@ def run_rosserial(port = '/dev/ttyACM0'):
 	if (not os.path.exists(port)):
 		return None;
 
-	command = ['rosrun', 'rosserial_python', 'serial_node.py', str(port)]
+	command = 'export ROS_IP=$(hostname --all-ip-addresses);\
+	echo ROS_IP = "$ROS_IP";\
+	rosrun rosserial_python serial_node.py {}'.format(port)
 
-	p = subprocess.Popen(command, l=True)
+	p = subprocess.Popen(command, shell=True)
 	return p
 
 def refreshShells():
-	for k in activeShells:
+	for k in activeShells.keys():
 		if activeShells[k].poll() is not None:
+			print 'ROSserial process for {} has died'.format(k)
 			# The shell has finished
-			activeShells[k].kill()
 			del activeShells[k]
 			
-	for i in range(8):
+	for i in range(4):
 		path = '/dev/ttyACM{}'.format(i)
 
 		if path in activeShells:
+			print 'ROSserial running on {}'.format(path)
 			continue
 		else:
 			p = run_rosserial(path)
 			if p:
 				activeShells[path] = p
+				print 'Started ROSserial for {}'.format(path)
+			else:
+				print 'Unable to start ROSserial for {}'.format(path)
+	print ''
+
 
 def killAllShells():
+	print '\nShutting down all active shells'
 	for k in activeShells:
 		activeShells[k].terminate()
-		del activeShells[k]
-	time.sleep(0.5)
+	sleep(.5)
 
 def main():
 	try:
 		while True:
 			refreshShells()
-			time.sleep(5)
+			sleep(3)
 	except Exception, e:
 		raise e
 	finally:
 		killAllShells()
+
+if __name__ == '__main__':
+	main()
