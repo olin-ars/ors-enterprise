@@ -1,21 +1,21 @@
 /*
- * ORS demonstration of closed-loop motor control
- * When run on a teensy connected to a computer with rosserial,
- * this code accepts commands from the topic rudderCommands and 
- * initiates a motion of the connected motor to the setpoint specified
- * by the command. Feedback is provided through an analog potentiometer,
- * and all work is done in degrees 0-360.
- */
+* ORS demonstration of closed-loop motor control
+* When run on a teensy connected to a computer with rosserial,
+* this code accepts commands from the topic rudderCommands and 
+* initiates a motion of the connected motor to the setpoint specified
+* by the command. Feedback is provided through an analog potentiometer,
+* and all work is done in degrees 0-360.
+*/
 
- #include <ros.h>
- #include <std_msgs/Int16.h>
+#include <ros.h>
+#include <std_msgs/Int16.h>
 
- #include <Servo.h> 
+#include <Servo.h> 
 
- #define SERVO_PIN 9
- #define potpin A7
+#define SERVO_PIN 9
+#define potpin A7
 
- ros::NodeHandle  nh;
+ros::NodeHandle  nh;
 
 Servo myservo;  // create servo object to control a servo 
 
@@ -76,22 +76,33 @@ void moveServo(){
 		movementDirection = 0;
 	}
 	dir_msg.data = movementDirection;
-	direction_chn.publish( &dir_msg );
 }
 
 float readPot(){
 	return 360 - analogRead(potpin) * (360.0 / 1024);  
 }
 
+// Controls the frequency with which ROS transmits/recieves data.
+// This allows the control loop to run much faster while still attempting
+// to recieve / transmit updates in a timely way.
+int ros_transmit_period = 10; //milliseconds
+
 void loop()
 {
 	currentPos = readPot();          // reads the value of the potentiometer (value between 0 and 1023) 
 
 	pot_msg.data = currentPos;
-	potentiometer.publish( &pot_msg );
+
+	static unsigned long last_ros_transmit = millis();
+	if (millis() - last_ros_transmit >= ros_transmit_period){
+		last_ros_transmit = millis();
+
+		direction_chn.publish( &dir_msg );
+		potentiometer.publish( &pot_msg );
+		nh.spinOnce();
+	}
 
 	moveServo();
 
-	nh.spinOnce();
-	delay(10);
+	delay(1);
 }
