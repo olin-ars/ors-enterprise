@@ -70,7 +70,7 @@ void moveServo(){
 		}
 	}
 
-	if(abs(currentPosition - lastCommanded) <= DEADZONE){
+	if(abs(currentPos - lastCommanded) <= DEADZONE){
 		// We have reached our target
 		myservo.write(SERVO_CENTER);
 		movementDirection = 0;
