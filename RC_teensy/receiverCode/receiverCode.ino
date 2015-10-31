@@ -24,7 +24,7 @@ void setupROS(){
 }
 
 void setup() {
-  setupROS()
+  setupROS();
   pinMode(pins, INPUT);
   pinMode(pinx, INPUT);
   pinMode(piny, INPUT);
@@ -32,6 +32,10 @@ void setup() {
 
 float readPWM(int pin, int range[2]){
 	int val = pulseIn(pin, HIGH); //NOTE: pulseIn() has pretty nasty resolution sometimes.
+  if (val == 0){
+    // No pulse recieved, radio probably disconnected
+    return 0.0;
+  }
 	float mid = (range[0] + range[1]) / 2.0;
 	float rng = (range[1] - range[0]) / 2.0;
   return (val-mid) / rng;
