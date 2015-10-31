@@ -21,7 +21,7 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 86;
+int SERVO_CENTER = 85;
 const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
@@ -40,11 +40,15 @@ void command_callback(const std_msgs::Int16& command){
 }
 ros::Subscriber<std_msgs::Int16> command_sub("rudderCommands", &command_callback);
 
+void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
+ros::Subscriber<std_msgs::Int16> center_sub("rudderServoCenter", &center_callback);
+
 void setupROS(){
 	nh.initNode();
 	nh.advertise(pot_pub);
 	nh.advertise(dir_pub);
 	nh.subscribe(command_sub);
+	nh.subscribe(center_sub);
 }
 
 void setup()
@@ -88,7 +92,7 @@ float readPot(){
 // Controls the frequency with which ROS transmits/recieves data.
 // This allows the control loop to run much faster while still attempting
 // to recieve / transmit updates in a timely way.
-int ros_transmit_period = 10; //milliseconds
+unsigned int ros_transmit_period = 10; //milliseconds
 
 void loop()
 {

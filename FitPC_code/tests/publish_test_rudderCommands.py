@@ -12,7 +12,6 @@ def talker():
     pub = rospy.Publisher('/ttyACM0/rudderCommands', Int16)
     def callback(msg): 
         global potPos #TODO: this is ugly.
-        print 'callback run', potPos
         potPos = msg.data
     pot_sub = rospy.Subscriber('/ttyACM1/potentiometer', Float32, callback)
     rospy.init_node('talker', anonymous=True)
