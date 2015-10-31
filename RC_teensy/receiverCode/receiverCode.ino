@@ -13,7 +13,7 @@ void setup() {
 }
 
 float readPWM(int pin, int range[2]){
-	int val = pulseIn(pin, HIGH);
+	int val = pulseIn(pin, HIGH); //NOTE: pulseIn() has pretty nasty resolution sometimes.
 	float mid = (range[0] + range[1]) / 2.0;
 	float rng = (range[1] - range[0]) / 2.0;
   return (val-(mid)) / rng;
