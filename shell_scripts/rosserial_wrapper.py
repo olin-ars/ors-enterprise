@@ -49,7 +49,7 @@ def killAllShells():
 	print '\nShutting down all active shells'
 	for k in activeShells:
 		activeShells[k].terminate()
-	sleep(.5)
+	sleep(2)
 
 def main():
 	activeShells['roscore'] = subprocess.Popen('export ROS_IP=$(hostname --all-ip-addresses);roscore;', shell=True)
