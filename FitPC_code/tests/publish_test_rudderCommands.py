@@ -7,9 +7,9 @@ import random
 def talker():
     pub = rospy.Publisher('rudderCommands', Int16, queue_size=10)
     rospy.init_node('talker', anonymous=True)
-    rate = rospy.Rate(0.2) # .2hz
+    rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
-        command = random.randint(30, 330);
+        command = 180;
         rospy.loginfo("Sent command {}".format(command))
         pub.publish(command)
         rate.sleep()
