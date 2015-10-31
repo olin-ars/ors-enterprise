@@ -3,7 +3,7 @@
 * When run on a teensy connected to a computer with rosserial,
 * this code accepts commands from the topic rudderCommands and 
 * initiates a motion of the connected motor to the setpoint specified
-* by the command. Feedback is provided through an analog potentiometer,
+* by the command. Feedback is provided through an analog pot_pub,
 * and all work is done in degrees 0-360.
 */
 
@@ -27,26 +27,29 @@ int lastCommanded = -1;
 bool newCommand = false;
 
 std_msgs::Int16 pot_msg;
-ros::Publisher potentiometer("rudderSensor", &pot_msg);
+ros::Publisher pot_pub("rudderSensor", &pot_msg);
 std_msgs::Int16 dir_msg;
-ros::Publisher direction_chn("rudderMotorDirection", &dir_msg);
+ros::Publisher dir_pub("rudderMotorDirection", &dir_msg);
 
-void commandCB(const std_msgs::Int16& command){
+void command_callback(const std_msgs::Int16& command){
 	if(command.data <= 0 || command.data >= 360){
 		return;
 	}
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> commands("rudderCommands", &commandCB);
+ros::Subscriber<std_msgs::Int16> command_sub("rudderCommands", &command_callback);
 
+void setupROS(){
+	nh.initNode();
+	nh.advertise(pot_pub);
+	nh.advertise(dir_pub);
+	nh.subscribe(command_sub);
+}
 
 void setup()
 {
-	nh.initNode();
-	nh.advertise(potentiometer);
-	nh.advertise(direction_chn);
-	nh.subscribe(commands);
+	setupROS();
 
 	myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
 	myservo.write(SERVO_CENTER);
@@ -89,7 +92,7 @@ int ros_transmit_period = 10; //milliseconds
 
 void loop()
 {
-	currentPos = readPot();          // reads the value of the potentiometer (value between 0 and 1023) 
+	currentPos = readPot();          // reads the value of the pot_pub (value between 0 and 1023) 
 
 	pot_msg.data = currentPos;
 
@@ -97,8 +100,8 @@ void loop()
 	if (millis() - last_ros_transmit >= ros_transmit_period){
 		last_ros_transmit = millis();
 
-		direction_chn.publish( &dir_msg );
-		potentiometer.publish( &pot_msg );
+		dir_pub.publish( &dir_msg );
+		pot_pub.publish( &pot_msg );
 		nh.spinOnce();
 	}
 
