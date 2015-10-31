@@ -52,6 +52,7 @@ def killAllShells():
 	sleep(.5)
 
 def main():
+	activeShells['roscore'] = subprocess.Popen('export ROS_IP=$(hostname --all-ip-addresses);roscore;')
 	try:
 		while True:
 			refreshShells()
