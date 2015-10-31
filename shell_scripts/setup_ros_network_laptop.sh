@@ -9,3 +9,5 @@ export ROS_IP=$(hostname --all-ip-addresses)
 # Also, because the laptop should not be running a copy of roscore during full operation, 
 # we need to tell it to look for Enterprise's ros server.
 export ROS_MASTER_URI=http://192.168.17.130:11311
+
+echo "ran"
