@@ -1,7 +1,7 @@
 #include <ros.h>
 #include <std_msgs/Float32.h>
 
-ros::NodeHandle  nh;
+ros::NodeHandle nh;
 
 std_msgs::Float32 x_msg;
 ros::Publisher x_pub("RC_x_axis", &x_msg);
