@@ -22,6 +22,7 @@ Servo myservo;  // create servo object to control a servo
 int currentPos;    // variable to read the value from the analog pin 
 
 int SERVO_CENTER = 86;
+const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
 
@@ -69,9 +70,7 @@ void moveServo(){
 		}
 	}
 
-	if(
-		((movementDirection == 1) && currentPos >= lastCommanded) ||
-		((movementDirection == -1) && currentPos <= lastCommanded)){
+	if(abs(currentPosition - lastCommanded) <= DEADZONE){
 		// We have reached our target
 		myservo.write(SERVO_CENTER);
 		movementDirection = 0;
