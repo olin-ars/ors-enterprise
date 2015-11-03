@@ -3,8 +3,8 @@
 * When run on a teensy connected to a computer with rosserial,
 * this code accepts commands from the topic rudderCommands and 
 * initiates a motion of the connected motor to the setpoint specified
-* by the command. Feedback is provided through an analog pot_pub,
-* and all work is done in degrees 0-360.
+* by the command. Feedback is provided through an series of magnetic switches,
+* and all work is done in counts of magnetic switches.
 */
 
 #include <ros.h>
@@ -13,35 +13,38 @@
 #include <Servo.h> 
 
 #define SERVO_PIN 9
-#define potpin A7
+
+#define FIRST_SENSOR_PIN 14
+#define NUM_SENSORS 7
+
 
 ros::NodeHandle  nh;
 
+// TODO: bug electrical to get a motor controller set up so we can test this for real
 Servo myservo;  // create servo object to control a servo 
 
-int currentPos;    // variable to read the value from the analog pin 
+float currentPos = -1;
 
 int SERVO_CENTER = 85;
-const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
 
 std_msgs::Int16 pot_msg;
-ros::Publisher pot_pub("rudderSensor", &pot_msg);
+ros::Publisher pot_pub("sailSensor", &pot_msg);
 std_msgs::Int16 dir_msg;
-ros::Publisher dir_pub("rudderMotorDirection", &dir_msg);
+ros::Publisher dir_pub("sailMotorDirection", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
-	if(command.data <= 0 || command.data >= 360){
+	if(command.data < 0 || command.data > NUM_SENSORS){
 		return;
 	}
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> command_sub("rudderCommands", &command_callback);
+ros::Subscriber<std_msgs::Int16> command_sub("sailCommands", &command_callback);
 
 void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
-ros::Subscriber<std_msgs::Int16> center_sub("rudderServoCenter", &center_callback);
+ros::Subscriber<std_msgs::Int16> center_sub("sailServoCenter", &center_callback);
 
 void setupROS(){
 	nh.initNode();
@@ -57,11 +60,15 @@ void setup()
 
 	myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
 	myservo.write(SERVO_CENTER);
+
+	for(int i = 0; i < NUM_SENSORS; i++){
+		pinMode(FIRST_SENSOR_PIN + i, INPUT_PULLUP);
+	}
 }
 
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
-void moveServo(){
+void moveMotor(){
 	const int power = 5;
 
 	if (newCommand){
@@ -85,8 +92,22 @@ void moveServo(){
 	dir_msg.data = movementDirection;
 }
 
-float readPot(){
-	return 360 - analogRead(potpin) * (360.0 / 1024);  
+float readSensors(){
+	int total;
+	int count;
+	for(int i = 0; i < NUM_SENSORS; i++){
+		bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
+		if (switchVal){
+			total += i;
+			count++;
+		}
+	}
+	if (count == 0) 
+		return currentPos;
+	float newPos = float(total)/count;
+	return newPos;
+	// Note that this function sorta-expects that the output it returns will go into
+	// a global variable called currentPos.
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
@@ -96,7 +117,7 @@ unsigned int ros_transmit_period = 10; //milliseconds
 
 void loop()
 {
-	currentPos = readPot();          // reads the value of the pot_pub (value between 0 and 1023) 
+	currentPos = readSensors();    // reads the position of the motor
 
 	pot_msg.data = currentPos;
 
@@ -109,7 +130,7 @@ void loop()
 		nh.spinOnce();
 	}
 
-	moveServo();
+	moveMotor();
 
 	delay(1);
 }
