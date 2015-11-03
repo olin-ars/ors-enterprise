@@ -9,6 +9,10 @@ std_msgs::Float32 y_msg;
 ros::Publisher y_pub("RC_y_axis", &y_msg);
 std_msgs::Float32 s_msg;
 ros::Publisher s_pub("RC_s_axis", &s_msg);
+std_msgs::Float32 pot_msg;
+ros::Publisher pot_pub("potentiometer", &pot_msg);
+
+#define potpin A7
 
 int pins = 5;
 int piny = 3;
@@ -21,6 +25,7 @@ void setupROS(){
   nh.advertise(x_pub);
   nh.advertise(y_pub);
   nh.advertise(s_pub);
+  nh.advertise(pot_pub);
 }
 
 void setup() {
@@ -31,7 +36,8 @@ void setup() {
 }
 
 float readPWM(int pin, int range[2]){
-	int val = pulseIn(pin, HIGH); //NOTE: pulseIn() has pretty nasty resolution sometimes.
+  // Timeout on pulsein is 50ms
+	int val = pulseIn(pin, HIGH, 50*1000); //NOTE: pulseIn() has pretty nasty resolution sometimes.
   if (val == 0){
     // No pulse recieved, radio probably disconnected
     return 0.0;
@@ -39,6 +45,10 @@ float readPWM(int pin, int range[2]){
 	float mid = (range[0] + range[1]) / 2.0;
 	float rng = (range[1] - range[0]) / 2.0;
   return (val-mid) / rng;
+}
+
+float readPot(){
+  return (analogRead(potpin) - 512)/1024.0 * 270.0;  
 }
 
 void loop() {
@@ -55,6 +65,9 @@ void loop() {
   x_pub.publish(&x_msg);
   y_msg.data = y;
   y_pub.publish(&y_msg);
+
+  pot_msg.data = readPot();
+  pot_pub.publish(&pot_msg);
 
   nh.spinOnce();
   delay(20);
