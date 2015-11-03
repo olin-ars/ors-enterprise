@@ -14,6 +14,8 @@
 
 #define SERVO_PIN 9
 
+#define DEADZONE 0
+
 #define FIRST_SENSOR_PIN 14
 #define NUM_SENSORS 7
 
@@ -93,8 +95,8 @@ void moveMotor(){
 }
 
 float readSensors(){
-	int total;
-	int count;
+	int total = 0;
+	int count = 0;
 	for(int i = 0; i < NUM_SENSORS; i++){
 		bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
 		if (switchVal){
