@@ -14,7 +14,7 @@ def talker():
         global potPos #TODO: this is ugly.
         potPos = msg.data
     pot_sub = rospy.Subscriber('/ttyACM1/potentiometer', Float32, callback)
-    rospy.init_node('talker', anonymous=True)
+    rospy.init_node('command_center', anonymous=True)
 
 
     rate = rospy.Rate(10) # 10hz
