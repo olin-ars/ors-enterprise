@@ -114,7 +114,8 @@ void moveServo(){
 float readPot(){
   return 360 - analogRead(potpin) * (360.0 / 1024);  
 }
-bool readLim(){
+
+int readLim(){
   //stop if TRUE
   if(digitalRead(STAR_LIM_PIN) == HIGH)
     return STAR_LIM_PIN;
