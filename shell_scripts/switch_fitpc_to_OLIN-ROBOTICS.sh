@@ -1,1 +1,1 @@
-nmcli con up id 'OLIN-ROBOTICS'
+sudo nmcli con up id 'OLIN-ROBOTICS'

@@ -1,1 +1,2 @@
-nmcli con up id 'ORS-NETWORK'
+sudo nmcli con up id 'ORS-NETWORK'
+
