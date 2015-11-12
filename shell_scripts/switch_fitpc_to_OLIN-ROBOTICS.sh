@@ -1,1 +1,1 @@
-sudo nmcli dev wifi connect OLIN-ROBOTICS password R0B0TS-RULE
+nmcli con up id 'OLIN-ROBOTICS'
