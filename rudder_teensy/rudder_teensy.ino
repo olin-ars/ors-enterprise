@@ -27,7 +27,7 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 85;
+int SERVO_CENTER = 88;
 const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
@@ -65,6 +65,8 @@ void setup()
   myservo.write(SERVO_CENTER);
   pinMode(STAR_LIM_PIN,INPUT);
   pinMode(PORT_LIM_PIN,INPUT);
+  pinMode(13,OUTPUT); //Check LED Activate
+  digitalWrite(13,HIGH);
 }
 
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
@@ -73,7 +75,6 @@ void moveServo(){
   const int power = 5;
 
   if (newCommand){
-
     //check limits
     if((softLimStop == STAR_LIM_PIN && lastCommanded >= currentPos) //STAR = bigger angle, PORT = less angle
         ||(softLimStop == PORT_LIM_PIN && lastCommanded <= currentPos)){
@@ -98,7 +99,6 @@ void moveServo(){
       }
     }
   }
-  
   if(softLimStop){
     lastCommanded = currentPos; //stop servo
   }
@@ -133,7 +133,6 @@ void loop()
 {
   currentPos = readPot();          // reads the value of the pot_pub (value between 0 and 1023) 
   softLimStop = readLim();
-
   pot_msg.data = currentPos;
 
   static unsigned long last_ros_transmit = millis();
