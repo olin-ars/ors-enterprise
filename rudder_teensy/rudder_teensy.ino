@@ -88,55 +88,40 @@ int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement directi
 void moveServo(){
   const int power = 5;
 
-  if (newCommand){
-    //check limits
-    if((softLimStop == STAR_LIM_PIN && lastCommanded >= currentPos) //STAR = bigger angle, PORT = less angle
-        ||(softLimStop == PORT_LIM_PIN && lastCommanded <= currentPos)){
-          //when command exceeding the limits are issued
-          newCommand = false; // invalidate command
-          lastCommanded = currentPos;
+    
+  // A valid command has just been recieved
+  if(newCommand){
+    newCommand = false;
+    if (lastCommanded > currentPos){
+      movementDirection = 1;
     }
     else{
-    softLimStop = 0; //release Soft Limit Switch
+      movementDirection = -1;
     }
-    
-    // A valid command has just been recieved
-    if(newCommand){
-      newCommand = false;
-      if (lastCommanded > currentPos){
-        myservo.write(SERVO_CENTER + power);
-        movementDirection = 1;
-      }
-      else{
-        myservo.write(SERVO_CENTER - power);
-        movementDirection = -1;
-      }
-    }
-  }
-  if(softLimStop){
-    lastCommanded = currentPos; //stop servo
-    myservo.write(SERVO_CENTER);
-  }
-  
+  }  
   if(abs(currentPos - lastCommanded) <= DEADZONE){
     // We have reached our target
-    myservo.write(SERVO_CENTER);
     movementDirection = 0;
   }
+
+  // DEAL with limit switches
+  
+  if(digitalRead(STAR_LIM_PIN) == HIGH && movementDirection > 0){
+    movementDirection = 0;
+  }  
+  if(digitalRead(PORT_LIM_PIN) == HIGH && movementDirection < 0){
+    movementDirection = 0;
+  }
+
+  // WRITE motor values
+
+  myservo.write(SERVO_CENTER + power*movementDirection)
+
   dir_msg.data = movementDirection;
 }
 
 float readPot(){
   return 360 - analogRead(potpin) * (360.0 / 1024);  
-}
-
-int readLim(){
-  //stop if TRUE
-  if(digitalRead(STAR_LIM_PIN) == HIGH)
-    return STAR_LIM_PIN;
-  else if(digitalRead(PORT_LIM_PIN) == HIGH)
-    return PORT_LIM_PIN;
-  return 0;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
@@ -147,7 +132,6 @@ unsigned int ros_transmit_period = 10; //milliseconds
 void loop()
 {
   currentPos = readPot();          // reads the value of the pot_pub (value between 0 and 1023) 
-  softLimStop = readLim();
   pot_msg.data = currentPos;
 
   static unsigned long last_ros_transmit = millis();
