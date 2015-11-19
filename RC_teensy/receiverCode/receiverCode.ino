@@ -17,7 +17,7 @@ ros::Publisher pot_pub("potentiometer", &pot_msg);
 
 int pinSails = 2;
 int pinRudder = 3;
-int pinSwitch = 6;
+int pinSwitch = 4;
 
 float SailCommand, RudderCommand, Switch;
 
