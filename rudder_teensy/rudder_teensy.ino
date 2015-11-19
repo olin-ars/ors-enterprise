@@ -7,6 +7,20 @@
 * and all work is done in degrees 0-360.
 */
 
+/*
+    Electrical setup:
+    Outputs:
+      Pin SERVO_PIN [D9] connected to PWM input of motor controller, with value of 88
+      referring to center.
+
+    Inputs:
+      Pin potpin [A7] connected to potentiometer. Analog input expected in range 0..3V
+      Pins STAR_LIM_PIN and PORT_LIM_PIN [11], [12] connected through limit switches.
+        The other wire of the limit switch connects to ground.
+        The limit switch is expected to be normally closed, and the Teensy provides
+        an internal pullup resistor.
+*/
+
 #include <ros.h>
 #include <std_msgs/Int16.h>
 
@@ -15,8 +29,8 @@
 #define SERVO_PIN 9
 #define potpin A7
 
-#define STAR_LIM_PIN 11 //StarBoard
-#define PORT_LIM_PIN 12 //Port
+#define STAR_LIM_PIN 11 //StarBoard limit switch pin
+#define PORT_LIM_PIN 12 //Port limit switch pin
 //Assumption : STAR = (numerically) bigger angle, PORT = less angle
 
 int softLimStop = 0;
@@ -63,8 +77,8 @@ void setup()
   Serial.begin(9600);
   myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
   myservo.write(SERVO_CENTER);
-  pinMode(STAR_LIM_PIN,INPUT);
-  pinMode(PORT_LIM_PIN,INPUT);
+  pinMode(STAR_LIM_PIN,INPUT_PULLUP);
+  pinMode(PORT_LIM_PIN,INPUT_PULLUP);
   pinMode(13,OUTPUT); //Check LED Activate
   digitalWrite(13,HIGH);
 }
@@ -101,6 +115,7 @@ void moveServo(){
   }
   if(softLimStop){
     lastCommanded = currentPos; //stop servo
+    myservo.write(SERVO_CENTER);
   }
   
   if(abs(currentPos - lastCommanded) <= DEADZONE){
@@ -121,7 +136,7 @@ int readLim(){
     return STAR_LIM_PIN;
   else if(digitalRead(PORT_LIM_PIN) == HIGH)
     return PORT_LIM_PIN;
-   return 0;
+  return 0;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
