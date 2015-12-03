@@ -22,6 +22,7 @@ Servo myservo;  // create servo object to control a servo
 int currentPos;    // variable to read the value from the analog pin 
 
 int SERVO_CENTER = 92.5;
+const float POT_OFFSET = 277;
 const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
