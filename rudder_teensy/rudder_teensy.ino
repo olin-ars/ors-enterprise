@@ -115,7 +115,7 @@ void moveServo(){
 
   // WRITE motor values
 
-  myservo.write(SERVO_CENTER + power*movementDirection)
+  myservo.write(SERVO_CENTER + power*movementDirection);
 
   dir_msg.data = movementDirection;
 }
