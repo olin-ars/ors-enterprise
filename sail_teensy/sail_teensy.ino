@@ -36,7 +36,7 @@ std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("sailMotorDirection", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
-	if(command.data < 0 || command.data > NUM_SENSORS){
+	if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
 		return;
 	}
 	lastCommanded = command.data;
@@ -70,17 +70,17 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveMotor(){
-	const int power = 10;
+	const int power = 20;
 
 	if (newCommand){
 		// A command has just been recieved
 		newCommand = false;
 		if (lastCommanded > currentPos){
-			myservo.write(SERVO_CENTER - power);
+			myservo.write(SERVO_CENTER + power);
 			movementDirection = 1;
 		}
 		else{
-			myservo.write(SERVO_CENTER + power);
+			myservo.write(SERVO_CENTER - power);
 			movementDirection = -1;
 		}
 	}
