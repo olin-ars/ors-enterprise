@@ -22,17 +22,16 @@
 
 ros::NodeHandle  nh;
 
-// TODO: bug electrical to get a motor controller set up so we can test this for real
 Servo myservo;  // create servo object to control a servo 
 
 float currentPos = -1;
 
-int SERVO_CENTER = 85;
+int SERVO_CENTER = 92;
 int lastCommanded = -1;
 bool newCommand = false;
 
-std_msgs::Int16 pot_msg;
-ros::Publisher pot_pub("sailSensor", &pot_msg);
+std_msgs::Int16 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
+ros::Publisher pos_pub("sailSensor", &pos_msg);
 std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("sailMotorDirection", &dir_msg);
 
@@ -50,7 +49,7 @@ ros::Subscriber<std_msgs::Int16> center_sub("sailServoCenter", &center_callback)
 
 void setupROS(){
 	nh.initNode();
-	nh.advertise(pot_pub);
+	nh.advertise(pos_pub);
 	nh.advertise(dir_pub);
 	nh.subscribe(command_sub);
 	nh.subscribe(center_sub);
@@ -71,17 +70,17 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveMotor(){
-	const int power = 5;
+	const int power = 10;
 
 	if (newCommand){
 		// A command has just been recieved
 		newCommand = false;
 		if (lastCommanded > currentPos){
-			myservo.write(SERVO_CENTER + power);
+			myservo.write(SERVO_CENTER - power);
 			movementDirection = 1;
 		}
 		else{
-			myservo.write(SERVO_CENTER - power);
+			myservo.write(SERVO_CENTER + power);
 			movementDirection = -1;
 		}
 	}
@@ -115,24 +114,22 @@ float readSensors(){
 // Controls the frequency with which ROS transmits/recieves data.
 // This allows the control loop to run much faster while still attempting
 // to recieve / transmit updates in a timely way.
-unsigned int ros_transmit_period = 10; //milliseconds
+unsigned int ros_transmit_period = 25; //milliseconds
 
 void loop()
 {
 	currentPos = readSensors();    // reads the position of the motor
-
-	pot_msg.data = currentPos;
+	pos_msg.data = currentPos;
 
 	static unsigned long last_ros_transmit = millis();
 	if (millis() - last_ros_transmit >= ros_transmit_period){
 		last_ros_transmit = millis();
 
 		dir_pub.publish( &dir_msg );
-		pot_pub.publish( &pot_msg );
+		pos_pub.publish( &pos_msg );
 		nh.spinOnce();
 	}
 
 	moveMotor();
-
 	delay(1);
 }
