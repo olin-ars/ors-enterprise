@@ -21,7 +21,8 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 85;
+int SERVO_CENTER = 92.5;
+const float POT_OFFSET = 277;
 const int DEADZONE = 5;
 int lastCommanded = -1;
 bool newCommand = false;
@@ -62,7 +63,7 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-	const int power = 5;
+	const int power = 10;
 
 	if (newCommand){
 		// A command has just been recieved
