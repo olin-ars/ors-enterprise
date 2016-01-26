@@ -4,7 +4,7 @@
 * this code accepts commands from the topic rudderCommands and 
 * initiates a motion of the connected motor to the setpoint specified
 * by the command. Feedback is provided through an analog pot_pub,
-* and all work is done in degrees 0-360.
+* and all work is done in degrees -180 -- 180.
 */
 
 #include <ros.h>
@@ -33,7 +33,7 @@ std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("rudderMotorDirection", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
-	if(command.data <= 0 || command.data >= 360){
+	if(command.data <= -180 || command.data >= 180){
 		return;
 	}
 	lastCommanded = command.data;
@@ -87,7 +87,10 @@ void moveServo(){
 }
 
 float readPot(){
-	return 360 - analogRead(potpin) * (360.0 / 1024);  
+	float reading = (-analogRead(potpin) * (360.0 / 1024)) - POT_OFFSET;
+  while (reading < -180){reading += 360;}
+  while (reading >= 180){reading -= 360;}
+  return reading;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
