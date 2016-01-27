@@ -6,5 +6,3 @@
 
 # Note that I think this line needs to be run in each terminal window you want to use.
 export ROS_IP=$(hostname --all-ip-addresses)
-
-echo "ran"
