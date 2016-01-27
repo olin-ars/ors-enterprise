@@ -9,9 +9,13 @@ note: none of this is implemented yet
 
 #### RC topics:
 * `rc/rudder_in` RC input for rudder position
+ * Float32 (pub)
 * `rc/sails_in` RC input for sail position
+ * Float32 (pub)
 * `rc/switch_in` RC input for switch on controller
+ * Float32 (pub)
 * `rc/debug_dial_in` value of potentiometer connected to rc teensy
+ * Float32 (pub)
 
 #### Rudder topics:
 * `rudder/pos` encoder/pot position in degrees
@@ -28,3 +32,9 @@ note: none of this is implemented yet
   * Int32 (pub)
 * `sail/set_point` set point for linear actuator
   * Int32 (sub)
+
+### Information Flow
+
+1. The RC teensy gets information from the RC controller and sends that information to the FitPC over rostopics outlined above.
+2. A node on the FitPC then determines what set points to send to both the sail and the rudder using the rostopics outlined above (this arbiter node will hold logic for choosing between RC control and various autonomous modes)
+* Topics published by the rudder and sail teensys, as well as the debug dial are currently used only for debugging, but may be useful later.
