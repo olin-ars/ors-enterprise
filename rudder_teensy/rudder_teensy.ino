@@ -28,9 +28,9 @@ int lastCommanded = -1;
 bool newCommand = false;
 
 std_msgs::Int16 pot_msg;
-ros::Publisher pot_pub("rudderSensor", &pot_msg);
+ros::Publisher pot_pub("/rudder/pos", &pot_msg);
 std_msgs::Int16 dir_msg;
-ros::Publisher dir_pub("rudderMotorDirection", &dir_msg);
+ros::Publisher dir_pub("/rudder/motor_direction", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
 	if(command.data <= -180 || command.data >= 180){
@@ -39,10 +39,11 @@ void command_callback(const std_msgs::Int16& command){
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> command_sub("rudderCommands", &command_callback);
+ros::Subscriber<std_msgs::Int16> command_sub("/rudder/set_point", &command_callback);
 
 void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
-ros::Subscriber<std_msgs::Int16> center_sub("rudderServoCenter", &center_callback);
+// DEPRECIATED
+ros::Subscriber<std_msgs::Int16> center_sub("/rudder/ServoCenter", &center_callback);
 
 void setupROS(){
 	nh.initNode();

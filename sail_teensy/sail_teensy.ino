@@ -31,9 +31,9 @@ int lastCommanded = -1;
 bool newCommand = false;
 
 std_msgs::Int16 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
-ros::Publisher pos_pub("sailSensor", &pos_msg);
+ros::Publisher pos_pub("/sail/pos", &pos_msg);
 std_msgs::Int16 dir_msg;
-ros::Publisher dir_pub("sailMotorDirection", &dir_msg);
+ros::Publisher dir_pub("/sail/motor_direction", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
 	if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
@@ -42,10 +42,11 @@ void command_callback(const std_msgs::Int16& command){
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> command_sub("sailCommands", &command_callback);
+ros::Subscriber<std_msgs::Int16> command_sub("/sail/set_point", &command_callback);
 
 void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
-ros::Subscriber<std_msgs::Int16> center_sub("sailServoCenter", &center_callback);
+// DEPRECIATED
+ros::Subscriber<std_msgs::Int16> center_sub("/sail/ServoCenter", &center_callback);
 
 void setupROS(){
 	nh.initNode();
