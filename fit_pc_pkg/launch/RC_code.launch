@@ -1,4 +1,6 @@
 <launch>
+  <arg name="ros-ip" default="192.168.17.130" />
+  <env name="ROS_IP" value="$(arg ros-ip)"/>
   <node name="setup" pkg="fit_pc_pkg" type="rosserial_wrapper.py" />
   <node name="command_center" pkg="fit_pc_pkg" type="RC-control-master.py" />
 </launch>
