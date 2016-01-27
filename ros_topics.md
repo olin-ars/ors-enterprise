@@ -13,7 +13,7 @@ note: none of this is implemented yet
 * `rc/sails_in` RC input for sail position
  * Float32 (pub)
 * `rc/switch_in` RC input for switch on controller
- * Float32 (pub)
+ * Bool (pub)
 * `rc/debug_dial_in` value of potentiometer connected to rc teensy
  * Float32 (pub)
 
