@@ -33,6 +33,12 @@ note: none of this is implemented yet
 * `sail/set_point` set point for linear actuator
   * Int16 (sub)
 
+#### Constants for Operating Mode:
+* DEFAULT = 0
+* RC_MODE = 1
+* AUTO_MODE = 2
+* TEST_MODE = 3
+
 ### Information Flow
 
 1. The RC teensy gets information from the RC controller and sends that information to the FitPC over rostopics outlined above.
