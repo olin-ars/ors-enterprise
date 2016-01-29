@@ -19,19 +19,19 @@ note: none of this is implemented yet
 
 #### Rudder topics:
 * `rudder/pos` encoder/pot position in degrees
-  * Int32 (pub)
+  * Int16 (pub)
 * `rudder/motor_direction` direction of motor
-  * Int32 (pub)
+  * Int16 (pub)
 * `rudder/set_point` set point for rudder in degrees
-  * Int32 (sub)
+  * Int16 (sub)
 
 #### Sail topics:
 * `sail/pos` magnet sensor position
-  * Int32 (pub)
+  * Int16 (pub)
 * `sail/motor_direction` direction of actuator
-  * Int32 (pub)
+  * Int16 (pub)
 * `sail/set_point` set point for linear actuator
-  * Int32 (sub)
+  * Int16 (sub)
 
 ### Information Flow
 
