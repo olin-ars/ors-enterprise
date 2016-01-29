@@ -24,13 +24,12 @@ class RCmaster(object):
         self.sailPos = 0  # TODO: what is the sail neutral pos?
 
         rospy.init_node('command_center', anonymous=True)
-        # TODO: at some point, this needs to become more intelligent
-        # with detecting what port the Teensy is on
-        self.rudderPub = rospy.Publisher('/ttyACM0/rudderCommands', Int16)
-        self.sailPub = rospy.Publisher('/ttyACM2/sailCommands', Int16)
+        
+        self.rudderPub = rospy.Publisher('rudder/set_point', Int16)
+        self.sailPub = rospy.Publisher('sail/set_point', Int16)
 
-        self.sailSub = rospy.Subscriber('/ttyACM1/RC_sails_in', Float32, self.update_sail)
-        self.rudderSub = rospy.Subscriber('/ttyACM1/RC_rudder_in', Float32, self.update_rudder)
+        self.sailSub = rospy.Subscriber('rc/sails_in', Float32, self.update_sail)
+        self.rudderSub = rospy.Subscriber('rc/rudder_in', Float32, self.update_rudder)
 
     def update_rudder(self, msg):
         self.rudderPos = msg.data

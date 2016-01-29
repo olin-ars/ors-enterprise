@@ -9,11 +9,11 @@ def talker():
     global potPos;
     potPos = 180.0;
 
-    pub = rospy.Publisher('/ttyACM0/rudderCommands', Int16)
+    pub = rospy.Publisher('rudder/set_point', Int16)
     def callback(msg): 
         global potPos #TODO: this is ugly.
         potPos = msg.data
-    pot_sub = rospy.Subscriber('/ttyACM1/potentiometer', Float32, callback)
+    pot_sub = rospy.Subscriber('rc/debug_dial_in', Float32, callback)
     rospy.init_node('command_center', anonymous=True)
 
 
