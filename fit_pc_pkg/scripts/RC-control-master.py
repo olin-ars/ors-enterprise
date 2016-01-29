@@ -7,10 +7,12 @@ class RCmaster(object):
     def run(self):
         rate = rospy.Rate(10)  # 10hz
         while not rospy.is_shutdown():
-            rudderMsg = int(self.rudderPos)
+            # Convert (-1.0 -- 1.0) to (-45 -- 45)
+            rudderMsg = int(self.rudderPos * 45)
             self.rudderPub.publish(rudderMsg)
 
-            sailMsg = int(self.sailPos)
+            # Convert (-1.0 -- 1.0) to (0 -- 6)
+            sailMsg = int((self.sailPos + 1.0) * 6/2.0)
             self.sailPub.publish(sailMsg)
 
             rospy.loginfo("Sent command (Rudder, Sail)=({}, {})".format(rudderMsg, sailMsg))
