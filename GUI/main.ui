@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<<<<<<< HEAD
  <class>ORS_GUI</class>
  <widget class="QMainWindow" name="ORS_GUI">
+=======
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+>>>>>>> 86fc243a0368d455235fdaeda17b6ced53cd5117
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,6 +16,7 @@
    </rect>
   </property>
   <property name="windowTitle">
+<<<<<<< HEAD
    <string>ORS_GUI</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -133,6 +139,11 @@
    <zorder>gridLayoutWidget</zorder>
    <zorder>label_3</zorder>
   </widget>
+=======
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+>>>>>>> 86fc243a0368d455235fdaeda17b6ced53cd5117
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
@@ -142,6 +153,7 @@
      <height>25</height>
     </rect>
    </property>
+<<<<<<< HEAD
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
@@ -159,6 +171,17 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+=======
+   <widget class="QMenu" name="menuORSVisualize">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <addaction name="menuORSVisualize"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+>>>>>>> 86fc243a0368d455235fdaeda17b6ced53cd5117
  <resources/>
  <connections/>
 </ui>
