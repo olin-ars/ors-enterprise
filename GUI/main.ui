@@ -218,7 +218,7 @@
         <property name="title">
          <string>Rudder</string>
         </property>
-        <widget class="QDial" name="dial">
+        <widget class="QDial" name="rPosDial">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -226,6 +226,18 @@
            <width>50</width>
            <height>64</height>
           </rect>
+         </property>
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="invertedAppearance">
+          <bool>false</bool>
+         </property>
+         <property name="invertedControls">
+          <bool>false</bool>
+         </property>
+         <property name="wrapping">
+          <bool>true</bool>
          </property>
         </widget>
         <widget class="QWidget" name="verticalLayoutWidget_2">
@@ -248,7 +260,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_13">
+             <widget class="QLabel" name="rDstLabel">
               <property name="text">
                <string>--</string>
               </property>
@@ -266,7 +278,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_9">
+             <widget class="QLabel" name="rPosLabel">
               <property name="text">
                <string>--</string>
               </property>
@@ -283,7 +295,7 @@
         <property name="title">
          <string>Sail</string>
         </property>
-        <widget class="QSlider" name="horizontalSlider">
+        <widget class="QSlider" name="sPosSlider">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -325,7 +337,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_17">
+             <widget class="QLabel" name="sDstLabel">
               <property name="text">
                <string>--</string>
               </property>
@@ -343,7 +355,7 @@
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_15">
+             <widget class="QLabel" name="sPosLabel">
               <property name="text">
                <string>--</string>
               </property>
