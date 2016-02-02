@@ -1,6 +1,5 @@
 # Namespaces and Topics
 ### where they go, what they do
-note: none of this is implemented yet
 
 #### Each teensy has it's own namespace:
 * `rc/` for the teensy recieveing RC signals
@@ -9,11 +8,11 @@ note: none of this is implemented yet
 
 #### Arbiter:
 * `operating_mode` Controls boat's operating mode
- * Int16 (sub)
-  * DEFAULT = 0
-  * RC_MODE = 1
-  * AUTO_MODE = 2
-  * TEST_MODE = 3
+  * Int16 (sub)
+    * DEFAULT = 0 : Unimplemented
+    * RC_MODE = 1 : Implemented by `RC-control-master.py`
+    * AUTO_MODE = 2 : Unimplemented
+    * TEST_MODE = 3 : Implemented by `publish-test-rudderCommands.py`
 
 ##### Each operating mode gets its own namespace
 * `rc_mode/`
