@@ -6,20 +6,29 @@ from PyQt4.QtCore import *
 class MapWidget(QFrame):
     def __init__(self,parent=None):
         QFrame.__init__(self,parent);
-        self.location = QPoint(0,0);
+        self.location = QPointF(0.5,0.5);
+        self.locPen = QPen(QColor.fromRgb(255,255,255));
+        self.locPen.setWidthF(0.1);
     def setLoc(self,*args):
         """setLoc : set latitude/longitude
         setLoc(int latitude, int longitude);
         setLoc(QPoint)
         setLoc(QPointF)
         """
-
-    def paintEvent(self,event):
-        p = QPainter(self);
-        p.scale(self.width()/2,self.height()/2); #viewport from -1~1
+        # from -1 to 1
+        self.location = QPointF(args[0]/3.14,args[1]/3.14);
+    def drawBK(self,p):
         p.translate(1,1);
         m = QPixmap('world.gif');
         p.drawPixmap(QRectF(-1,-1,2,2),m,QRectF(0,0,m.width(),m.height()));
+    def drawLocation(self,p):
+        p.setPen(self.locPen);
+        p.drawPoint(self.location);
+    def paintEvent(self,event):
+        p = QPainter(self);
+        p.scale(self.width()/2,self.height()/2); #viewport from -1~1
+        self.drawBK(p);
+        self.drawLocation(p);
         QFrame.paintEvent(self,event);
 
 if __name__ == "__main__":
