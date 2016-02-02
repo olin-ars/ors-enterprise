@@ -23,14 +23,14 @@ class Arbiter:
         #autoSailsSub = rospy.Subscriber('auto_sails_in', Float32)
         self.opModeSub = rospy.Subscriber('operating_mode', Int16,self.onOpMode)
         #for further expansion
-        setupSubscribers(self,DEFAULT)
+        self.setupSubscribers(RC_MODE)
 
     def setupSubscribers(self, mode):
         namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:None, TEST_MODE:"test_mode"}
         currentNamespace = namespaces[mode]
 
         #input
-        if rudderSub:
+        if self.rudderSub:
             self.rudderSub.unregister();
             self.sailsSub.unregister();
 
@@ -40,28 +40,29 @@ class Arbiter:
         self.rudderSub = rospy.Subscriber(currentNamespace + '/rudder/set_point', Int16, self.onRudder) #listening to rudder_in
         self.sailsSub = rospy.Subscriber(currentNamespace + '/sail/set_point', Int16, self.onSail) #listening to sails_in
     
-    def onRudder(self,data):
-        self.rudder=data
-        self.rudderPub.publish(data)
+    def onRudder(self,msg):
+        self.rudder=msg.data
+        self.rudderPub.publish(msg.data)
 
-#    def onRCSwitch(self,data):
-#        if data is True:
+#    def onRCSwitch(self,msg):
+#        if msg.data is True:
 #            self.controlType = RC_MODE
 #        else:
 #            self.controlType = DEFAULT
 #
-    def onSail(self,data):
-        self.sail=data
-        self.sailPub.publish(data)
+    def onSail(self,msg):
+        self.sail=msg.data
+        self.sailPub.publish(msg.data)
 
-    def onOpMode(self,data):
-        self.opMode = data
-        setupSubscribers(self,data)
+    def onOpMode(self,msg):
+        self.opMode = msg.data
+        self.setupSubscribers(msg.data)
 
     def spin(self):
         rospy.spin()
 
 if __name__ == '__main__':
-	arbiter = new Arbiter()
-        arbiter.spin()
-	# do something
+    rospy.init_node('arbiter', anonymous=True)
+    arbiter = Arbiter()
+    arbiter.spin()
+    # do something
