@@ -30,6 +30,5 @@ class ORSWindow(QMainWindow):
 if __name__ == "__main__":
     app = QApplication(sys.argv);
     w = ORSWindow();
-    w.setWindowTitle("ORSVisualize");
     w.show();
     sys.exit(app.exec_());

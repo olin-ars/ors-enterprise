@@ -1,2 +1,6 @@
 # swap files
 *~
+*.un~
+.*~
+.*.un~
+*.py~
