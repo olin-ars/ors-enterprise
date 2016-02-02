@@ -9,7 +9,7 @@ def talker():
     global potPos;
     potPos = 180.0;
 
-    pub = rospy.Publisher('rudder/set_point', Int16)
+    pub = rospy.Publisher('test_mode/rudder/set_point', Int16)
     def callback(msg): 
         global potPos #TODO: this is ugly.
         potPos = msg.data
