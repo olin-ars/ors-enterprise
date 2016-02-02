@@ -3,8 +3,8 @@
 * When run on a teensy connected to a computer with rosserial,
 * this code accepts commands from the topic rudderCommands and 
 * initiates a motion of the connected motor to the setpoint specified
-* by the command. Feedback is provided through an analog pot_pub,
-* and all work is done in degrees -180 -- 180.
+* by the command. Feedback is provided through an series of magnetic switches,
+* and all work is done in counts of magnetic switches.
 */
 
 #include <ros.h>
@@ -13,41 +13,44 @@
 #include <Servo.h> 
 
 #define SERVO_PIN 9
-#define potpin A7
+
+#define DEADZONE 0
+
+#define FIRST_SENSOR_PIN 14
+#define NUM_SENSORS 7
+
 
 ros::NodeHandle  nh;
 
 Servo myservo;  // create servo object to control a servo 
 
-int currentPos;    // variable to read the value from the analog pin 
+float currentPos = -1;
 
-int SERVO_CENTER = 92.5;
-const float POT_OFFSET = 277;
-const int DEADZONE = 5;
+int SERVO_CENTER = 92;
 int lastCommanded = -1;
 bool newCommand = false;
 
-std_msgs::Int16 pot_msg;
-ros::Publisher pot_pub("/rudder/pos", &pot_msg);
+std_msgs::Int16 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
+ros::Publisher pos_pub("/sail/pos", &pos_msg);
 std_msgs::Int16 dir_msg;
-ros::Publisher dir_pub("/rudder/motor_direction", &dir_msg);
+ros::Publisher dir_pub("/sail/motor_direction", &dir_msg);
 
 void command_callback(const std_msgs::Int16& command){
-	if(command.data <= -180 || command.data >= 180){
+	if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
 		return;
 	}
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> command_sub("/rudder/set_point", &command_callback);
+ros::Subscriber<std_msgs::Int16> command_sub("/sail/set_point", &command_callback);
 
 void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
 // DEPRECIATED
-ros::Subscriber<std_msgs::Int16> center_sub("/rudder/ServoCenter", &center_callback);
+ros::Subscriber<std_msgs::Int16> center_sub("/sail/ServoCenter", &center_callback);
 
 void setupROS(){
 	nh.initNode();
-	nh.advertise(pot_pub);
+	nh.advertise(pos_pub);
 	nh.advertise(dir_pub);
 	nh.subscribe(command_sub);
 	nh.subscribe(center_sub);
@@ -59,12 +62,16 @@ void setup()
 
 	myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
 	myservo.write(SERVO_CENTER);
+
+	for(int i = 0; i < NUM_SENSORS; i++){
+		pinMode(FIRST_SENSOR_PIN + i, INPUT_PULLUP);
+	}
 }
 
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
-void moveServo(){
-	const int power = 10;
+void moveMotor(){
+	const int power = 20;
 
 	if (newCommand){
 		// A command has just been recieved
@@ -87,34 +94,43 @@ void moveServo(){
 	dir_msg.data = movementDirection;
 }
 
-float readPot(){
-	float reading = (-analogRead(potpin) * (360.0 / 1024)) - POT_OFFSET;
-  while (reading < -180){reading += 360;}
-  while (reading >= 180){reading -= 360;}
-  return reading;
+float readSensors(){
+	int total = 0;
+	int count = 0;
+	for(int i = 0; i < NUM_SENSORS; i++){
+		bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
+		if (switchVal){
+			total += i;
+			count++;
+		}
+	}
+	if (count == 0) 
+		return currentPos;
+	float newPos = float(total)/count;
+	return newPos;
+	// Note that this function sorta-expects that the output it returns will go into
+	// a global variable called currentPos.
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
 // This allows the control loop to run much faster while still attempting
 // to recieve / transmit updates in a timely way.
-unsigned int ros_transmit_period = 10; //milliseconds
+unsigned int ros_transmit_period = 25; //milliseconds
 
 void loop()
 {
-	currentPos = readPot();          // reads the value of the pot_pub (value between 0 and 1023) 
-
-	pot_msg.data = currentPos;
+	currentPos = readSensors();    // reads the position of the motor
+	pos_msg.data = currentPos;
 
 	static unsigned long last_ros_transmit = millis();
 	if (millis() - last_ros_transmit >= ros_transmit_period){
 		last_ros_transmit = millis();
 
 		dir_pub.publish( &dir_msg );
-		pot_pub.publish( &pot_msg );
+		pos_pub.publish( &pos_msg );
 		nh.spinOnce();
 	}
 
-	moveServo();
-
+	moveMotor();
 	delay(1);
 }

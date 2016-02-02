@@ -5,13 +5,13 @@
 ros::NodeHandle nh;
 
 std_msgs::Float32 Rudder_msg;
-ros::Publisher rudder_pub("RC_rudder_in", &Rudder_msg);
+ros::Publisher rudder_pub("/rc/rudder_in", &Rudder_msg);
 std_msgs::Bool Switch_msg;
-ros::Publisher switch_pub("RC_switch_in", &Switch_msg);
+ros::Publisher switch_pub("/rc/switch_in", &Switch_msg);
 std_msgs::Float32 Sail_msg;
-ros::Publisher sail_pub("RC_sails_in", &Sail_msg);
+ros::Publisher sail_pub("/rc/sails_in", &Sail_msg);
 std_msgs::Float32 pot_msg;
-ros::Publisher pot_pub("potentiometer", &pot_msg);
+ros::Publisher pot_pub("/rc/debug_dial_in", &pot_msg);
 
 #define potpin A7
 
@@ -31,6 +31,8 @@ void setupROS(){
 
 void setup() {
   setupROS();
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
   pinMode(pinSails, INPUT);
   pinMode(pinRudder, INPUT);
   pinMode(pinSwitch, INPUT);
