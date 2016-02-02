@@ -7,6 +7,23 @@ note: none of this is implemented yet
 * `rudder/` for teensy controlling the rudder motor
 * `sails/` for teensy controlling the sail motor
 
+#### Arbiter:
+* `operating_mode` Controls boat's operating mode
+ * Int16 (sub)
+  * DEFAULT = 0
+  * RC_MODE = 1
+  * AUTO_MODE = 2
+  * TEST_MODE = 3
+
+##### Each operating mode gets its own namespace
+* `rc_mode/`
+ * `rc_mode/rudder/set_point` This is forwarded to `rudder/set_point` if RC mode is active
+ * `rc_mode/sail/set_point` etc...
+* `test_mode/`
+ * `rc_mode/rudder/set_point`
+ * `rc_mode/sail/set_point`
+
+
 #### RC topics:
 * `rc/rudder_in` RC input for rudder position
  * Float32 (pub)
@@ -32,12 +49,6 @@ note: none of this is implemented yet
   * Int16 (pub)
 * `sail/set_point` set point for linear actuator
   * Int16 (sub)
-
-#### Constants for Operating Mode:
-* DEFAULT = 0
-* RC_MODE = 1
-* AUTO_MODE = 2
-* TEST_MODE = 3
 
 ### Information Flow
 
