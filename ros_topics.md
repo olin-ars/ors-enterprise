@@ -1,11 +1,27 @@
 # Namespaces and Topics
 ### where they go, what they do
-note: none of this is implemented yet
 
 #### Each teensy has it's own namespace:
 * `rc/` for the teensy recieveing RC signals
 * `rudder/` for teensy controlling the rudder motor
 * `sails/` for teensy controlling the sail motor
+
+#### Arbiter:
+* `operating_mode` Controls boat's operating mode
+  * Int16 (sub)
+    * DEFAULT = 0 : Unimplemented
+    * RC_MODE = 1 : Implemented by `RC-control-master.py`
+    * AUTO_MODE = 2 : Unimplemented
+    * TEST_MODE = 3 : Implemented by `publish-test-rudderCommands.py`
+
+##### Each operating mode gets its own namespace
+* `rc_mode/`
+ * `rc_mode/rudder/set_point` This is forwarded to `rudder/set_point` if RC mode is active
+ * `rc_mode/sail/set_point` etc...
+* `test_mode/`
+ * `rc_mode/rudder/set_point`
+ * `rc_mode/sail/set_point`
+
 
 #### RC topics:
 * `rc/rudder_in` RC input for rudder position
@@ -32,12 +48,6 @@ note: none of this is implemented yet
   * Int16 (pub)
 * `sail/set_point` set point for linear actuator
   * Int16 (sub)
-
-#### Constants for Operating Mode:
-* DEFAULT = 0
-* RC_MODE = 1
-* AUTO_MODE = 2
-* TEST_MODE = 3
 
 ### Information Flow
 
