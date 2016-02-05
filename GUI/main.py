@@ -24,8 +24,12 @@ class ORSWindow(QMainWindow):
 
         msgs = ['rudder/pos','rudder/set_point','sail/pos','sail/set_point','GPS/latitude','GPS/longitude', 'GPS/direction']
         for msg in msgs:
-            self.sub[msg] = rospy.Subscriber(msg,Int16,partial(self.fetchData,msg_type=msg))
-            self.val[msg] = 0
+            if msg != 'sail/pos' and msg != 'sail/set_point':
+                self.sub[msg] = rospy.Subscriber(msg,Int16,partial(self.fetchData,msg_type=msg))
+                self.val[msg] = 0
+            else:
+                self.sub[msg] = rospy.Subscriber(msg,Float32,partial(self.fetchData,msg_type=msg))
+                self.val[msg] = 0
         #self.sub['rPos'] = rospy.Subscriber('rudder/pos',Int16,partial(self.fetchData,msg_type='rudder/pos'))
         #self.sub['rDst'] = rospy.Subscriber('rudder/set_point',Int16,partial(self.fetchData,msg_type='rudder/set_point'))
         #self.sub['sPos'] = rospy.Subscriber('sail/pos',Int16,partial(self.fetchData,msg_type='sail/pos'))

@@ -24,8 +24,12 @@ class ORSWindow(QMainWindow):
 
         msgs = ['rudder/pos','rudder/set_point','sail/pos','sail/set_point','GPS/latitude','GPS/longitude', 'GPS/direction']
         for msg in msgs:
-            self.sub[msg] = rospy.Subscriber(msg,Int16,partial(self.fetchData,msg_type=msg))
-            self.val[msg] = 0
+            if msg != 'sail/pos' and msg != 'sail/set_point':
+                self.sub[msg] = rospy.Subscriber(msg,Int16,partial(self.fetchData,msg_type=msg))
+                self.val[msg] = 0
+            else:
+                self.sub[msg] = rospy.Subscriber(msg,Float32,partial(self.fetchData,msg_type=msg))
+                self.val[msg] = 0
         #self.sub['rPos'] = rospy.Subscriber('rudder/pos',Int16,partial(self.fetchData,msg_type='rudder/pos'))
         #self.sub['rDst'] = rospy.Subscriber('rudder/set_point',Int16,partial(self.fetchData,msg_type='rudder/set_point'))
         #self.sub['sPos'] = rospy.Subscriber('sail/pos',Int16,partial(self.fetchData,msg_type='sail/pos'))
@@ -35,7 +39,7 @@ class ORSWindow(QMainWindow):
         self.val[msg_type] = msg.data
         self.ui.compass.setValue(self.val['GPS/direction']*36)
         self.ui.map.setLoc(self.val['GPS/latitude']-5,self.val['GPS/longitude']-5)
-        self.ui.rPosDial.setValue(self.val['rudder/pos'])
+        self.ui.rPosDial.setValue(self.val['rudder/pos']+180) #to have 0=North
         self.ui.rPosLabel.setText(QString.number(self.val['rudder/pos']))
         self.ui.sPosSlider.setValue(self.val['sail/pos'])
         self.ui.sPosLabel.setText(QString.number(self.val['sail/pos']))
