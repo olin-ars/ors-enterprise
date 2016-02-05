@@ -28,7 +28,7 @@ Servo myservo;  // create servo object to control a servo
 float currentPos = -1;
 
 int SERVO_CENTER = 92;
-int lastCommanded = -1;
+float lastCommanded = -1;
 bool newCommand = false;
 
 std_msgs::Float32 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
@@ -36,7 +36,7 @@ ros::Publisher pos_pub("/sail/pos", &pos_msg);
 std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("/sail/motor_direction", &dir_msg);
 
-void command_callback(const std_msgs::Int16& command){
+void command_callback(const std_msgs::Float32& command){
 	if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
 		return;
 	}
