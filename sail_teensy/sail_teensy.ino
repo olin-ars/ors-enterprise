@@ -9,6 +9,7 @@
 
 #include <ros.h>
 #include <std_msgs/Int16.h>
+#include <std_msgs/Float32.h>
 
 #include <Servo.h> 
 
@@ -30,7 +31,7 @@ int SERVO_CENTER = 92;
 int lastCommanded = -1;
 bool newCommand = false;
 
-std_msgs::Int16 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
+std_msgs::Float32 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
 ros::Publisher pos_pub("/sail/pos", &pos_msg);
 std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("/sail/motor_direction", &dir_msg);
@@ -42,7 +43,7 @@ void command_callback(const std_msgs::Int16& command){
 	lastCommanded = command.data;
 	newCommand = true;
 }
-ros::Subscriber<std_msgs::Int16> command_sub("/sail/set_point", &command_callback);
+ros::Subscriber<std_msgs::Float32> command_sub("/sail/set_point", &command_callback);
 
 void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
 // DEPRECIATED

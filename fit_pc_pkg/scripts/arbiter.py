@@ -16,7 +16,7 @@ class Arbiter:
         self.debugDial = 0
         #output
         self.rudderPub = rospy.Publisher('rudder/set_point', Int16)
-        self.sailPub = rospy.Publisher('sail/set_point', Int16)
+        self.sailPub = rospy.Publisher('sail/set_point', Float32)
 
         self.rudderSub = None
         #autoRudderSub = rospy.Subscriber('auto_rudder_in', Float32)
@@ -38,7 +38,7 @@ class Arbiter:
             return
 
         self.rudderSub = rospy.Subscriber(currentNamespace + '/rudder/set_point', Int16, self.onRudder) #listening to rudder_in
-        self.sailsSub = rospy.Subscriber(currentNamespace + '/sail/set_point', Int16, self.onSail) #listening to sails_in
+        self.sailsSub = rospy.Subscriber(currentNamespace + '/sail/set_point', Float32, self.onSail) #listening to sails_in
     
     def onRudder(self,msg):
         self.rudder=msg.data

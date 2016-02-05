@@ -43,11 +43,11 @@
 
 #### Sail topics:
 * `sail/pos` magnet sensor position
-  * Int16 (pub)
+  * Float32 (pub)
 * `sail/motor_direction` direction of actuator
   * Int16 (pub)
 * `sail/set_point` set point for linear actuator
-  * Int16 (sub)
+  * Float32 (sub)
 
 ### Information Flow
 
