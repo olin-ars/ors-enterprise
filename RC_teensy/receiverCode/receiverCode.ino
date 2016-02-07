@@ -15,9 +15,15 @@ ros::Publisher pot_pub("/rc/debug_dial_in", &pot_msg);
 
 #define potpin A7
 
+//teensy pins for each input
 int pinSails = 2;
 int pinRudder = 3;
 int pinSwitch = 4;
+
+//rc pwm range for each input
+int SailRange[] = {1135, 1895};
+int RudderRange[] = {1209, 1792};
+int SwitchRange[] = {1180, 1720};
 
 float SailCommand, RudderCommand, Switch;
 
@@ -48,6 +54,7 @@ float readPWM(int pin, int range[2]){
   float mid = (range[0] + range[1]) / 2.0;
   float rng = (range[1] - range[0]) / 2.0;
   return (val-mid) / rng;
+  //return val; // for getting the actual pwm values
 }
 
 float readPot(){
@@ -55,11 +62,8 @@ float readPot(){
 }
 
 void loop() {
-  int SailRange[] = {1150, 1700};
   SailCommand = readPWM(pinSails, SailRange);
-  int RudderRange[] = {1180, 1730};
   RudderCommand = readPWM(pinRudder, RudderRange);
-  int SwitchRange[] = {1180, 1720};
   Switch = readPWM(pinSwitch, SwitchRange);
 
   Sail_msg.data = SailCommand;
