@@ -3,13 +3,13 @@
 #pip install pyserial
 import rospy
 import serial
-from std_msgs.msg import Int16, Float32, Boo
+from std_msgs.msg import Int16, Float32, Bool, String
 
 class hemisphere_parser:
 	def __init__(self):
 		#This if if we want the hemisphere data to be serparated then published to corresponding topics to be handled within this parser module
 		self.hemisphereFixPub = rospy.Publisher('hemisphere/fix', Int16) #time as hhmmss
-		self.hemisphereStatusPub = rospy.Publisher('hemisphere/status', Int16) #A=active or V=void
+		self.hemisphereStatusPub = rospy.Publisher('hemisphere/status', Bool) #A=active or V=void
 		self.hemispherePosNumbersPub = rospy.Publisher('hemisphere/position_numbers', Float32) #lattitude, longtitude
 		self.hemispherePosDirectionPub = rospy.Publisher('hemisphere/position_direction', String) #lattitude, longtitude, with values of N, S, E, or W for compass directions
 		self.hemisphereSpeedPub = rospy.Publisher('hemisphere/speed', Float32)
@@ -24,7 +24,7 @@ class hemisphere_parser:
 
 		#serial reader to receive input via USB
 		self.ser = serial.Serial()
-		self.ser.port = "dev/ttyUSB0"
+		self.ser.port = "/dev/ttyUSB0"
 		self.ser.baudrate = 19200
 		self.ser.open()
 	def run(self):
@@ -38,9 +38,12 @@ class hemisphere_parser:
         	 #Using multiple publishers
         	 messageArray = hemisphereMsg.split(',')
         	 self.hemisphereFixPub.publish(messageArray[1])
-        	 self.hemisphereStatusPub.publish(messageArray[2])
+        	 if(messageArray[2] == 'A'):
+        	 	self.hemisphereStatusPub.publish(True)
+        	 else:
+        	 	self.hemisphereStatusPub.publish(False)
         	 self.hemispherePosNumbersPub.publish(messageArray[3], messageArray[5])
-        	 self.hemisphereMagneticDirectionPub.publish(messageArray[4], messageArray[6])
+        	 self.hemisphereMagneticDirectionPub.publish((messageArray[4], messageArray[6])
         	 self.hemisphereSpeedPub.publish(messageArray[7])
         	 self.hemisphereAnglePub.publish(messageArray[8])
         	 self.hemisphereDatePub.publish(messageArray[9])
