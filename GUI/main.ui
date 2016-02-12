@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>688</width>
-    <height>477</height>
+    <width>730</width>
+    <height>566</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>340</y>
+      <x>580</x>
+      <y>430</y>
       <width>91</width>
       <height>51</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QGroupBox" name="Geography">
     <property name="geometry">
      <rect>
-      <x>390</x>
-      <y>10</y>
+      <x>20</x>
+      <y>250</y>
       <width>281</width>
       <height>271</height>
      </rect>
@@ -214,10 +214,10 @@
    <widget class="QGroupBox" name="BoatStatus">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>220</y>
+      <x>360</x>
+      <y>10</y>
       <width>351</width>
-      <height>201</height>
+      <height>351</height>
      </rect>
     </property>
     <property name="title">
@@ -395,8 +395,87 @@
       </item>
      </layout>
     </widget>
+    <widget class="QGroupBox" name="Hemisphere">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>210</y>
+       <width>311</width>
+       <height>111</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>[other Hemisphere stuff]</string>
+     </property>
+     <widget class="QWidget" name="verticalLayoutWidget_4">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>30</y>
+        <width>161</width>
+        <height>81</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_5">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <item>
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>Speed:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="rDstLabel_2">
+           <property name="text">
+            <string>--</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Angle:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="rPosLabel_2">
+           <property name="text">
+            <string>--</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_11">
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="text">
+            <string>Date:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="rDstLabel_3">
+           <property name="text">
+            <string>--</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
+   <widget class="QGroupBox" name="Mode">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -467,7 +546,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>688</width>
+     <width>730</width>
      <height>25</height>
     </rect>
    </property>
