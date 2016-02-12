@@ -4,53 +4,97 @@
 import rospy
 import serial
 from std_msgs.msg import Int16, Float32, Bool, String
+from geometry_msgs.msg import Pose2D
 
 class hemisphere_parser:
-	def __init__(self):
-		#This if if we want the hemisphere data to be serparated then published to corresponding topics to be handled within this parser module
-		self.hemisphereFixPub = rospy.Publisher('hemisphere/fix', Int16) #time as hhmmss
-		self.hemisphereStatusPub = rospy.Publisher('hemisphere/status', Bool) #A=active or V=void
-		self.hemispherePosNumbersPub = rospy.Publisher('hemisphere/position_numbers', Float32) #lattitude, longtitude
-		self.hemispherePosDirectionPub = rospy.Publisher('hemisphere/position_direction', String) #lattitude, longtitude, with values of N, S, E, or W for compass directions
-		self.hemisphereSpeedPub = rospy.Publisher('hemisphere/speed', Float32)
-		self.hemisphereAnglePub = rospy.Publisher('hemisphere/angle', Float32)
-		self.hemisphereDatePub = rospy.Publisher('hemisphere/date', Int16) #ddmmyy
-		self.hemisphereMagenticVariationPub = rospy.Publisher('hemisphere/magnetic_variation', Float32)
-		self.hemisphereMagneticDirectionPub = rospy.Publisher('hemisphere/magnetic_direction', String) #NSEW
-		self.hemisphereChecksumPub = rospy.Publisher('hemisphere/checksum', String) #checksum, always begins with *
+    def __init__(self):
+        self.init_serial()
+        self.init_ros_node()
+        self.init_ros_msgs()
 
-		#This is if we want the the entire GPRMC message line to be output as a single String
-		#self.hemispherePub = rospy.Publisher('hemisphere', String)
+    def init_ros_node(self):
+        #ros stuff
+        rospy.init_node('hemisphere')
+        #time 
+        #self.hemisphereTimePub = rospy.Publisher('hemisphere/time', Int16, queue_size=5) #time as hhmmss
+        #status (void or active)
+        self.hemisphereStatusPub = rospy.Publisher('hemisphere/status', Bool, queue_size=5) #A=active or V=void
+        #position in GPS coordinates and heading
+        #TODO: get heading correct
+        self.hemispherePosNumbersPub = rospy.Publisher('hemisphere/position_numbers', Pose2D, queue_size=10) #lattitude, longtitude, compass heading
+        #speed in ?
+        self.hemisphereSpeedPub = rospy.Publisher('hemisphere/speed', Float32, queue_size=10)
+        #angle ????
+        self.hemisphereAnglePub = rospy.Publisher('hemisphere/angle', Float32, queue_size=10)
+        #magnetic varriation
+        #self.hemisphereMagenticVariationPub = rospy.Publisher('hemisphere/magnetic_variation', Float32, queue_size=2)
+        #compass heading? ????
+        self.hemisphereMagneticDirectionPub = rospy.Publisher('hemisphere/magnetic_direction', Float32, queue_size=2) #NSEW
 
-		#serial reader to receive input via USB
-		self.ser = serial.Serial()
-		self.ser.port = "/dev/ttyUSB0"
-		self.ser.baudrate = 19200
-		self.ser.open()
-	def run(self):
+    def init_ros_msgs(self):
+        self.position = Pose2D
+        self.status = False
+        self.speed = 0
+        self.angle = 0
+        self.mag_dir = 0
+
+    def init_serial(self):
+        #serial reader to receive input via USB
+        self.ser = serial.Serial()
+        self.ser.port = "/dev/ttyUSB0"
+        self.ser.baudrate = 19200
+        self.ser.open()
+
+    def run(self):
         rate = rospy.Rate(10)  # 10hz
         while not rospy.is_shutdown():
-        	hemisphereMsg = self.ser.read() #have been unable to actually test reading in
-        	 #If only using a single publisher
-        	 '''self.hemisperePub.publish(hemisphereMsg)
-        	 rospy.loginfo("Sent hemisphere data {}".format(hemisphereMsg))
-        	 '''
-        	 #Using multiple publishers
-        	 messageArray = hemisphereMsg.split(',')
-        	 self.hemisphereFixPub.publish(messageArray[1])
-        	 if(messageArray[2] == 'A'):
-        	 	self.hemisphereStatusPub.publish(True)
-        	 else:
-        	 	self.hemisphereStatusPub.publish(False)
-        	 self.hemispherePosNumbersPub.publish(messageArray[3], messageArray[5])
-        	 self.hemisphereMagneticDirectionPub.publish((messageArray[4], messageArray[6])
-        	 self.hemisphereSpeedPub.publish(messageArray[7])
-        	 self.hemisphereAnglePub.publish(messageArray[8])
-        	 self.hemisphereDatePub.publish(messageArray[9])
-        	 self.hemisphereMagenticVariationPub.publish(messageArray[10])
-        	 self.hemisphereMagneticDirectionPub.publish(messageArray[11].split('*')[0])
-        	 self.hemisphereChecksumPub.publish(messageArray[11].split('*')[1])
-        	 rate.sleep()
+            hemisphereMsg = self.ser.readline() #have been unable to actually test reading in
+            #If only using a single publisher
+            '''self.hemisperePub.publish(hemisphereMsg)
+            rospy.loginfo("Sent hemisphere data {}".format(hemisphereMsg))
+            '''
+            #Using multiple publishers
+            print hemisphereMsg
+            messageArray = hemisphereMsg.split(',')
+            print messageArray
+
+            if messageArray[0] == '$GPRMC':
+                self.parse_GPRMC(messageArray)
+                self.publish_GPRMC()
+            elif messageArray[1] == '$PASHR':
+                self.parse_PASHR()
+                self.publish_PASHR()
+            ### Add code for more messages here ###
+            
+            rate.sleep()
+    def parse_GPRMC(self, msg):
+        if(msg[2] == 'A' or msg[2]==''):
+            self.status = True
+        else:
+            self.status = False
+        self.position.x = float(msg[3])
+        self.position.y = float(msg[5])
+        if msg[4] == 'S':
+            self.position.x *= -1
+        if msg[6] == 'W':
+            self.position.y *= -1
+        self.speed = float(msg[7])
+        self.angle = float(msg[8])
+        #self.mag_var = msg[10]
+
+    def publish_GPRMC(self):
+        self.hemisphereStatusPub.publish(self.status)
+        self.hemispherePosNumbersPub.publish(self.position)
+        self.hemisphereSpeedPub.publish(self.speed)
+        self.hemisphereAnglePub.publish(self.angle)
+        #self.hemisphereMagenticVariationPub.publish(self.mag_var)
+
+    def parse_PASHR(self, msg):
+        pass
+
+    def publish_PASHR(self):
+        pass
+
 if __name__ == '__main__':
     try:
         core = hemisphere_parser()
