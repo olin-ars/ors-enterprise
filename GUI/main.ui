@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Launch Boat</string>
+     <string>Launch Torpedoes</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="Geography">

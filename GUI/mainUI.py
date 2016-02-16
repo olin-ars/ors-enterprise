@@ -259,7 +259,7 @@ class Ui_ORS_GUI(object):
 
     def retranslateUi(self, ORS_GUI):
         ORS_GUI.setWindowTitle(_translate("ORS_GUI", "ORS_GUI", None))
-        self.pushButton.setText(_translate("ORS_GUI", "Launch Boat", None))
+        self.pushButton.setText(_translate("ORS_GUI", "Launch\nTorpedoes", None))
         self.Geography.setTitle(_translate("ORS_GUI", "Geography", None))
         self.label_3.setText(_translate("ORS_GUI", "--", None))
         self.label_4.setToolTip(_translate("ORS_GUI", "Measured From North, Clockwise", None))

@@ -20,6 +20,8 @@ class ORSWindow(QMainWindow):
         rospy.init_node('ORS_GUI',anonymous=True)
         self.sub = {}
         self.updated.connect(self.update)
+        self.ui.pushButton.clicked.connect(self.onButtonPushed)
+
 
         msgs = {'rudder/pos' : Int16,
                 'rudder/set_point' : Int16,
@@ -76,6 +78,10 @@ class ORSWindow(QMainWindow):
 
         #self.ui.map.setLoc(self.val['GPS/latitude']-5,self.val['GPS/longitude']-5)
         self.updated.emit()
+
+    def onButtonPushed(self):
+        import webbrowser #Don't do this.
+        webbrowser.open("http://giphy.com/embed/UgAvyUi9mXBiE")
 
     def update(self):
         QMainWindow.update(self)
