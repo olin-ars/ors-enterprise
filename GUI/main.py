@@ -9,7 +9,6 @@ import rospy
 from math import *
 from std_msgs.msg import * #for convenience
 from mainUI import *
-PI = 3.14159265358979
 
 class ORSWindow(QMainWindow):
     updated = pyqtSignal()
