@@ -9,6 +9,7 @@ def getPoint(r, theta): #in angle
     return QPointF(r*sin(theta),-r*cos(theta));
 
 class CompassWidget(QWidget):
+    """ CompassWidget : angle given in degrees"""
     def __init__(self,parent=None):
         QWidget.__init__(self,parent);
         self.value = 0;

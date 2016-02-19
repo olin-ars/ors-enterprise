@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 class MapWidget(QFrame):
+    """Map Widget : Coordinates from -1.0 to 1.0"""
     def __init__(self,parent=None):
         QFrame.__init__(self,parent);
         self.location = QPointF(0.5,0.5);
@@ -16,7 +17,7 @@ class MapWidget(QFrame):
         setLoc(QPointF)
         """
         # from -1 to 1
-        self.location = QPointF(args[0]/10.0,args[1]/10.0);
+        self.location = QPointF(args[0],args[1]);
     def drawBK(self,p):
         p.translate(1,1);
         m = QPixmap('world.gif');
@@ -30,6 +31,8 @@ class MapWidget(QFrame):
         self.drawBK(p);
         self.drawLocation(p);
         QFrame.paintEvent(self,event);
+    def mousePressEvent(self,event):
+        pass
 
 if __name__ == "__main__":
     global app;
