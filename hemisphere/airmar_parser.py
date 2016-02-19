@@ -6,7 +6,7 @@ import serial
 from std_msgs.msg import Int16, Float32, Bool, String
 from geometry_msgs.msg import Pose2D, Vector3
 
-class hemisphere_parser:
+class airmar_parser:
     def __init__(self):
         self.init_serial()
         self.init_ros_node()
@@ -14,9 +14,7 @@ class hemisphere_parser:
 
     def init_ros_node(self):
         #ros stuff
-        rospy.init_node('hemisphere')
-        #time 
-        #self.hemisphereTimePub = rospy.Publisher('hemisphere/time', Int16, queue_size=5) #time as hhmmss
+        rospy.init_node('airmar')
         #status (void or active)
         self.StatusPub = rospy.Publisher('airmar/status', Bool, queue_size=5) #A=active or V=void
         #position in GPS coordinates and heading (decimal minutes, + = N and E, - = S and W)
@@ -29,8 +27,6 @@ class hemisphere_parser:
         self.RelWindPub = rospy.Publisher('airmar/relative_wind', Vector3, queue_size = 5)
         #true wind speed and direction
         self.TrueWindPub = rospy.Publisher('airmar/true_wind', Vector3, queue_size = 5)
-        #magnetic varriation
-        #self.hemisphereMagenticVariationPub = rospy.Publisher('hemisphere/magnetic_variation', Float32, queue_size=2)
         #compass heading? ????
         self.MagneticDirectionPub = rospy.Publisher('airmar/magnetic_direction', Float32, queue_size=2) #NSEW
         #error strings we want to see
@@ -107,7 +103,7 @@ class hemisphere_parser:
     def parse_HCHDT(self, msg):
         """ Parse the WIMWV message from the airmar
             Gives wind speed and angle """
-        self.position.theta = msg[1]
+        self.position.theta = float(msg[1])
 
     def publish_HCHDT(self):
         self.PositionPub.publish(self.position)
@@ -143,7 +139,7 @@ class hemisphere_parser:
 
 if __name__ == '__main__':
     try:
-        core = hemisphere_parser()
+        core = airmar_parser()
         core.run()
     except rospy.ROSInterruptException:
         print 'ahh'
