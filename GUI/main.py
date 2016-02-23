@@ -16,7 +16,7 @@ import webbrowser
 class IgnoreMouseFilter(QObject):
     def eventFilter(self,obj,event):
         if event.type() == QEvent.KeyPress:
-            print("??")
+            print("Key Pressed")
             return True
         return False
 
@@ -49,6 +49,11 @@ class ORSWindow(QMainWindow):
         #USER-EVENTS
         self.updated.connect(self.update)
         self.ui.torpedoBtn.clicked.connect(self.onTorpedo)
+        self.ui.launchBoatBtn.clicked.connect(self.onLaunchBoat)
+        self.ui.publishBtn.clicked.connect(self.onPublish)
+
+        #publishing to rostopics
+        self.proc = QProcess()
 
     def subscribe(self):
         self.sub = {}
@@ -128,6 +133,26 @@ class ORSWindow(QMainWindow):
 
     def onTorpedo(self):
         webbrowser.open("http://giphy.com/embed/UgAvyUi9mXBiE")
+
+    def onLaunchBoat(self):
+        QProcess.startDetached("roslaunch fit_pc_pkg RC_code.launch")
+
+    def onPublish(self):
+        try:
+            self.proc.close()
+        except:
+            pass
+        
+        topic_name = self.ui.topicNameEdit.text() 
+        data_type = self.ui.dataTypeEdit.text()
+        data_value = self.ui.dataValueEdit.text()
+        
+        cmd = 'rostopic pub' + ' '
+        cmd += topic_name + ' '
+        cmd += data_type + ' '
+        cmd += '"' + data_value + '"'
+
+        self.proc.start(cmd)
 
     def update(self):
         QMainWindow.update(self)

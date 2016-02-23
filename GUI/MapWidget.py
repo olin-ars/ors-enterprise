@@ -17,10 +17,10 @@ class MapWidget(QFrame):
         setLoc(QPointF)
         """
         # from -1 to 1
-        self.location = QPointF(args[0],args[1]);
+        self.location = QPointF(args[1],-args[0]);
     def drawBK(self,p):
         p.translate(1,1);
-        m = QPixmap('world.gif');
+        m = QPixmap('map.jpg');
         p.drawPixmap(QRectF(-1,-1,2,2),m,QRectF(0,0,m.width(),m.height()));
     def drawLocation(self,p):
         p.setPen(self.locPen);
