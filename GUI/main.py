@@ -52,9 +52,6 @@ class ORSWindow(QMainWindow):
         self.ui.launchBoatBtn.clicked.connect(self.onLaunchBoat)
         self.ui.publishBtn.clicked.connect(self.onPublish)
 
-        #publishing to rostopics
-        self.proc = QProcess()
-
     def subscribe(self):
         self.sub = {}
         msgs = {'rudder/pos' : Int16,
@@ -138,21 +135,24 @@ class ORSWindow(QMainWindow):
         QProcess.startDetached("roslaunch fit_pc_pkg RC_code.launch")
 
     def onPublish(self):
-        try:
-            self.proc.close()
-        except:
-            pass
-        
+        #try:
+        #    self.proc.close()
+        #except:
+        #    pass
+        #
         topic_name = self.ui.topicNameEdit.text() 
         data_type = self.ui.dataTypeEdit.text()
         data_value = self.ui.dataValueEdit.text()
-        
-        cmd = 'rostopic pub' + ' '
+        #
+        cmd = 'rostopic pub -1' + ' '
         cmd += topic_name + ' '
         cmd += data_type + ' '
         cmd += '"' + data_value + '"'
 
-        self.proc.start(cmd)
+        proc = QProcess()
+        proc.start(cmd)
+        proc.waitForFinished()
+
 
     def update(self):
         QMainWindow.update(self)
