@@ -46,7 +46,7 @@ class airmar_parser:
     def init_serial(self):
         #serial reader to receive input via USB
         self.ser = serial.Serial()
-        self.ser.port = "/dev/ttyUSB1"
+        self.ser.port = "/dev/ttyUSB0"
         self.ser.baudrate = 4800
         self.ser.open()
 
@@ -79,6 +79,7 @@ class airmar_parser:
             elif messageArray[0] == '$GPVTG': #parse PASHR message
                 self.parse_GPVTG(messageArray)
                 self.publish_GPVTG()
+                self.ser.flushInput()
             ### Add code for more messages here ###
             rate.sleep()
 
@@ -89,7 +90,7 @@ class airmar_parser:
             self.status = True
             if(msg[2] == 'R'): #relative wind
                 self.rel_wind.x = float(msg[1]) #wind direction (knots?)
-                self.true_wind.y = float(msg[3]) #wind speed
+                self.rel_wind.y = float(msg[3]) #wind speed
             else: #msg[2] == 'T' for true wind
                 self.true_wind.x = float(msg[1]) #wind direction (knots?)
                 self.true_wind.y = float(msg[3]) #wind speed
