@@ -11,13 +11,15 @@ def find_rate(ser):
 		ser.flush()
 		print 'here'
 		try:
-			msg = ser.read(20)
+			msg = ser.read(40)
 		except:
 			msg = ''
 		print msg
 		if len(msg) > 0:
 			chars = msg.split(',')
-			if len(chars)>1:
+			if len(chars)>3:
+				#Given 40 bytes and longest message size, should still be
+				#at least 3 commas
 				print 'banana'
 				print ser.readline()
 				return rate
