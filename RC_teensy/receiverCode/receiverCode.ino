@@ -53,7 +53,7 @@ float readPWM(int pin, int range[2]){
   }
   float mid = (range[0] + range[1]) / 2.0;
   float rng = (range[1] - range[0]) / 2.0;
-  return (val-mid) / rng;
+  return constrain((val-mid) / rng, -1, 1);
   //return val; // for getting the actual pwm values
 }
 
