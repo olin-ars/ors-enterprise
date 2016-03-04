@@ -31,7 +31,7 @@ class WorldModel:
         if self.relwind > pi:
             self.relwind = 2.0*pi-self.relwind
         self.relwindcomp = pi-self.relwind
-        self.boat1.update(dt,model)
+        self.boat1.update(dt, self)
         self.wind.update(dt)
         
         
@@ -160,7 +160,7 @@ class Boat:
         self.ypos += self.vy*dt*self.disp_k
 
     def posStr(self):
-        return "(x={}, y={})".format(model.boat1.xpos, model.boat1.ypos)
+        return "(x={}, y={})".format(self.xpos, self.ypos)
         
 def Vtmax(theta,k):
     """theoretical max for a relative wind angle.  Doesn't belong to the boat class, but could!"""
