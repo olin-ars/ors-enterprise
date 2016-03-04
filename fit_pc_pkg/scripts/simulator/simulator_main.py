@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
+#! /usr/bin/python
 """
 Created on Mon Apr 21 00:43:25 2014
 
-@author: mbocamazo
-Last updated: 2015/03/17
+@author: mbocamazo, Eric Miller
+Last updated: 2016/03
 Current shortcomings:
 sail torque, drag model equations
 """
 
-import pygame
-from pygame.locals import *
-from random import *
+#from random import *
 import math
 from math import atan2, degrees, pi, sin, cos, radians, sqrt
 import time
@@ -160,6 +158,9 @@ class Boat:
         self.heading += self.angularVelocity*dt
         self.xpos += self.vx*dt*self.disp_k
         self.ypos += self.vy*dt*self.disp_k
+
+    def posStr(self):
+        return "(x={}, y={})".format(model.boat1.xpos, model.boat1.ypos)
         
 def Vtmax(theta,k):
     """theoretical max for a relative wind angle.  Doesn't belong to the boat class, but could!"""
@@ -184,11 +185,11 @@ def drag_ratio(RudderPos):
     """coefficient on velocity from the drag given the rudder pos"""
 #    return 1 - 0.9*sin(abs(RudderPos)) #given current state, this means that at pi/4, effectively 1/4 as fast (1-0.9*sin(1))
     return 1 - 0.9*sin(abs(RudderPos*pi/2.0))
-               
+
 if __name__ == '__main__':
     model = WorldModel(2,0) #initial windspeed, windheading
     running = True
     while running:
         model.update_model()
-        view.draw()
-        time.sleep(.01)
+        time.sleep(.1)
+        print model.boat1.posStr()
