@@ -132,7 +132,8 @@ class ORSWindow(QMainWindow):
         webbrowser.open("http://giphy.com/embed/UgAvyUi9mXBiE")
 
     def onLaunchBoat(self):
-        QProcess.startDetached("roslaunch fit_pc_pkg RC_code.launch")
+        #should not launch boat.
+        #QProcess.startDetached("roslaunch fit_pc_pkg RC_code.launch")
 
     def onPublish(self):
         #try:
