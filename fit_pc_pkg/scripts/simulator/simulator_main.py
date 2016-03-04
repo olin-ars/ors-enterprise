@@ -160,7 +160,7 @@ class Boat:
         self.ypos += self.vy*dt*self.disp_k
 
     def posStr(self):
-        return "(x={}, y={})".format(self.xpos, self.ypos)
+        return "(x={}, y={}, heading={})".format(self.xpos, self.ypos, self.heading)
         
 def Vtmax(theta,k):
     """theoretical max for a relative wind angle.  Doesn't belong to the boat class, but could!"""
