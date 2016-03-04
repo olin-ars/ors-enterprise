@@ -15,17 +15,19 @@ import time
 
 class WorldModel:
     """encodes simulator world state"""
+    enable_wrapping=False
+
     def __init__(self,windspeed,windheading):
-        self.boat1 = Boat(40,400,400,(100,100,100)) #later include boat list for support of multiple boats
+        self.boat1 = Boat(40,0,0) #later include boat list for support of multiple boats
         self.wind = Wind(windspeed,windheading)
-        self.lastclock = time.clock()
+        self.lastclock = time.time()
         self.relwind = abs(self.wind.windheading-self.boat1.heading)%(2.0*pi)
         if self.relwind > pi:
             self.relwind = 2.0*pi-self.relwind
         self.relwindcomp = pi-self.relwind #the complement
             
     def update_model(self):
-        dt = time.clock()-self.lastclock
+        dt = time.time()-self.lastclock
         self.lastclock += dt
         self.relwind = abs(self.wind.windheading-self.boat1.heading)%(2.0*pi)
         if self.relwind > pi:
@@ -49,7 +51,7 @@ class Wind:
     
 class Boat:
     """encodes information about the boat"""
-    def __init__(self,length,xpos,ypos,color):
+    def __init__(self,length,xpos,ypos,color=(100,100,100)):
         self.length = length
         self.xpos = xpos
         self.ypos = ypos
@@ -85,14 +87,15 @@ class Boat:
         self.heading = self.heading % (2.0*pi) #sanitization
         self.trim(model)
         self.kinematics(dt,model)
-        if self.xpos > 820:
-            self.xpos = 0
-        if self.xpos < 0:
-            self.xpos = 820
-        if self.ypos > 800:
-            self.ypos = 0
-        if self.ypos < 0:
-            self.ypos = 800
+        if model.enable_wrapping:
+            if self.xpos > 820:
+                self.xpos = 0
+            if self.xpos < 0:
+                self.xpos = 820
+            if self.ypos > 800:
+                self.ypos = 0
+            if self.ypos < 0:
+                self.ypos = 800
     
     def trim(self,model):
         """readjust sails and rudder to suggestions if possible"""
@@ -122,7 +125,6 @@ class Boat:
         
         #rudder torque aspect
         Tr = -self.kw*math.log(abs(self.forward_speed)+1)*self.RudderPos #all of these ratios are made up 
-        
         #sail torque aspect
         Ts = -self.q*sin(self.main_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
         #Ts = self.q*self.strength_Jib*sin(self.jib_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
@@ -160,7 +162,7 @@ class Boat:
         self.ypos += self.vy*dt*self.disp_k
 
     def posStr(self):
-        return "(x={}, y={}, heading={})".format(self.xpos, self.ypos, self.heading)
+        return "(x={:.3f},\ty={:.3f},\theading={:.1f} (deg),\tspeed={:.3f})".format(self.xpos, self.ypos, self.heading*180/pi, self.forward_speed)
         
 def Vtmax(theta,k):
     """theoretical max for a relative wind angle.  Doesn't belong to the boat class, but could!"""
