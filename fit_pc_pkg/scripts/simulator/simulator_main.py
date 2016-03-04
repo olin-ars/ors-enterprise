@@ -54,9 +54,9 @@ class Boat:
         self.xpos = xpos
         self.ypos = ypos
         self.MainPos = 0
-        self.JibPos = 0
+        #self.JibPos = 0
         self.MainSuggestion = 0
-        self.JibSuggestion = 0
+        #self.JibSuggestion = 0
         self.RudderPos = 0
         self.RudderSuggestion = 0
         self.vx = 0
@@ -69,11 +69,11 @@ class Boat:
         self.log_coefficient = 0.1
         self.lambda_1 = 0.1 #can't be named lambda, reserved
         self.lambda_2 = 0.4 #decay rate for angular velocity, to zero, way of encoding drag
-        self.strength_Main = 0.65
-        self.strength_Jib = 1-self.strength_Main
+        #self.strength_Main = 0.65
+        #self.strength_Jib = 1-self.strength_Main
         self.debug_list = (0,0)
         self.main_angle = 0
-        self.jib_angle = 0
+        #self.jib_angle = 0
         
         self.k = 2 #velocity scaling for the wind
         self.kw = 0.3 #angular velocity scaling for the torque from the rudder
@@ -100,17 +100,17 @@ class Boat:
             self.MainSuggestion = 0
         if self.MainSuggestion >= 1:
             self.MainSuggestion = 1
-        if self.JibSuggestion <= 0:
-            self.JibSuggestion = 0
-        if self.JibSuggestion >= 1:
-            self.JibSuggestion = 1
+        # if self.JibSuggestion <= 0:
+        #    self.JibSuggestion = 0
+        # if self.JibSuggestion >= 1:
+        #    self.JibSuggestion = 1
         if self.RudderSuggestion >=1:
             self.RudderSuggestion = 1
         elif self.RudderSuggestion <= -1:
             self.RudderSuggestion = -1
         self.RudderPos = self.RudderSuggestion
         self.MainPos = min([self.MainSuggestion,model.relwindcomp*2.0/pi,1]) #in foolish ratio units, [0 1], 1 being full out, 90 degrees
-        self.JibPos = min([self.JibSuggestion,model.relwindcomp*2.0/pi,1])
+        #self.JibPos = min([self.JibSuggestion,model.relwindcomp*2.0/pi,1])
         self.wind_over_port = ((model.wind.windheading-self.heading)%(2.0*pi))<pi #a boolean
     
     def kinematics(self,dt,model):
@@ -124,8 +124,8 @@ class Boat:
         Tr = -self.kw*math.log(abs(self.forward_speed)+1)*self.RudderPos #all of these ratios are made up 
         
         #sail torque aspect
-        Ts = -self.q*self.strength_Main*sin(self.main_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
-        Ts = self.q*self.strength_Jib*sin(self.jib_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
+        Ts = -self.q*sin(self.main_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
+        #Ts = self.q*self.strength_Jib*sin(self.jib_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
         #this overwrite is an error and needs to be addressed, however, it works decently with it.
 
         #log torque aspect?
@@ -137,12 +137,12 @@ class Boat:
         
         
         #forward sail aspect
-        Sr = shadow_ratio(model.relwindcomp)
-        PrMain = power_ratio(self.MainPos,model.relwindcomp)*self.strength_Main
-        PrJib = power_ratio(self.JibPos,model.relwindcomp)*self.strength_Jib
+        #Sr = shadow_ratio(model.relwindcomp)
+        PrMain = power_ratio(self.MainPos, model.relwindcomp)
+        # PrJib = power_ratio(self.JibPos,model.relwindcomp)*self.strength_Jib
         Dr = drag_ratio(self.RudderPos)
-        Vmax = Vtmax(model.relwindcomp,self.k)*(PrMain+(1-Sr)*PrJib)/(2.0-Sr)*Dr
-        self.forward_speed += self.lambda_1*(Vmax-self.forward_speed)*dt #decay to the max, acceleration term
+        Vmax = Vtmax(model.relwindcomp, self.k) * PrMain/(2.0)*Dr
+        self.forward_speed += self.lambda_1*(Vmax-self.forward_speed)*dt  #decay to the max, acceleration term
         
         self.debug_list = (Ts, angular_drag, Vtmax(model.relwindcomp,self.k), Vmax)
 
@@ -174,12 +174,12 @@ def power_ratio(SailP,relwindcomp):
     """power given sail position, assuming relwindcomp/pi is best"""
     return sin(pi**2.0/(4*relwindcomp)*SailP)  
     
-def shadow_ratio(relwindcomp):
-    """shadow that falls on the jib given the wind"""
-    if relwindcomp >= pi/2.0:
-        return 0
-    else:
-        return (2.0/pi*relwindcomp)-1
+# def shadow_ratio(relwindcomp):
+#     """shadow that falls on the jib given the wind"""
+#     if relwindcomp >= pi/2.0:
+#         return 0
+#     else:
+#         return (2.0/pi*relwindcomp)-1
         
 def drag_ratio(RudderPos):
     """coefficient on velocity from the drag given the rudder pos"""
