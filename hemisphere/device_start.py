@@ -1,7 +1,6 @@
 import serial
+import subprocess
 
-serial = serial.Serial(timeout = 2)
-serial.port = "/dev/ttyUSB0"
 
 def find_rate(ser):
 	baudrates = [19200, 4800]
@@ -25,12 +24,25 @@ def find_rate(ser):
 				return rate
 		ser.close()
 
-def find_device():
+def find_device(port):
 	while True:
-		baud = find_rate(serial)
+		ser = serial.Serial()
+		ser.port = port
+		baud = find_rate(ser)
 		if baud == 4800:
 			return 'airmar'
 		elif baud == 19200:
 			return 'hemisphere'
 
-print find_device()
+def find_all_devices():
+	ports = subprocess.check_output("ls /dev/ttyU*", shell=True).strip().split("\n")
+	portNames = {}
+	for port in ports:
+		print port
+		portNames[find_device(port)] = port
+	return portNames
+
+if __name__ == '__main__':
+	
+
+	print find_all_devices()
