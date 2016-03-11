@@ -13,20 +13,24 @@ class ROShandler():
     def __init__(self, model):
         rospy.init_node('simulator', anonymous=True)
         self.model = model
-        self.registerSubscribers()
+        self.registerSubs()
+        self.registerPubs()
 
-        self.travelPub = rospy.Publisher('test/travel', Pose2D)
-        self.ehmPub = rospy.Publisher('hemisphere/position', Pose2D)
-
-    def registerSubscribers(self):
+    def registerSubs(self):
         self.rudderSub = rospy.Subscriber('/rudder/set_point',
                                           Int16, self.onRudder)
         self.sailSub = rospy.Subscriber('/sail/set_point',
                                         Float32, self.onSail)
 
+    def registerPubs(self):
+        self.travelPub = rospy.Publisher('test/travel', Pose2D)
+        self.sailPub = rospy.Publisher('sail/pos', Float32)
+        self.hemispherePub = rospy.Publisher('hemisphere/position', Pose2D)
+
     def publish(self):
         self.travelPub.publish(Pose2D(model.boat1.xpos, model.boat1.ypos, model.boat1.heading))
-        self.ehmPub.publish(Pose2D(0, 0, model.boat1.heading*180/math.pi))
+        self.hemispherePub.publish(Pose2D(0, 0, model.boat1.heading*180/math.pi))
+        self.sailPub.publish(Float32(model.boat1.MainPos))
 
     def onRudder(self, msg):
         """The ROS network thinks in degrees,
@@ -36,7 +40,7 @@ class ROShandler():
     def onSail(self, msg):
         """The ROS network thinks in sensors (0-6),
         the sim things in 1/4th rotations"""
-        self.model.boat1.RudderSuggestion = msg.data * 1.0/6
+        self.model.boat1.MainSuggestion = msg.data * 1.0/6
 
 if __name__ == '__main__':
     model = sim.WorldModel(.1, 3*math.pi/2)  # initial windspeed, windheading
