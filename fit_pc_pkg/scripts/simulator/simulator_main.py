@@ -126,7 +126,7 @@ class Boat:
         #rudder torque aspect
         Tr = -self.kw*math.log(abs(self.forward_speed)+1)*self.RudderPos #all of these ratios are made up 
         #sail torque aspect
-        Ts = -self.q*sin(self.main_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
+        Ts = -self.q*sin(self.heading-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
         # Ts = 0 #!!!
         #Ts = self.q*self.strength_Jib*sin(self.jib_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
         #this overwrite is an error and needs to be addressed, however, it works decently with it.
