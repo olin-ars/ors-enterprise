@@ -1,10 +1,15 @@
 # Namespaces and Topics
 ### where they go, what they do
 
-#### Each teensy has it's own namespace:
-* `rc/` for the teensy recieveing RC signals
-* `rudder/` for teensy controlling the rudder motor
-* `sails/` for teensy controlling the sail motor
+#### General boat topics:
+* `location` The boat's location relative to startup, in meters with North at +y and
+  * Pose2D (pub from simulator for now) (x and y orthogonal) (angle Range 0-359.999)
+* `velocity` The boat's smoothed current velocity, relative to location
+  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from North)
+* `true_wind` The motion of the wind relative to the fixed local coordinate system, smoothed.
+  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+* `relative_wind` The motion of the wind relative to the boat, smoothed.
+  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
 
 #### Arbiter:
 * `operating_mode` Controls boat's operating mode
@@ -20,8 +25,12 @@
  * `rc_mode/sail/set_point` etc...
 * `test_mode/`
  * `rc_mode/rudder/set_point`
- * `rc_mode/sail/set_point`
+ * `rc_mode/sail/set_point` etc...
 
+#### Each teensy has it's own namespace:
+* `rc/` for the teensy recieveing RC signals
+* `rudder/` for teensy controlling the rudder motor
+* `sails/` for teensy controlling the sail motor
 
 #### RC topics:
 * `rc/rudder_in` RC input for rudder position
