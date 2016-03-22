@@ -23,14 +23,16 @@ class ROShandler():
                                         Float32, self.onSail)
 
     def registerPubs(self):
-        self.travelPub = rospy.Publisher('test/travel', Pose2D)
-        self.sailPub = rospy.Publisher('sail/pos', Float32)
-        self.hemispherePub = rospy.Publisher('hemisphere/position', Pose2D)
+        self.travelPub = rospy.Publisher('/test/travel', Pose2D)
+        self.sailPub = rospy.Publisher('/sail/pos', Float32)
+        self.rudderPub = rospy.Publisher('/rudder/pos', Int16)
+        self.hemispherePub = rospy.Publisher('/hemisphere/position', Pose2D)
 
     def publish(self):
         self.travelPub.publish(Pose2D(model.boat1.xpos, model.boat1.ypos, model.boat1.heading))
         self.hemispherePub.publish(Pose2D(0, 0, model.boat1.heading*180/math.pi))
-        self.sailPub.publish(Float32(model.boat1.MainPos))
+        self.sailPub.publish(Float32(model.boat1.MainPos*90/6))
+        self.rudderPub.publish(Int16(model.boat1.RudderPos*360))
 
     def onRudder(self, msg):
         """The ROS network thinks in degrees,
@@ -43,7 +45,7 @@ class ROShandler():
         self.model.boat1.MainSuggestion = msg.data * 1.0/6
 
 if __name__ == '__main__':
-    model = sim.WorldModel(.1, 3*math.pi/2)  # initial windspeed, windheading
+    model = sim.WorldModel(.1, math.pi/2)  # initial windspeed, windheading
     roshandler = ROShandler(model)
 
     r = rospy.Rate(10)
