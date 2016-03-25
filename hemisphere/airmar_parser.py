@@ -150,8 +150,15 @@ HCHDT - heading, hopefully true (vs. magnetic)
 WIMWV - wind speed and angle
     R - "relative" to boat heading - no extra math
     T - true - still relative to boat, but corrected for boat's speed
+WIMWD - wind speed and angle relative to north
+    <1> - true north (<2> should be 'T')
+    <3> - magnetic north (<4> should be 'M')
+    <5> - wind speed knots (<6> should be 'N')
+    <7> - wind speed m/s (don't use this, we are using knots)
 GPGLL - GPS
 GPVTG - speed over ground (SOG), course over ground (COG)
+
+$PAMTC,EN,MWD - enable MWD command
 
 $YXXDR,A,86.0,D,PTCH,A,-85.2,D,ROLL*71
 $GPVTG,,,,,,,,,N*30
