@@ -64,7 +64,7 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-	const int power = 20;
+	const int power = 10;
 
 	if (newCommand){
 		// A command has just been recieved
