@@ -72,6 +72,8 @@ class hemisphere_parser:
             elif messageArray[0] == '$PASHR': #parse PASHR message
                 self.parse_PASHR(messageArray)
                 self.publish_PASHR()
+                self.ser.flushInput()
+
             ### Add code for more messages here ###
             rate.sleep()
 
