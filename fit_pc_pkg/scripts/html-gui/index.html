@@ -90,12 +90,31 @@
 
   listensail.subscribe(function(message) {
     var string=message.data+"";
-    console.log('Received Sail : ' + string);
+    //console.log('Received Sail : ' + string);
 
     $("#sail_angle").text(string);
 
     var angle=message.data; //This should be multiplied for real boat values.
     $("#sailVis").attr("Transform","rotate("+angle+")")
+  });
+
+
+
+  // Rudder subscribers
+  var listenrudder = new ROSLIB.Topic({
+    ros : ros,
+    name : '/rudder/pos',
+    messageType : 'std_msgs/Int16'
+  });
+
+  listenrudder.subscribe(function(message) {
+    var string=message.data+"";
+    console.log('Received Rudder : ' + string);
+
+    $("#rudder_angle").text(string);
+
+    var angle=message.data; //This should be multiplied for real boat values.
+    $("#rudderVis").attr("Transform","rotate("+angle+")")
   });
 
 
@@ -107,6 +126,7 @@
   <h2>Internal state visualizations</h2>
   <div>Local position: <span class="numdisplay" id="local_pos">[data missing]</span></div>
   <div>Sail position: <span class="numdisplay" id="sail_angle">[data missing]</span></div>
+  <div>Rudder position: <span class="numdisplay" id="rudder_angle">[data missing]</span></div>
   <!-- TODO: this should be loaded dynamically from an Inkscape/Illustrator file -->
   <svg
    width="700"
@@ -143,11 +163,23 @@
 
 
       <g transform="translate(0,-90)">
+        <!-- Sail line -->
         <line x1="0" y1="0" 
           x2="0" y2="150" 
           stroke="red" 
           stroke-width="6"
           id="sailVis"
+          transform=""/>
+      </g>
+
+
+      <g transform="translate(0, 110)">
+        <!-- Rudder line -->
+        <line x1="0" y1="0" 
+          x2="0" y2="70" 
+          stroke="blue" 
+          stroke-width="6"
+          id="rudderVis"
           transform=""/>
       </g>
 
