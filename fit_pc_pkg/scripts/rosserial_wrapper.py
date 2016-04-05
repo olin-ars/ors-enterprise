@@ -13,10 +13,10 @@ def getIP():
 def run_rosserial(port = '/dev/ttyACM0'):
 	if (not os.path.exists(port)):
 		return None;
-
+	"""
 	command = 'export ROS_IP=$(hostname --all-ip-addresses);\
-	echo ROS_IP = "$ROS_IP";\
-	export ROS_NAMESPACE={ns};\
+	echo ROS_IP = "$ROS_IP";\ """
+	command = 'export ROS_NAMESPACE={ns};\
 	rosrun rosserial_python serial_node.py {port}'.format(ns=port.split('/')[-1] ,port=port)
 
 	p = subprocess.Popen(command, shell=True)
