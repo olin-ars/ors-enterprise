@@ -75,13 +75,13 @@
     $("#local_pos").text(string);
 
     var tx = ((message.x*scale+250)%500+500)%500
-    var ty = ((message.y*scale+250)%500+500)%500
+    var ty = ((-message.y*scale+250)%500+500)%500
     $("#localboatmap").attr("transform","translate("+tx+","+ty+"), rotate("+message.theta+")")
   });
 
 
 
-  // Sail subscribers
+  // Sail subscriber(s)
   var listensail = new ROSLIB.Topic({
     ros : ros,
     name : '/sail/pos',
@@ -89,7 +89,7 @@
   });
 
   listensail.subscribe(function(message) {
-    var string=message.data+"";
+    var string=message.data.toFixed(2);
     //console.log('Received Sail : ' + string);
 
     $("#sail_angle").text(string);
@@ -100,7 +100,7 @@
 
 
 
-  // Rudder subscribers
+  // Rudder subscriber
   var listenrudder = new ROSLIB.Topic({
     ros : ros,
     name : '/rudder/pos',
@@ -108,13 +108,32 @@
   });
 
   listenrudder.subscribe(function(message) {
-    var string=message.data+"";
-    console.log('Received Rudder : ' + string);
+    var string=message.data.toFixed(2);
+    //console.log('Received Rudder : ' + string);
 
     $("#rudder_angle").text(string);
 
-    var angle=message.data; //This should be multiplied for real boat values.
+    var angle = -message.data; //This should be multiplied for real boat values.
     $("#rudderVis").attr("Transform","rotate("+angle+")")
+  });
+
+
+
+  // Wind subscriber
+  var listenrudder = new ROSLIB.Topic({
+    ros : ros,
+    name : '/true_wind',
+    messageType : 'geometry_msgs/Pose2D'
+  });
+
+  listenrudder.subscribe(function(message) {
+    var string=message.x.toFixed(2)+"@"+message.theta.toFixed(2);
+    //console.log('Received Rudder : ' + string);
+
+    $("#true_wind").text(string);
+
+//     var angle=message.data; //This should be multiplied for real boat values.
+//     $("#rudderVis").attr("Transform","rotate("+angle+")")
   });
 
 
@@ -127,6 +146,7 @@
   <div>Local position: <span class="numdisplay" id="local_pos">[data missing]</span></div>
   <div>Sail position: <span class="numdisplay" id="sail_angle">[data missing]</span></div>
   <div>Rudder position: <span class="numdisplay" id="rudder_angle">[data missing]</span></div>
+  <div>True Wind: <span class="numdisplay" id="true_wind">[data missing]</span></div>
   <!-- TODO: this should be loaded dynamically from an Inkscape/Illustrator file -->
   <svg
    width="700"

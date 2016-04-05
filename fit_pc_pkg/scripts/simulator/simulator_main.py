@@ -79,7 +79,7 @@ class Boat:
         
         self.k = 2 #velocity scaling for the wind
         self.kw = 0.3 #angular velocity scaling for the torque from the rudder
-        self.q = .2 #ang vel scaling for torque from the sails
+        self.q = .05 #ang vel scaling for torque from the sails
         
         self.disp_k =0.25 #scaling for the output
         

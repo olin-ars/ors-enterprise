@@ -48,7 +48,7 @@ class ROShandler():
         self.velocityPub.publish(Pose2D(math.sqrt(b.vx**2+b.vy**2), 0, vheading))
 
         w = model.wind
-        self.true_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading-b.heading)))
+        self.true_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading-b.heading-math.pi/2)))
 
         (wvx, wvy) = (w.windspeed * math.cos(w.windheading), w.windspeed * math.sin(w.windheading))
         (wvx, wvy) = (wvx - b.vx, wvy - b.vy)
@@ -56,8 +56,8 @@ class ROShandler():
         self.relative_windPub.publish(Pose2D(math.sqrt(wvx**2 + wvy**2), 0,
                                       angleconvert(math.atan2(wvy, wvx) - b.heading)))
 
-        self.sailPub.publish(Float32(model.boat1.MainPos*90/6))
-        self.rudderPub.publish(Int16(model.boat1.RudderPos*360))
+        self.sailPub.publish(Float32(model.boat1.MainPos*90))
+        self.rudderPub.publish(Int16(model.boat1.RudderPos*90))
 
     def onRudder(self, msg):
         """The ROS network thinks in degrees,
