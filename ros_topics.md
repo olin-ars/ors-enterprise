@@ -19,6 +19,14 @@
     * AUTO_MODE = 2 : Unimplemented
     * TEST_MODE = 3 : Implemented by `publish-test-rudderCommands.py`
 
+#### Hemisphere:
+* `hemispere/location` GPS location data
+  * sensor_msgs/NavSatFix (pub)
+* `hemispere/vel` GPS velocity data
+  * geometry_msgs/Twist (pub)
+* `hemispere/pose` GPS/IMU orientation data
+  * geometry_msgs/Quaternion (pub)
+
 ##### Each operating mode gets its own namespace
 * `rc_mode/`
  * `rc_mode/rudder/set_point` This is forwarded to `rudder/set_point` if RC mode is active
