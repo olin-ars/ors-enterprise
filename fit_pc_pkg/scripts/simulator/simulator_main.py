@@ -68,7 +68,7 @@ class Boat:
         self.forward_speed = 0
         self.color = color #should be a three-tuple
         self.wind_over_port = True 
-        self.log_coefficient = 0.1
+        self.log_coefficient = 0.01 #was 0.1
         self.lambda_1 = 0.1 #can't be named lambda, reserved
         self.lambda_2 = 0.4 #decay rate for angular velocity, to zero, way of encoding drag
         #self.strength_Main = 0.65
@@ -127,7 +127,7 @@ class Boat:
         Tr = -self.kw*math.log(abs(self.forward_speed)+1)*self.RudderPos #all of these ratios are made up 
         #sail torque aspect
         Ts = -self.q*sin(self.heading-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
-        # Ts = 0 #!!!
+        Ts = 0 #!!! This line substantially decreases the realism.
         #Ts = self.q*self.strength_Jib*sin(self.jib_angle-model.wind.windheading)*sqrt(abs(model.wind.windspeed))
         #this overwrite is an error and needs to be addressed, however, it works decently with it.
         print "Tr={},Ts={}".format(Tr,Ts)
@@ -144,7 +144,7 @@ class Boat:
         PrMain = power_ratio(self.MainPos, model.relwindcomp)
         # PrJib = power_ratio(self.JibPos,model.relwindcomp)*self.strength_Jib
         Dr = drag_ratio(self.RudderPos)
-        Vmax = Vtmax(model.relwindcomp, self.k) * PrMain/(2.0)*Dr
+        Vmax = Vtmax(model.relwindcomp, self.k) * PrMain*Dr
         self.forward_speed += self.lambda_1*(Vmax-self.forward_speed)*dt  #decay to the max, acceleration term
         
         self.debug_list = (Ts, angular_drag, Vtmax(model.relwindcomp,self.k), Vmax)
@@ -187,7 +187,7 @@ def power_ratio(SailP,relwindcomp):
 def drag_ratio(RudderPos):
     """coefficient on velocity from the drag given the rudder pos"""
 #    return 1 - 0.9*sin(abs(RudderPos)) #given current state, this means that at pi/4, effectively 1/4 as fast (1-0.9*sin(1))
-    return 1 - 0.9*sin(abs(RudderPos*pi/2.0))
+    return 1 - 0.3*sin(abs(RudderPos*pi/2.0))
 
 if __name__ == '__main__':
     model = WorldModel(2,0) #initial windspeed, windheading
