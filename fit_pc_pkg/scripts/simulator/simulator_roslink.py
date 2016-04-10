@@ -70,7 +70,7 @@ class ROShandler():
         self.model.boat1.MainSuggestion = msg.data * 1.0/6
 
 if __name__ == '__main__':
-    model = sim.WorldModel(.1, math.pi/2)  # initial windspeed, windheading
+    model = sim.WorldModel(3, -math.pi/2)  # initial windspeed, windheading
     roshandler = ROShandler(model)
 
     r = rospy.Rate(10)
