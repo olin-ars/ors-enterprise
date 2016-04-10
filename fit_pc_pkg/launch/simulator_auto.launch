@@ -3,6 +3,7 @@
   <env name="ROS_IP" value="192.168.17.130" if="$(arg olin_robotics)"/>
   <!-- <node name="setup" pkg="fit_pc_pkg" type="rosserial_wrapper.py" /> -->
   <node name="arbiter" pkg="fit_pc_pkg" type="arbiter.py" />
+  <node name="websockets" pkg="rosbridge_server" type="rosbridge_websocket.py" />
   <!-- <node name="RC_master" pkg="fit_pc_pkg" type="RC-control-master.py" /> -->
   <node name="simulator" pkg="fit_pc_pkg" type="simulator_roslink.py" />
   <!-- More things need to be started here to run auto code -->
