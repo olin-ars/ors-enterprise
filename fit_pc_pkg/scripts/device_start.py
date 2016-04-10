@@ -43,6 +43,13 @@ def find_all_devices():
 	return portNames
 
 if __name__ == '__main__':
-	
-
-	print find_all_devices()
+	#sensors = find_all_devices()
+	sensors = ""
+	if "hemisphere" in sensors:
+		subprocess.Popen("python hemisphere_parser.py %" % sensors["hemisphere"])
+	else:
+		print "Hemisphere not found."
+	if "airmar" in sensors:
+		subprocess.Popen("python airmar_parser.py %" % sensors["airmar"])
+	else:
+		print "Airmar not found."
