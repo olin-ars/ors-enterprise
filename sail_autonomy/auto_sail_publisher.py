@@ -1,11 +1,13 @@
 #!/usr/bin/env python
-import rospy
+import rospy, time
 from std_msgs.msg import Int16, Float32
 from geometry_msgs.msg import Pose2D
 
 class autonomousSailPublisher:
 	def __init__(self):
+		rospy.init_node('sail_publisher')
 		self.sailPub = rospy.Publisher('sail/pos', Float32) # unsure of whether publishing to this topic actually has the sail actuator move to a given magnet position
+		self.windAngle = 0
 		def callback(self, data):
 			self.speed = data.x
 			self.windAngle = data.theta
@@ -20,7 +22,7 @@ class autonomousSailPublisher:
 		
 		rate = rospy.Rate(10)  # 10hz
 		while not rospy.is_shutdown():
-			sailPos = calculateSailPosition(self.windAngle)
+			sailPos = self.calculateSailPosition(self.windAngle)
 			self.sailPub.publish(sailPos)
 			rospy.loginfo("Sent desired sail position: {}".format(sailPos))
 			rate.sleep()
