@@ -37,11 +37,11 @@ std_msgs::Int16 dir_msg;
 ros::Publisher dir_pub("/sail/motor_direction", &dir_msg);
 
 void command_callback(const std_msgs::Float32& command){
-	if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
-		return;
-	}
-	lastCommanded = command.data;
-	newCommand = true;
+    if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
+        return;
+    }
+    lastCommanded = command.data;
+    newCommand = true;
 }
 ros::Subscriber<std_msgs::Float32> command_sub("/sail/set_point", &command_callback);
 
@@ -50,67 +50,72 @@ void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
 ros::Subscriber<std_msgs::Int16> center_sub("/sail/ServoCenter", &center_callback);
 
 void setupROS(){
-	nh.initNode();
-	nh.advertise(pos_pub);
-	nh.advertise(dir_pub);
-	nh.subscribe(command_sub);
-	nh.subscribe(center_sub);
+    nh.initNode();
+    nh.advertise(pos_pub);
+    nh.advertise(dir_pub);
+    nh.subscribe(command_sub);
+    nh.subscribe(center_sub);
 }
 
 void setup()
 {
-	setupROS();
+    setupROS();
 
-	myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
-	myservo.write(SERVO_CENTER);
+    myservo.attach(SERVO_PIN);  // attaches the servo on pin SERVO_PIN to the servo object 
+    myservo.write(SERVO_CENTER);
 
-	for(int i = 0; i < NUM_SENSORS; i++){
-		pinMode(FIRST_SENSOR_PIN + i, INPUT_PULLUP);
-	}
+    for(int i = 0; i < NUM_SENSORS; i++){
+        pinMode(FIRST_SENSOR_PIN + i, INPUT_PULLUP);
+    }
+
+    //Turn on light
+
+    pinMode(13, OUTPUT);
+    digitalWrite(13, HIGH);
 }
 
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveMotor(){
-	const int power = 20;
+    const int power = 20;
 
-	if (newCommand){
-		// A command has just been recieved
-		newCommand = false;
-		if (lastCommanded > currentPos){
-			myservo.write(SERVO_CENTER + power);
-			movementDirection = 1;
-		}
-		else{
-			myservo.write(SERVO_CENTER - power);
-			movementDirection = -1;
-		}
-	}
+    if (newCommand){
+        // A command has just been recieved
+        newCommand = false;
+        if (lastCommanded > currentPos){
+            myservo.write(SERVO_CENTER + power);
+            movementDirection = 1;
+        }
+        else{
+            myservo.write(SERVO_CENTER - power);
+            movementDirection = -1;
+        }
+    }
 
-	if(abs(currentPos - lastCommanded) <= DEADZONE){
-		// We have reached our target
-		myservo.write(SERVO_CENTER);
-		movementDirection = 0;
-	}
-	dir_msg.data = movementDirection;
+    if(abs(currentPos - lastCommanded) <= DEADZONE){
+        // We have reached our target
+        myservo.write(SERVO_CENTER);
+        movementDirection = 0;
+    }
+    dir_msg.data = movementDirection;
 }
 
 float readSensors(){
-	int total = 0;
-	int count = 0;
-	for(int i = 0; i < NUM_SENSORS; i++){
-		bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
-		if (switchVal){
-			total += i;
-			count++;
-		}
-	}
-	if (count == 0) 
-		return currentPos;
-	float newPos = float(total)/count;
-	return newPos;
-	// Note that this function sorta-expects that the output it returns will go into
-	// a global variable called currentPos.
+    int total = 0;
+    int count = 0;
+    for(int i = 0; i < NUM_SENSORS; i++){
+        bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
+        if (switchVal){
+            total += i;
+            count++;
+        }
+    }
+    if (count == 0) 
+        return currentPos;
+    float newPos = float(total)/count;
+    return newPos;
+    // Note that this function sorta-expects that the output it returns will go into
+    // a global variable called currentPos.
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
@@ -120,18 +125,18 @@ unsigned int ros_transmit_period = 25; //milliseconds
 
 void loop()
 {
-	currentPos = readSensors();    // reads the position of the motor
-	pos_msg.data = currentPos;
+    currentPos = readSensors();    // reads the position of the motor
+    pos_msg.data = currentPos;
 
-	static unsigned long last_ros_transmit = millis();
-	if (millis() - last_ros_transmit >= ros_transmit_period){
-		last_ros_transmit = millis();
+    static unsigned long last_ros_transmit = millis();
+    if (millis() - last_ros_transmit >= ros_transmit_period){
+        last_ros_transmit = millis();
 
-		dir_pub.publish( &dir_msg );
-		pos_pub.publish( &pos_msg );
-		nh.spinOnce();
-	}
+        dir_pub.publish( &dir_msg );
+        pos_pub.publish( &pos_msg );
+        nh.spinOnce();
+    }
 
-	moveMotor();
-	delay(1);
+    moveMotor();
+    delay(1);
 }
