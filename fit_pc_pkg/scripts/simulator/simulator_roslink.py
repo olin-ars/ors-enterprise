@@ -27,6 +27,7 @@ class ROShandler():
         self.velocityPub = rospy.Publisher('velocity', Pose2D)
         self.true_windPub = rospy.Publisher('true_wind', Pose2D)
         self.relative_windPub = rospy.Publisher('relative_wind', Pose2D)
+        self.global_windPub = rospy.Publisher('global_wind', Pose2D)
 
         self.sailPub = rospy.Publisher('/sail/pos', Float32)
         self.rudderPub = rospy.Publisher('/rudder/pos', Int16)
@@ -49,12 +50,13 @@ class ROShandler():
 
         w = model.wind
         self.true_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading-b.heading-math.pi/2)))
+        self.global_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading)))
 
         (wvx, wvy) = (w.windspeed * math.cos(w.windheading), w.windspeed * math.sin(w.windheading))
         (wvx, wvy) = (wvx - b.vx, wvy - b.vy)
 
         self.relative_windPub.publish(Pose2D(math.sqrt(wvx**2 + wvy**2), 0,
-                                      angleconvert(math.atan2(wvy, wvx) - b.heading)))
+                                      angleconvert(math.atan2(wvy, wvx) - b.heading+math.pi/2)))
 
         self.sailPub.publish(Float32(model.boat1.MainPos*90))
         self.rudderPub.publish(Int16(model.boat1.RudderPos*90))
