@@ -91,10 +91,11 @@ void moveServo(){
 }
 
 float readPot(){
+	const float gear_ratio = 0.25;
 	float reading = (-analogRead(potpin) * (360.0 / 1024)) - POT_OFFSET;
-  while (reading < -180){reading += 360;}
-  while (reading >= 180){reading -= 360;}
-  return reading;
+    while (reading < -180){reading += 360;}
+    while (reading >= 180){reading -= 360;}
+    return reading*gear_ratio;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
