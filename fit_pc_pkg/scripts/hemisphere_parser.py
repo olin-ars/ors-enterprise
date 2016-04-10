@@ -3,11 +3,13 @@
 #pip install pyserial
 import rospy
 import serial
+import sys
 from std_msgs.msg import Int16, Float32, Bool, String
 from geometry_msgs.msg import Pose2D, Vector3
 
 class hemisphere_parser:
-    def __init__(self):
+    def __init__(self, port = "/dev/ttyUSB0"):
+        self.port = port
         self.init_serial()
         self.init_ros_node()
         self.init_ros_msgs()
@@ -47,7 +49,7 @@ class hemisphere_parser:
     def init_serial(self):
         #serial reader to receive input via USB
         self.ser = serial.Serial()
-        self.ser.port = "/dev/ttyUSB0"
+        self.ser.port = self.port
         self.ser.baudrate = 19200
         self.ser.open()
 
@@ -106,7 +108,8 @@ class hemisphere_parser:
         """ Parse PASHR message from hemisphere
             give us true heading, roll, pitch and heave """
         if msg[3] == 'T': #true heading (empty if no data)
-            self.position.theta = msg[2] #true heading
+            if msg[2] != msg[2]:
+                self.position.theta = float(msg[2]) #true heading
             self.attitude.x = float(msg[7]) #roll
             self.attitude.y = float(msg[8]) #pitch
             self.attitude.z = float(msg[6]) #heave
@@ -117,7 +120,8 @@ class hemisphere_parser:
 
 if __name__ == '__main__':
     try:
-        core = hemisphere_parser()
+        port = sys.argv[1]
+        core = hemisphere_parser(port)
         core.run()
     except rospy.ROSInterruptException:
         print 'ahh'

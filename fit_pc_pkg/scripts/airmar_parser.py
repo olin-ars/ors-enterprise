@@ -3,11 +3,13 @@
 #pip install pyserial
 import rospy
 import serial
+import sys
 from std_msgs.msg import Int16, Float32, Bool, String
 from geometry_msgs.msg import Pose2D, Vector3
 
 class airmar_parser:
-    def __init__(self):
+    def __init__(self, port = "/dev/ttyUSB0"):
+        self.port = port
         self.init_serial()
         self.init_ros_node()
         self.init_ros_msgs()
@@ -46,7 +48,7 @@ class airmar_parser:
     def init_serial(self):
         #serial reader to receive input via USB
         self.ser = serial.Serial()
-        self.ser.port = "/dev/ttyUSB0"
+        self.ser.port = self.port
         self.ser.baudrate = 4800
         self.ser.open()
 
@@ -140,7 +142,8 @@ class airmar_parser:
 
 if __name__ == '__main__':
     try:
-        core = airmar_parser()
+        port = sys.argv[1]
+        core = airmar_parser(port)
         core.run()
     except rospy.ROSInterruptException:
         print 'ahh'
