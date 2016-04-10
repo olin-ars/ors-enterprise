@@ -57,6 +57,8 @@
   * Int16 (pub)
 * `rudder/set_point` set point for rudder in degrees
   * Int16 (sub)
+* `rudder/powerconstant` max power applied to motor (default: 20)
+  * Int16 (sub) - range 0...255
 
 #### Sail topics:
 * `sail/pos` magnet sensor position
@@ -65,6 +67,8 @@
   * Int16 (pub)
 * `sail/set_point` set point for linear actuator
   * Float32 (sub)
+* `sail/powerconstant` max power applied to motor (default: 20)
+  * Int16 (sub) - range 0...255
 
 ### Information Flow
 

@@ -21,9 +21,11 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-int SERVO_CENTER = 92.5;
+const int SERVO_CENTER = 92.5;
 const float POT_OFFSET = 277;
 const int DEADZONE = 5;
+int power = 20;
+
 int lastCommanded = -1;
 bool newCommand = false;
 
@@ -41,9 +43,8 @@ void command_callback(const std_msgs::Int16& command){
 }
 ros::Subscriber<std_msgs::Int16> command_sub("/rudder/set_point", &command_callback);
 
-void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
-// DEPRECIATED
-ros::Subscriber<std_msgs::Int16> center_sub("/rudder/ServoCenter", &center_callback);
+void power_callback(const std_msgs::Int16& msg){power = msg.data;}
+ros::Subscriber<std_msgs::Int16> center_sub("/rudder/powerconstant", &power_callback);
 
 void setupROS(){
 	nh.initNode();
@@ -68,8 +69,6 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveServo(){
-	const int power = 20;
-
 	if (newCommand){
 		// A command has just been recieved
 		newCommand = false;

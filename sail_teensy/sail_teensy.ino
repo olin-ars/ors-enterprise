@@ -23,13 +23,14 @@
 
 ros::NodeHandle  nh;
 
-Servo myservo;  // create servo object to control a servo 
-
-float currentPos = -1;
+Servo myservo;  // create servo object to control a motor 
 
 int SERVO_CENTER = 92;
+int power = 20;
+
 float lastCommanded = -1;
 bool newCommand = false;
+float currentPos = -1;
 
 std_msgs::Float32 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
 ros::Publisher pos_pub("/sail/pos", &pos_msg);
@@ -45,9 +46,8 @@ void command_callback(const std_msgs::Float32& command){
 }
 ros::Subscriber<std_msgs::Float32> command_sub("/sail/set_point", &command_callback);
 
-void center_callback(const std_msgs::Int16& msg){SERVO_CENTER = msg.data;}
-// DEPRECIATED
-ros::Subscriber<std_msgs::Int16> center_sub("/sail/ServoCenter", &center_callback);
+void power_callback(const std_msgs::Int16& msg){power = msg.data;}
+ros::Subscriber<std_msgs::Int16> center_sub("/sail/powerconstant", &power_callback);
 
 void setupROS(){
     nh.initNode();
@@ -77,8 +77,6 @@ void setup()
 int movementDirection = 0; // 0 for stopped, 1 , -1 for current movement direction.
 
 void moveMotor(){
-    const int power = 20;
-
     if (newCommand){
         // A command has just been recieved
         newCommand = false;
