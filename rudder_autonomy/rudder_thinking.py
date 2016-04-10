@@ -39,7 +39,7 @@ class RudderThought():
 
 		self.pose = [0, -5] # east, north
 
-		self.target_pose = [0, 0] # east, north
+		self.target_pose = [0, 100] # east, north
 		self.angle_to_target = 0 # compass heading to target
 
 		self.heading = 90 #degrees clockwise from north
@@ -58,6 +58,9 @@ class RudderThought():
 		positive error means boat should turn clockwise
 		"""
 		print '\n'
+		print 'angle to target', self.angle_to_target
+		print 'steering angle to wind', self.wind_err()
+
 		if self.Tacking:
 			print 'tack'
 			err = subtract_angles(self.true_wind_angle, (DEADZONE-5)*self.tack)
@@ -67,16 +70,13 @@ class RudderThought():
 			return err
 
 		elif self.is_target_upwind():
-			print 'wind', self.global_wind
-			print 'target', self.angle_to_target
 			print 'upwind'
 			return self.wind_err()
 
 		else:
 			print 'direct'
 			self.tack = sign(self.true_wind_angle)
-			print self.tack
-			print self.angle_to_target
+			print "current tack direction:", self.tack
 			if self.is_target_accross_wind():
 				self.tack *= -1
 				self.Tacking = True
@@ -85,8 +85,8 @@ class RudderThought():
 
 	def is_target_upwind(self):
 		""" return if we should be in 'tacking mode' """
-		off_wind = abs(subtract_angles(self.angle_to_target, self.global_wind))
-		print 'wind', off_wind
+		off_wind = abs(subtract_angles(self.angle_to_target, self.global_wind + 180))
+		print 'off_wind', off_wind
 		return off_wind <= DEADZONE + 5
 
 	def is_target_accross_wind(self):
@@ -104,7 +104,7 @@ class RudderThought():
 		if not self.is_in_bounds():
 			self.tack *= -1
 			self.Tacking = True
-		return subtract_angles(self.rel_wind_angle, DEADZONE*self.tack)
+		return subtract_angles(self.rel_wind_angle, (180-DEADZONE)*self.tack)
 
 	def target_err(self):
 		""" return angle between boat's heading and bearing to target """
@@ -135,11 +135,11 @@ class RudderThought():
 	def global_wind_callback(self, data):
 		""" get relative wind angle in range -180 to 180 """
 		self.global_wind = angle_range(data.theta)
-		print 'got wind', data.theta
+		#print 'got wind', data.theta
 
 if __name__ == '__main__':
 	rud = RudderThought()
 	r = rospy.Rate(1)
 	while not rospy.is_shutdown():
-		print rud.think()
+		print "Final desired turn amount", rud.think()
 		r.sleep()
