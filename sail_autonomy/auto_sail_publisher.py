@@ -1,29 +1,33 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Int16, Float32
+from geometry_msgs.msg import Pose2D
 
 class autonomousSailPublisher:
 	def __init__(self):
-        self.sailPub = rospy.Publisher('rc_mode/sail/set_point', Int16)
-        def callback(angle):
-        	self.waypoint = angle
-        self.waypointAngleListener = rospy.Subscriber('windAngle', Int16, callback) #placeholder for wind angle topic, positive is starboard, negative is port, angle is the direction the wind is hitting the boat from
-	def calculateSailPosition(self, windAngle):#calculate sail position from wind angle
-		#need to figure out how exactly sails work, this is assuming sail positions will not be given in the dead zone (estimated -45 to 45)
-		sailPos = 1 if windAngle in range(-180, -135) else 2 if windAngle in range(-135, -90) else 3 if windAngle in range(-90, -45) else 4 if windAngle in range(45, 90) else 5 if windAngle in range(90, 135) else 6 if windAnglein range(90, 181)
+		self.sailPub = rospy.Publisher('sail/pos', Float32) # unsure of whether publishing to this topic actually has the sail actuator move to a given magnet position
+		def callback(self, data):
+			self.speed = data.x
+			self.windAngle = data.theta
+		self.waypointAngleListener = rospy.Subscriber('relative_wind', Pose2D, callback) # placeholder for wind angle topic, positive is starboard, negative is port, angle is the direction the wind is hitting the boat from
+	def calculateSailPosition(self, windAngle):# calculate sail position from wind angle
+		# assuming sail positions will not be given in the dead zone and rudders will navigate away
+		# sail goes from positions 0 to 6
+		sailPos = 6 if abs(windAngle) in range(155, 180) else 5 if abs(windAngle) in range(130, 155) else 4 if abs(windAngle) in range(105, 130) else 3 if abs(windAngle) in range(80, 105) else 2 if abs(windAngle) in range(55, 80) else 1 if abs(windAngle) in range (30, 55) else 0
 		return sailPos
 
 	def run(self):
+		
 		rate = rospy.Rate(10)  # 10hz
-        while not rospy.is_shutdown():
-        	sailPos = calculateSailPosition(self.waypoint)
-        	self.sailPub.publish(sailPos)
-        	rospy.loginfo("Sent desired sail position : {}".format(sailPos))
-        	rate.sleep()
+		while not rospy.is_shutdown():
+			sailPos = calculateSailPosition(self.windAngle)
+			self.sailPub.publish(sailPos)
+			rospy.loginfo("Sent desired sail position: {}".format(sailPos))
+			rate.sleep()
 
 if __name__ == '__main__':
 	try:
 		test = autonomousSailPublisher()
 		test.run()
 	except rospy.ROSInterruptException:
-		pass
+		passta
