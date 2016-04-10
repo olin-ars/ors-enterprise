@@ -13,10 +13,10 @@ class DataCapturer():
         hemisphere_pub = rospy.Subscriber("hemisphere/fullmsg", String, self.hemisphere_callback)
 
     def airmar_callback(self, data):
-        self.airmar_capture.write(time.time() + " -- " + data)
+        self.airmar_capture.write(str(time.time()) + " -- " + str(data) + '\n')
 
     def hemisphere_callback(self, data):
-        self.hemisphere_capture.write(time.time() + " -- " + data)
+        self.hemisphere_capture.write("time: " + str(time.time()) + ", " + str(data) + '\n')
 
 if __name__ == '__main__':
     data_capture = DataCapturer()
