@@ -16,7 +16,7 @@ class DataCapturer():
         self.airmar_capture.write(str(time.time()) + " -- " + str(data) + '\n')
 
     def hemisphere_callback(self, data):
-        self.hemisphere_capture.write("time: " + str(time.time()) + ", " + str(data) + '\n')
+        self.hemisphere_capture.write("timestamp: " + str(time.time()) + ", " + str(data) + '\n')
 
 if __name__ == '__main__':
     data_capture = DataCapturer()
