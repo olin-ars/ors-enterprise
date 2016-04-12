@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import serial
 import subprocess
+import time
 
 
 def find_rate(ser):
@@ -56,3 +57,6 @@ if __name__ == '__main__':
         subprocess.Popen("python airmar_parser.py %" % sensors["airmar"])
     else:
         print "Airmar not found."
+
+    while True:
+        time.sleep(1)
