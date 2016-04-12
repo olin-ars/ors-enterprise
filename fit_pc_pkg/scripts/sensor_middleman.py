@@ -13,6 +13,7 @@ class Arbiter:
 
         self.home = home
         self.pos = home
+        self.heading = 0
 
         self.initScalars()
 
@@ -32,28 +33,19 @@ class Arbiter:
         self.longscalar = longdistance / 360  # meters per degree
 
     def initPublishers(self):
-        pass
-        self.rudderPub = rospy.Publisher('rudder/set_point', Int16)
-        self.sailPub = rospy.Publisher('sail/set_point', Float32)
+        self.posPub = rospy.Publisher('location', Pose2D)
 
     def initSubscribers(self):
         self.positionSub = rospy.Subscriber('/hemishphere/position', Pose2D, self.onPosition)
-        pass
-        self.rudderSub = rospy.Subscriber(currentNamespace + '/rudder/set_point', Int16, self.onRudder) #listening to rudder_in
-        self.sailsSub = rospy.Subscriber(currentNamespace + '/sail/set_point', Float32, self.onSail) #listening to sails_in
 
     def onPosition(self, msg):
         # Incomming messages are in decimal minutes
-        self.pos[1] = msg.x/60
-        self.pos[2] = msg.y/60
 
-    def onSail(self, msg):
-        self.sail = msg.data
-        self.sailPub.publish(msg.data)
+        self.pos = self.transformLocation(msg.x / 60, msg.y / 60)
+        self.heading = msg.theta
 
-    def onOpMode(self, msg):
-        self.opMode = msg.data
-        self.setupSubscribers(msg.data)
+    def publish(self):
+        self.posPub(Pose2D(self.pos[0], self.pos[1], self.heading))
 
     def run(self):
         rate = rospy.Rate(10)  # 10hz
