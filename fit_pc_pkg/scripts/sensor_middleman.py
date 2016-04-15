@@ -47,8 +47,8 @@ class Arbiter:
         self.trackSub = rospy.Subscriber('/hemisphere/track', Float32, self.onTrack)
 
     def onPosition(self, msg):
-        # Incomming messages are in decimal minutes
-        self.pos = self.transformLocation(msg.x / 60, msg.y / 60)
+        # Incomming messages are in decimal degrees
+        self.pos = self.transformLocation(msg.x, msg.y)
         self.heading = msg.theta
 
     def onSpeed(self, msg):
