@@ -46,8 +46,6 @@ class hemisphere_parser:
         self.mag_dir = 0
         self.attitude = Vector3()
 
-        self.theta = 42.0
-
     def init_serial(self):
         #serial reader to receive input via USB
         self.ser = serial.Serial()
@@ -98,7 +96,6 @@ class hemisphere_parser:
             self.status = True
             self.position.x = convert_angle(msg[3]) #latitude (decimal degrees)
             self.position.y = convert_angle(msg[5], True) #longitude
-            self.position.theta = self.theta
             #convert S and W to negatives for lat lon
             if msg[4] == 'S':
                 self.position.x *= -1
@@ -122,7 +119,7 @@ class hemisphere_parser:
             give us true heading, roll, pitch and heave """
         if msg[3] == 'T': #true heading (empty if no data)
             if msg[2]:
-                self.theta = float(msg[2]) #true heading
+                self.position.theta = float(msg[2]) #true heading
             self.attitude.x = float(msg[7]) #roll
             self.attitude.y = float(msg[8]) #pitch
             self.attitude.z = float(msg[6]) #heave
