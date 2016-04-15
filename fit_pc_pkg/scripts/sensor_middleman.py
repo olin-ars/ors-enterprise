@@ -60,7 +60,7 @@ class Arbiter:
         self.track = msg.data
 
     def publish(self):
-        self.posPub.publish(Pose2D(self.pos[0], self.pos[1], self.heading))
+        self.posPub.publish(Pose2D(self.pos[1], self.pos[0], self.heading))
         self.velPub.publish(Pose2D(self.speed, 0.0, self.track))
 
     def run(self):
