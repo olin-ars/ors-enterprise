@@ -82,10 +82,18 @@ class hemisphere_parser:
     def parse_GPRMC(self, msg):
         """ Parse the GPRMC message from the hemisphere
             Gives GPS position, speed, track """
+
+        def convert_angle(string):
+            if not string:
+                return 0
+            degreepart = int(string[:2])
+            minutepart = float(string[2:])
+            return degreepart + minutepart/60
+
         if(msg[2] == 'A'): #A = valid, V = void
             self.status = True
-            self.position.x = float(msg[3]) #latitude (decimal minutes)
-            self.position.y = float(msg[5]) #longitude
+            self.position.x = convert_angle(msg[3]) #latitude (decimal degrees)
+            self.position.y = convert_angle(msg[5]) #longitude
             #convert S and W to negatives for lat lon
             if msg[4] == 'S':
                 self.position.x *= -1
