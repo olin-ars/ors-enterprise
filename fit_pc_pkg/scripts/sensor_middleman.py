@@ -18,14 +18,14 @@ class Arbiter:
 
         self.initScalars()
 
-        self.pos = self.transformLocation(home)
+        self.pos = self.transformLocation(home[0], home[1])
 
         self.initSubscribers()
         self.initPublishers()
 
     def transformLocation(self, lat, longitude):
-        return ((lat - self.home[1]) * self.latscalar,
-                (longitude - self.home[2]) * self.longscalar)
+        return ((lat - self.home[0]) * self.latscalar,
+                (longitude - self.home[1]) * self.longscalar)
 
     def initScalars(self):
         earth_circumference = 40.075 * 10**6  # meters
