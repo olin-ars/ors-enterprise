@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 import rospy
 import math
-from std_msgs.msg import Int16, Float32
-from geometry_msgs.msg import Pose2D, Vector3
+from std_msgs.msg import Float32
+from geometry_msgs.msg import Pose2D
 
 
 class Arbiter:
