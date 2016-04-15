@@ -118,7 +118,7 @@ class hemisphere_parser:
         """ Parse PASHR message from hemisphere
             give us true heading, roll, pitch and heave """
         if msg[3] == 'T': #true heading (empty if no data)
-            if msg[2] != msg[2]:
+            if msg[2] != '':
                 self.position.theta = float(msg[2]) #true heading
             self.attitude.x = float(msg[7]) #roll
             self.attitude.y = float(msg[8]) #pitch
