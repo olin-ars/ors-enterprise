@@ -42,9 +42,9 @@ class Arbiter:
         self.velPub = rospy.Publisher('velocity', Pose2D, queue_size=queue)
 
     def initSubscribers(self):
-        self.positionSub = rospy.Subscriber('/hemishphere/position', Pose2D, self.onPosition)
-        self.speedSub = rospy.Subscriber('/hemishphere/speed', Float32, self.onSpeed)
-        self.trackSub = rospy.Subscriber('/hemishphere/track', Float32, self.onTrack)
+        self.positionSub = rospy.Subscriber('/hemisphere/position', Pose2D, self.onPosition)
+        self.speedSub = rospy.Subscriber('/hemisphere/speed', Float32, self.onSpeed)
+        self.trackSub = rospy.Subscriber('/hemisphere/track', Float32, self.onTrack)
 
     def onPosition(self, msg):
         # Incomming messages are in decimal minutes
