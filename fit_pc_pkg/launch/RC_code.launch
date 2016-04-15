@@ -7,4 +7,6 @@
   <node name="test_master" pkg="fit_pc_pkg" type="publish_test_rudderCommands.py" />
   <node name="sensors" pkg="fit_pc_pkg" type="device_start.py" />
   <node name="sensorsMiddleman" pkg="fit_pc_pkg" type="sensor_middleman.py" />
+  
+  <node name="websockets" pkg="rosbridge_server" type="rosbridge_websocket.py" />
 </launch>
