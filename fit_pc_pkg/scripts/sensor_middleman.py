@@ -35,8 +35,10 @@ class Arbiter:
         self.longscalar = longdistance / 360  # meters per degree
 
     def initPublishers(self):
-        self.posPub = rospy.Publisher('location', Pose2D)
-        self.velPub = rospy.Publisher('velocity', Pose2D)
+        queue = 1
+
+        self.posPub = rospy.Publisher('location', Pose2D, queue_size=queue)
+        self.velPub = rospy.Publisher('velocity', Pose2D, queue_size=queue)
 
     def initSubscribers(self):
         self.positionSub = rospy.Subscriber('/hemishphere/position', Pose2D, self.onPosition)
@@ -57,8 +59,8 @@ class Arbiter:
         self.track = msg.data
 
     def publish(self):
-        self.posPub(Pose2D(self.pos[0], self.pos[1], self.heading))
-        self.velPub(Pose2D(self.speed, 0.0, self.track))
+        self.posPub.publish(Pose2D(self.pos[0], self.pos[1], self.heading))
+        self.velPub.publish(Pose2D(self.speed, 0.0, self.track))
 
     def run(self):
         rate = rospy.Rate(10)  # 10hz
