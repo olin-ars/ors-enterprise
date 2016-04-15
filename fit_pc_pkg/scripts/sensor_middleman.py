@@ -12,12 +12,13 @@ class Arbiter:
         of the Oval"""
 
         self.home = home
-        self.pos = home
         self.heading = 0.0
         self.speed = 0.0
         self.track = 0.0
 
         self.initScalars()
+
+        self.pos = self.transformLocation(home)
 
         self.initSubscribers()
         self.initPublishers()
