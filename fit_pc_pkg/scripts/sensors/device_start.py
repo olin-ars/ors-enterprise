@@ -2,15 +2,18 @@
 import serial
 import subprocess
 import time
+import os
 
 
-def find_rate(ser):
+def find_rate(port):
     baudrates = [19200, 4800]
     for rate in baudrates:
+        ser = serial.Serial(port=port, timeout=2)
         ser.baudrate = rate
+        ser.close()
         ser.open()
         ser.flush()
-        print 'here'
+        print 'Began read attempt'
         try:
             msg = ser.read(40)
         except:
@@ -21,17 +24,17 @@ def find_rate(ser):
             if len(chars) > 3:
                 # Given 40 bytes and longest message size, should still be
                 # at least 3 commas
-                print 'banana'
+                print 'Device found at baudrate', rate
                 print ser.readline()
+                ser.close()
                 return rate
+        print 'Device not found'
         ser.close()
 
 
 def find_device(port):
     while True:
-        ser = serial.Serial()
-        ser.port = port
-        baud = find_rate(ser)
+        baud = find_rate(port)
         if baud == 4800:
             return 'airmar'
         elif baud == 19200:
@@ -49,12 +52,15 @@ def find_all_devices():
 if __name__ == '__main__':
     sensors = find_all_devices()
 
+    workingdir = os.path.dirname(os.path.realpath(__file__))
+
     if "hemisphere" in sensors:
-        subprocess.Popen("python hemisphere_parser.py %" % sensors["hemisphere"])
+        subprocess.Popen("python hemisphere_parser.py " + sensors["hemisphere"], cwd=workingdir, shell=True)
     else:
         print "Hemisphere not found."
+
     if "airmar" in sensors:
-        subprocess.Popen("python airmar_parser.py %" % sensors["airmar"])
+        subprocess.Popen("python airmar_parser.py " + sensors["airmar"], cwd=workingdir, shell=True)
     else:
         print "Airmar not found."
 
