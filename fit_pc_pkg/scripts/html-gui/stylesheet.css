@@ -25,3 +25,25 @@ body {
     stroke-width: 2;
     stroke-linecap: round;
 }
+
+#sailVis {
+    stroke:red ;
+    stroke-width:6;
+    stroke-linecap: round;
+}
+
+#rudderVis {
+    stroke:blue ;
+    stroke-width:6;
+}
+
+#localboatmap {
+    fill:#0000ff;
+    stroke:#000000;
+    stroke-width:5;
+    stroke-linecap:butt;
+    stroke-linejoin:miter;
+    stroke-miterlimit:4;
+    stroke-opacity:1;
+    stroke-dasharray:none;
+}
