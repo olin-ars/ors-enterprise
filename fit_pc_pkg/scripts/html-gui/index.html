@@ -113,27 +113,43 @@
 
     $("#rudder_angle").text(string);
 
-    var angle = -message.data; //This should be multiplied for real boat values.
+    var angle = -message.data;
     $("#rudderVis").attr("Transform","rotate("+angle+")")
   });
 
 
 
-  // Wind subscriber
-  var listenrudder = new ROSLIB.Topic({
+  // Wind subscribers
+  var listentruewind = new ROSLIB.Topic({
     ros : ros,
     name : '/true_wind',
     messageType : 'geometry_msgs/Pose2D'
   });
 
-  listenrudder.subscribe(function(message) {
+  listentruewind.subscribe(function(message) {
     var string=message.x.toFixed(2)+"@"+message.theta.toFixed(2);
     //console.log('Received Rudder : ' + string);
 
     $("#true_wind").text(string);
 
-//     var angle=message.data; //This should be multiplied for real boat values.
+//     var angle=message.data;
 //     $("#rudderVis").attr("Transform","rotate("+angle+")")
+  });  
+
+  var listenglobalwind = new ROSLIB.Topic({
+    ros : ros,
+    name : '/true_wind',
+    messageType : 'geometry_msgs/Pose2D'
+  });
+
+  listenglobalwind.subscribe(function(message) {
+    var string=message.x.toFixed(2)+"@"+message.theta.toFixed(2);
+    //console.log('Received Rudder : ' + string);
+
+    $("#global_wind").text(string);
+
+     var angle=message.theta;
+     $("#windVector1").attr("Transform","rotate("+angle+")")
   });
 
 
@@ -142,15 +158,18 @@
 
 <body>
   <h1>ORS Mission Control</h1>
+  <hr>
   <h2>Internal state visualizations</h2>
   <div>Local position: <span class="numdisplay" id="local_pos">[data missing]</span></div>
   <div>Sail position: <span class="numdisplay" id="sail_angle">[data missing]</span></div>
   <div>Rudder position: <span class="numdisplay" id="rudder_angle">[data missing]</span></div>
   <div>True Wind: <span class="numdisplay" id="true_wind">[data missing]</span></div>
+  <div>Global Wind: <span class="numdisplay" id="global_wind">[data missing]</span></div>
   <!-- TODO: this should be loaded dynamically from an Inkscape/Illustrator file -->
   <svg
    width="700"
-   height="500">
+   height="500"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
    <g 
     transform="translate(0,0)">
       <!-- Local map view -->
@@ -159,11 +178,28 @@
        transform=""
        id="localboatmap">
       <!-- Small boat for map view -->
-      <path
-         d="m 250,145 c 0,0 -29.27113,25.76104 -27.85714,102.14285 l 55,1e-5 C 278.80151,165.27089 250,145 250,145 z"
-         transform="translate(-250,-210)"
-         style="fill:#0000ff;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
-       <circle style="fill:red", r="5px"/>
+        <path
+           d="m 250,145 c 0,0 -29.27113,25.76104 -27.85714,102.14285 l 55,1e-5 C 278.80151,165.27089 250,145 250,145 z"
+           transform="translate(-250,-210)"
+           style="fill:#0000ff;stroke:#000000;stroke-width:5;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+         <circle style="fill:red", r="5px"/>
+      </g>
+
+       <g
+       transform="translate(400,100) scale(2)">
+      <!-- Compass -->
+        <image width="100" height="100" x="-50" y="-50" xlink:href="compass.svg"/>
+        <g
+        transform=""
+        id="windVector1">
+          <line x1="0" y1="0" 
+            x2="0" y2="40" 
+            stroke="blue" 
+            opacity=".9"
+            stroke-width="2"
+            stroke-linecap="round"/>
+            <!-- This line points in the direction the wind is going, not from whence it comes -->
+        </g>
       </g>
     </g>
 
