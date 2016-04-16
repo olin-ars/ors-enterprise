@@ -9,3 +9,19 @@ body {
 .numdisplay {
     font-weight: bold;
 }
+
+.statuslight {
+    width: 64px;
+    height: 64px;
+    background: url(redgreen.svg);
+    display: inline-block;
+}
+
+/* Graphical display elements */
+
+#windVector1 {
+    stroke: darkgreen;
+    opacity: .9;
+    stroke-width: 2;
+    stroke-linecap: round;
+}
