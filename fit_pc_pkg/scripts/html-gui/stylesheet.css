@@ -15,6 +15,8 @@ body {
     height: 64px;
     background: url(redgreen.svg);
     display: inline-block;
+    /* transform: scale(.5); */
+    background-size: 200%;
 }
 
 /* Graphical display elements */
@@ -46,4 +48,11 @@ body {
     stroke-miterlimit:4;
     stroke-opacity:1;
     stroke-dasharray:none;
+}
+
+.statusRow {
+    width: 250px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
 }

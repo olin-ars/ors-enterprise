@@ -12,47 +12,58 @@
 <link rel="stylesheet" href="stylesheet.css" type="text/css">
 
 <script type="text/javascript" type="text/javascript">
+  'use strict'
   // Connecting to ROS
   // -----------------
 
-  var ros = new ROSLIB.Ros({
-    url : 'ws://' + prompt('ROS IP address', '192.168.17.130') + ':9090'
-  });
+  var rosIP = 'ws://' + prompt('ROS IP address', '192.168.17.130') + ':9090'
+  var ros = setupROS()
 
-  ros.on('connection', function() {
-    console.log('Connected to websocket server.');
-  });
+  function setupROS() {
+    var ros = new ROSLIB.Ros({
+      url : rosIP
+    });
 
-  ros.on('error', function(error) {
-    console.log('Error connecting to websocket server: ', error);
-  });
+    ros.on('connection', function() {
+      console.log('Connected to websocket server.');
+    });
 
-  ros.on('close', function() {
-    console.log('Connection to websocket server closed.');
-  });
+    ros.on('error', function(error) {
+      console.log('Error connecting to websocket server: ', error);
+      window.setTimeout(setupROS, 5000);
+    });
 
+    ros.on('close', function() {
+      console.log('Connection to websocket server closed.');
+      window.setTimeout(setupROS, 5000);
+    });
+
+    return ros
+  }
+
+  
   // Publishing a Topic
   // ------------------
 
-  var cmdVel = new ROSLIB.Topic({
-    ros : ros,
-    name : '/html_test_output',
-    messageType : 'geometry_msgs/Twist'
-  });
+//   var cmdVel = new ROSLIB.Topic({
+//     ros : ros,
+//     name : '/html_test_output',
+//     messageType : 'geometry_msgs/Twist'
+//   });
 
-  var twist = new ROSLIB.Message({
-    linear : {
-      x : 0.1,
-      y : 0.2,
-      z : 0.3
-    },
-    angular : {
-      x : -0.1,
-      y : -0.2,
-      z : -0.3
-    }
-  });
-  cmdVel.publish(twist);
+//   var twist = new ROSLIB.Message({
+//     linear : {
+//       x : 0.1,
+//       y : 0.2,
+//       z : 0.3
+//     },
+//     angular : {
+//       x : -0.1,
+//       y : -0.2,
+//       z : -0.3
+//     }
+//   });
+//   cmdVel.publish(twist);
 
   // Subscribing to Topics
   // ----------------------
@@ -152,6 +163,36 @@
      $("#windVector1").attr("Transform","rotate("+angle+")")
   });
 
+  // Watchdog timers
+  var setup_watchdog = function(topic, msgtype, element, validfunc) {
+    if (typeof validfunc == 'undefined') {
+      validfunc = function() {return true;}
+    }
+
+    var lastMessage = 0;
+
+    var sub = new ROSLIB.Topic({
+      ros : ros,
+      name : topic,
+      messageType : msgtype
+    });
+
+    sub.subscribe(function(message) {
+        if(validfunc(message))
+          lastMessage = new Date().getTime()
+      })
+
+    var update = function() {
+      var connected = (new Date().getTime() - lastMessage) < 2000;
+
+      var bp = connected ? "" : "-64px 0px";
+
+      element.css("background-position", bp);
+    }
+
+    window.setInterval(update, 500);
+    update()
+  }
 
 </script>
 </head>
@@ -236,7 +277,61 @@
 
   <hr>
   <h2>Status</h2>
-Test Status: <div class="statuslight"/>
-  
+
+<div class="statusRow">   
+<br>Sail Teensy: 
+<div style="background-position: -32px 0px;" id="sailstatus" class="statuslight"></div>
+<script>setup_watchdog('/sail/pos', 'std_msgs/Float32', $('#sailstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Rudder Teensy: 
+<div style="background-position: -32px 0px;" id="rudderstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/rudder/pos', 'std_msgs/Int16', $('#rudderstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>RC Teensy: 
+<div style="background-position: -32px 0px;" id="RCstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/rc/debug_dial_in', 'std_msgs/Float32', $('#RCstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Hemisphere (+parsing): 
+<div style="background-position: -32px 0px;" id="hemispherestatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/hemisphere/vel', 'geometry_msgs/Twist', $('#hemispherestatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Airmar (+parsing): 
+<div style="background-position: -32px 0px;" id="airmarstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/Airmar/status', 'std_msgs/Bool', $('#airmarstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>RC code:  
+<div style="background-position: -32px 0px;" id="rc_modestatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/rc_mode/rudder/set_point', 'std_msgs/Int16', $('#rc_modestatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Arbiter:  
+<div style="background-position: -32px 0px;" id="arbiterstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/rudder/set_point', 'std_msgs/Int16', $('#arbiterstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Sensor preprocessor:  
+<div style="background-position: -32px 0px;" id="sensorsstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/location', 'geometry_msgs/Pose2D', $('#sensorsstatus'))</script>
+</div>
+
 </body>
 </html>
