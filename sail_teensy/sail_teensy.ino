@@ -26,11 +26,11 @@ ros::NodeHandle  nh;
 Servo myservo;  // create servo object to control a motor 
 
 int SERVO_CENTER = 92;
-int power = 20;
+int power = 40;
 
-float lastCommanded = -1;
+float lastCommanded = 3;
 bool newCommand = false;
-float currentPos = -1;
+float currentPos = 3;
 
 std_msgs::Float32 pos_msg;  // Message from 0 to NUM_SENSORS giving the current sail location
 ros::Publisher pos_pub("/sail/pos", &pos_msg);
