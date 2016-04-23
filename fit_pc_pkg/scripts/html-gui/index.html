@@ -105,7 +105,7 @@
 
     $("#sail_angle").text(string);
 
-    var angle=message.data; //This should be multiplied for real boat values.
+    var angle=message.data*12; //This should be multiplied for real boat values.
     $("#sailVis").attr("Transform","rotate("+angle+")")
   });
 
