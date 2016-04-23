@@ -41,7 +41,7 @@ void command_callback(const std_msgs::Float32& command){
     if(command.data < 0 || command.data > (NUM_SENSORS - 1)){
         return;
     }
-    lastCommanded = command.data;
+    lastCommanded = round(command.data);
     newCommand = true;
 }
 ros::Subscriber<std_msgs::Float32> command_sub("/sail/set_point", &command_callback);
