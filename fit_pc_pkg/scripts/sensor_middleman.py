@@ -2,7 +2,7 @@
 import rospy
 import math
 from std_msgs.msg import Float32
-from geometry_msgs.msg import Pose2D
+from geometry_msgs.msg import Pose2D, Vector3
 
 
 class Arbiter:
@@ -31,7 +31,8 @@ class Arbiter:
         earth_circumference = 40.075 * 10**6  # meters
         self.latscalar = earth_circumference / 360  # meters per degree
 
-        longdistance = math.cos(math.radians(self.home[0])) * earth_circumference  # m
+        # the length of the line of latitude that we are on in meters
+        longdistance = math.cos(math.radians(self.home[0])) * earth_circumference
 
         self.longscalar = longdistance / 360  # meters per degree
 
@@ -42,9 +43,14 @@ class Arbiter:
         self.velPub = rospy.Publisher('velocity', Pose2D, queue_size=queue)
 
     def initSubscribers(self):
+        # Hemisphere subscribers
         self.positionSub = rospy.Subscriber('/hemisphere/position', Pose2D, self.onPosition)
         self.speedSub = rospy.Subscriber('/hemisphere/speed', Float32, self.onSpeed)
         self.trackSub = rospy.Subscriber('/hemisphere/track', Float32, self.onTrack)
+
+        # Airmar subscribers
+        self.relWindSub  = rospy.Subscriber('airmar/relative_wind', Vector3, self.onRelWind)
+        self.trueWindSub = rospy.Subscriber('airmar/true_wind', Vector3, self.onTrueWind)
 
     def onPosition(self, msg):
         # Incomming messages are in decimal degrees
