@@ -95,7 +95,19 @@ float readPot(){
 	float reading = (-analogRead(potpin) * (360.0 / 1024)) - POT_OFFSET;
     while (reading < -180){reading += 360;}
     while (reading >= 180){reading -= 360;}
-    return reading*gear_ratio;
+
+	static int turnsOffset = 0;
+	static float lastreading = reading;
+
+	if (reading > lastreading + 180.0){
+		turnsOffset--;
+	}
+	if (reading < lastreading - 180.0){
+		turnsOffset++;
+	}
+	lastreading = reading;
+
+    return (reading + 360*turnsOffset)*gear_ratio;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
