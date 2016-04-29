@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+subl rud#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose2D
 import math
@@ -140,6 +140,14 @@ class RudderThought():
 if __name__ == '__main__':
 	rud = RudderThought()
 	r = rospy.Rate(1)
+	setPoint = rospy.Publisher('rudder/setPoint', Int16, queue_size=5) #A=active or V=void
 	while not rospy.is_shutdown():
-		print rud.think()
+		error = rudder.think():
+		if error > 45: #Rudder only turns 45 degrees
+			setPoint.publish(45) 
+		elif error > -45 and error <= 90:
+			setPoint.publish(rudder.think())
+		else:
+			setPoint.publish(-45)
+
 		r.sleep()
