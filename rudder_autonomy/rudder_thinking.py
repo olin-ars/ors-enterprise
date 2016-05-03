@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose2D
+from std_msgs.msg import Int16
+from fit_pc_pkg import wp_list
 import math
 
 #angles in world coordinates are measured clockwise from north,
@@ -37,7 +39,11 @@ class RudderThought():
 
 		global_wind_sub = rospy.Subscriber('global_wind', Pose2D, self.global_wind_callback)
 
-		self.pose = [0, -5] # east, north
+		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
+
+		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queuesize=1)
+
+		self.pose = [0, 0] # east, north
 
 		self.target_pose = [0, 0] # east, north
 		self.angle_to_target = 0 # compass heading to target
@@ -50,6 +56,13 @@ class RudderThought():
 
 		self.Tacking = False
 		self.tack = 1 # 1 = starboard, -1 = port
+
+	def run(self):
+		r = rospy.Rate(1)
+		while not rospy.is_shutdown():
+			err = int(self.think())
+			self.heading_err_pub(err)
+			r.sleep()
 
 	def think(self):
 		""" 
@@ -136,6 +149,10 @@ class RudderThought():
 		""" get relative wind angle in range -180 to 180 """
 		self.global_wind = angle_range(data.theta)
 		print 'got wind', data.theta
+
+	def waypoints_callback(self, msg):
+		""" save the next waypoint as the target location """
+		self.target_pose = [msg[0].x, msg[0].y]
 
 if __name__ == '__main__':
 	rud = RudderThought()
