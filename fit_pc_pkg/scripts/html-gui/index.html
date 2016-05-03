@@ -222,7 +222,7 @@
   }
 
   var chooseCoordinate = function(event) {
-    var span = [0.0094032, 0.0207066];
+    var span = [0.012943, 0.027444];
     var center = [42.288987, -71.308653];
 
     var initBounds = [center[0]+span[0]/2, center[1]-span[1]/2];
@@ -233,7 +233,7 @@
     var lat = initBounds[0] - span[0] * (onMapY/$("#map")[0].y);
     var lng = initBounds[1] + span[1] * (onMapX/$("#map")[0].x);
 
-    console.log("CENTER: ", center);
+    console.log("CENTER: ", initBounds);
     console.log("LAT/LNG: ", lat + ", " + lng);
   }
 
