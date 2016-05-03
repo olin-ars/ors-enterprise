@@ -208,7 +208,7 @@
 
   var getMap = function() {
     var downloadPrefix = window.location.href.replace("index.html", "");
-    var mapUrl = "https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&center=" + $("#north").val();
+    var mapUrl = "https://maps.googleapis.com/maps/api/staticmap?maptype=roadmap&center=" + $("#north").val();
     mapUrl += "," + $("#west").val() + "&zoom=15&size=640x400&key=AIzaSyDGSGz3icpvYPCnxDt-G4GPPw1HU6LBBMA";
 
     console.log(mapUrl);
@@ -222,10 +222,19 @@
   }
 
   var chooseCoordinate = function(event) {
+    var span = [0.0094032, 0.0207066];
+    var center = [42.288987, -71.308653];
+
+    var initBounds = [center[0]+span[0]/2, center[1]-span[1]/2];
+
     var onMapX = event.layerX - $("#map")[0].x;
     var onMapY = event.layerY - $("#map")[0].y;
 
-    console.log(onMapX + ", " + onMapY);
+    var lat = initBounds[0] - span[0] * (onMapX/$("#map")[0].x);
+    var lng = initBounds[1] + span[1] * (onMapY/$("#map")[0].y);
+
+    console.log("CENTER: ", center);
+    console.log("LAT/LNG: ", lat + ", " + lng);
   }
 
 </script>
