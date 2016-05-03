@@ -6,7 +6,7 @@ from geometry_msgs.msg import Pose2D
 class autonomousSailPublisher:
 	def __init__(self):
 		rospy.init_node('sail_publisher')
-		self.sailPub = rospy.Publisher('auto/sail/pos', Float32) # unsure of whether publishing to this topic actually has the sail actuator move to a given magnet position
+		self.sailPub = rospy.Publisher('auto_mode/sail/set_point', Float32) # unsure of whether publishing to this topic actually has the sail actuator move to a given magnet position
 		self.windAngle = 0
 		def callback(self, data):
 			self.speed = data.x
