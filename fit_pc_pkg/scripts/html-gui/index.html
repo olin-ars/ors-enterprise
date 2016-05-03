@@ -194,6 +194,19 @@
     update()
   }
 
+  var getMap = function() {
+    var downloadPrefix = window.location.href.replace("index.html", "");
+    var mapUrl = "https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&center=" + $("#north").val();
+    mapUrl += "," + $("#west").val() + "&zoom=15&size=640x400&key=AIzaSyDGSGz3icpvYPCnxDt-G4GPPw1HU6LBBMA";
+
+    var a = $("<a>").attr("href", mapUrl)
+            .attr("download", downloadPrefix + "output.png")
+            .appendTo("body")
+    
+    a[0].click()
+    a.remove();
+  }
+
 </script>
 </head>
 
@@ -331,6 +344,15 @@
 <div style="background-position: -32px 0px;" id="sensorsstatus" class="statuslight"></div>
 <!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
 <script>setup_watchdog('/location', 'geometry_msgs/Pose2D', $('#sensorsstatus'))</script>
+</div>
+
+<hr />
+
+<div id="getMap">
+  <input type="number" id="north" step=".000001" value="42.288987" /> degrees North<br />
+  <input type="number" id="west" step=".000001" value="-71.308653" /> degrees West<br />
+  <button onclick="getMap()">Get Map</button>
+  <img id="map" />
 </div>
 
 </body>
