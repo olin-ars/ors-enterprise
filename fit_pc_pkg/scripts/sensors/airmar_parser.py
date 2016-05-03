@@ -26,9 +26,9 @@ class airmar_parser:
         #track made good (relative to true north)
         self.TrackPub = rospy.Publisher('airmar/track', Float32, queue_size=10)
         #relative wind speed and direction
-        self.RelWindPub = rospy.Publisher('airmar/relative_wind', Vector3, queue_size = 5)
+        self.RelWindPub = rospy.Publisher('airmar/relative_wind', Pose2D, queue_size = 5)
         #true wind speed and direction
-        self.TrueWindPub = rospy.Publisher('airmar/true_wind', Vector3, queue_size = 5)
+        self.TrueWindPub = rospy.Publisher('airmar/true_wind', Pose2D, queue_size = 5)
         #compass heading? ????
         self.MagneticDirectionPub = rospy.Publisher('airmar/magnetic_direction', Float32, queue_size=2) #NSEW
         #error strings we want to see
@@ -91,11 +91,11 @@ class airmar_parser:
         if msg[-1][0] == 'A': #A = valid, V = void
             self.status = True
             if(msg[2] == 'R'): #relative wind
-                self.rel_wind.x = float(msg[1]) #wind direction (knots?)
-                self.rel_wind.y = float(msg[3]) #wind speed
+                self.rel_wind.theta = float(msg[1]) #wind direction (knots?)
+                self.rel_wind.x = float(msg[3]) #wind speed
             else: #msg[2] == 'T' for true wind
-                self.true_wind.x = float(msg[1]) #wind direction (knots?)
-                self.true_wind.y = float(msg[3]) #wind speed
+                self.true_wind.theta = float(msg[1]) #wind direction (knots?)
+                self.true_wind.x = float(msg[3]) #wind speed
         else:
             self.status = False
 
