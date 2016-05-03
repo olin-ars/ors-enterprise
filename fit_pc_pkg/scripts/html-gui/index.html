@@ -194,10 +194,24 @@
     update()
   }
 
+  // MAP FUNCTIONS
+
+  var showMap = function(which) {
+    if(which) {
+      $("#useMap").attr("display", "block");
+    } else {
+      $("#getMap").attr("display", "block");
+    }
+
+    $("#mainMenu").attr("display", "none");
+  }
+
   var getMap = function() {
     var downloadPrefix = window.location.href.replace("index.html", "");
     var mapUrl = "https://maps.googleapis.com/maps/api/staticmap?maptype=satellite&center=" + $("#north").val();
     mapUrl += "," + $("#west").val() + "&zoom=15&size=640x400&key=AIzaSyDGSGz3icpvYPCnxDt-G4GPPw1HU6LBBMA";
+
+    console.log(mapUrl);
 
     var a = $("<a>").attr("href", mapUrl)
             .attr("download", downloadPrefix + "output.png")
@@ -205,6 +219,13 @@
     
     a[0].click()
     a.remove();
+  }
+
+  var chooseCoordinate = function(event) {
+    var onMapX = event.layerX - $("#map")[0].x;
+    var onMapY = event.layerY - $("#map")[0].y;
+
+    console.log(onMapX + ", " + onMapY);
   }
 
 </script>
@@ -349,10 +370,16 @@
 <hr />
 
 <div id="getMap">
-  <input type="number" id="north" step=".000001" value="42.288987" /> degrees North<br />
-  <input type="number" id="west" step=".000001" value="-71.308653" /> degrees West<br />
-  <button onclick="getMap()">Get Map</button>
-  <img id="map" />
+  <div id="useMap">
+    <h3>Current Map</h3>
+    <img id="map" src="./staticmap.png" alt="No map found" onmousedown="chooseCoordinate(event, this)" />
+  </div>
+  <div id="newMap">
+    <h3>Get new map (online only)</h3>
+    <input type="number" id="north" step=".000001" value="42.288987" /> degrees North<br />
+    <input type="number" id="west" step=".000001" value="-71.308653" /> degrees West<br />
+    <button onclick="getMap()">Get Map</button>
+  </div>
 </div>
 
 </body>
