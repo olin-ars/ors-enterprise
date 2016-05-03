@@ -230,8 +230,8 @@
     var onMapX = event.layerX - $("#map")[0].x;
     var onMapY = event.layerY - $("#map")[0].y;
 
-    var lat = initBounds[0] - span[0] * (onMapX/$("#map")[0].x);
-    var lng = initBounds[1] + span[1] * (onMapY/$("#map")[0].y);
+    var lat = initBounds[0] - span[0] * (onMapY/$("#map")[0].y);
+    var lng = initBounds[1] + span[1] * (onMapX/$("#map")[0].x);
 
     console.log("CENTER: ", center);
     console.log("LAT/LNG: ", lat + ", " + lng);
