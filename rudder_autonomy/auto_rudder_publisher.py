@@ -5,7 +5,7 @@ from std_msgs.msg import Int16, Float32
 class autonomousRudderPublisher:#needs a topic to read in waypoint angle from
 	def __init__(self):
 		rospy.init_node('rudder_publisher')
-		self.rudderPub = rospy.Publisher('auto/rudder/set_point', Int16)
+		self.rudderPub = rospy.Publisher('auto_mode/rudder/set_point', Int16)
 		self.waypoint = 0
 		def callback(angle):
 			self.waypoint = angle
