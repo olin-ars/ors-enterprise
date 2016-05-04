@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import math
+from GPStoMeters import SetHome
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose2D
 
@@ -11,7 +12,7 @@ class Arbiter:
         be within a few hundred km of our location. Default is the center
         of the Oval"""
 
-        self.home = home
+        self.grid = SetHome(home)
         self.heading = 0.0
         self.speed = 0.0
         self.track = 0.0
@@ -22,7 +23,7 @@ class Arbiter:
 
         self.initSubscribers()
         self.initPublishers()
-
+    """
     def transformLocation(self, lat, longitude):
         return ((lat - self.home[0]) * self.latscalar,
                 (longitude - self.home[1]) * self.longscalar)
@@ -34,7 +35,7 @@ class Arbiter:
         longdistance = math.cos(math.radians(self.home[0])) * earth_circumference  # m
 
         self.longscalar = longdistance / 360  # meters per degree
-
+    """
     def initPublishers(self):
         queue = 1
 
@@ -48,7 +49,7 @@ class Arbiter:
 
     def onPosition(self, msg):
         # Incomming messages are in decimal degrees
-        self.pos = self.transformLocation(msg.x, msg.y)
+        self.pos = self.grid.transformLocation(msg.x, msg.y)
         self.heading = msg.theta
 
     def onSpeed(self, msg):
