@@ -15,7 +15,13 @@ class autonomousSailPublisher:
 	def calculateSailPosition(self, windAngle):# calculate sail position from wind angle
 		# assuming sail positions will not be given in the dead zone and rudders will navigate away
 		# sail goes from positions 0 to 6
-		sailPos = 6 if abs(windAngle) in range(155, 180) else 5 if abs(windAngle) in range(130, 155) else 4 if abs(windAngle) in range(105, 130) else 3 if abs(windAngle) in range(80, 105) else 2 if abs(windAngle) in range(55, 80) else 1 if abs(windAngle) in range (30, 55) else 0
+		sailPos = (	6 if abs(windAngle) in range(155, 180) else 
+					5 if abs(windAngle) in range(130, 155) else 
+					4 if abs(windAngle) in range(105, 130) else 
+					3 if abs(windAngle) in range(80,  105) else 
+					2 if abs(windAngle) in range(55,  80)  else 
+					1 if abs(windAngle) in range(30,  55)  else 0)
+		
 		return sailPos
 
 	def run(self):
