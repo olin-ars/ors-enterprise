@@ -6,13 +6,14 @@ DEFAULT = 0
 RC_MODE = 1
 AUTO_MODE = 2
 TEST_MODE = 3
-Modes = [DEFAULT,RC_MODE,AUTO_MODE,TEST_MODE]
+Modes = [DEFAULT, RC_MODE, AUTO_MODE, TEST_MODE]
+
 
 class Arbiter:
     def __init__(self):
-        self.rudder=0
-        self.sail=0
-        self.opMode = 0 #DEFAULT = 0
+        self.rudder = 0
+        self.sail = 0
+        self.opMode = 0 # DEFAULT = 0
         self.debugDial = 0
         #output
         self.rudderPub = rospy.Publisher('rudder/set_point', Int16)
@@ -22,11 +23,13 @@ class Arbiter:
         #autoRudderSub = rospy.Subscriber('auto_rudder_in', Float32)
         #autoSailsSub = rospy.Subscriber('auto_sails_in', Float32)
         self.opModeSub = rospy.Subscriber('operating_mode', Int16,self.onOpMode)
+
+        self.switchSub = rospy.Subscriber('rc/switch_in', Bool, self.onRCSwitch)
         #for further expansion
         self.setupSubscribers(RC_MODE)
 
     def setupSubscribers(self, mode):
-        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE: 'auto_mode', TEST_MODE:"test_mode"}
+        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode"}
         currentNamespace = namespaces[mode]
 
         #input
@@ -44,12 +47,10 @@ class Arbiter:
         self.rudder=msg.data
         self.rudderPub.publish(msg.data)
 
-#    def onRCSwitch(self,msg):
-#        if msg.data is True:
-#            self.controlType = RC_MODE
-#        else:
-#            self.controlType = DEFAULT
-#
+   def onRCSwitch(self,msg):
+       if msg.data is True:
+           self.setupSubscribers(RC_MODE)
+
     def onSail(self,msg):
         self.sail=msg.data
         self.sailPub.publish(msg.data)

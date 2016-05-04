@@ -7,9 +7,11 @@
 * `velocity` The boat's smoothed current velocity, relative to location
   * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from North)
 * `true_wind` The motion of the wind relative to the fixed local coordinate system, smoothed.
-  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from boat heading)
 * `relative_wind` The motion of the wind relative to the boat, smoothed.
-  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+* `global_wind` The motion of the wind relative to the world, smoothed.
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from North)
 
 #### Arbiter:
 * `operating_mode` Controls boat's operating mode
@@ -62,6 +64,8 @@
   * Int16 (sub)
 * `rudder/powerconstant` max power applied to motor (default: 20)
   * Int16 (sub) - range 0...255
+* `rudder/trim` each publish moves the rudder trim point that many degrees
+  * Int16 (sub) - range -45...45
 
 #### Sail topics:
 * `sail/pos` magnet sensor position

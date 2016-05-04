@@ -21,10 +21,12 @@ Servo myservo;  // create servo object to control a servo
 
 int currentPos;    // variable to read the value from the analog pin 
 
-const int SERVO_CENTER = 92.5;
-const float POT_OFFSET = 277;
+const int SERVO_CENTER = 92;
 const int DEADZONE = 5;
-int power = 20;
+const float gear_ratio = 0.25;
+
+float POT_OFFSET = 277;
+int power = .70 * 90; // 70% power
 
 int lastCommanded = -1;
 bool newCommand = false;
@@ -45,6 +47,9 @@ ros::Subscriber<std_msgs::Int16> command_sub("/rudder/set_point", &command_callb
 
 void power_callback(const std_msgs::Int16& msg){power = msg.data;}
 ros::Subscriber<std_msgs::Int16> center_sub("/rudder/powerconstant", &power_callback);
+
+void trim_callback(const std_msgs::Int16& msg){POT_OFFSET += msg.data * 1/gear_ratio;}
+ros::Subscriber<std_msgs::Int16> center_sub("/rudder/trim", &trim_callback);
 
 void setupROS(){
 	nh.initNode();
@@ -91,11 +96,22 @@ void moveServo(){
 }
 
 float readPot(){
-	const float gear_ratio = 0.25;
 	float reading = (-analogRead(potpin) * (360.0 / 1024)) - POT_OFFSET;
     while (reading < -180){reading += 360;}
     while (reading >= 180){reading -= 360;}
-    return reading*gear_ratio;
+
+	static int turnsOffset = 0;
+	static float lastreading = reading;
+
+	if (reading > lastreading + 180.0){
+		turnsOffset--;
+	}
+	if (reading < lastreading - 180.0){
+		turnsOffset++;
+	}
+	lastreading = reading;
+
+    return (reading + 360*turnsOffset)*gear_ratio;
 }
 
 // Controls the frequency with which ROS transmits/recieves data.
