@@ -17,8 +17,8 @@
 
 #define DEADZONE 0
 
-#define FIRST_SENSOR_PIN 14
 #define NUM_SENSORS 7
+const int SENSOR_PINS[7] = {14, 15, 16, 17, 19, 18, 20};
 
 
 ros::NodeHandle  nh;
@@ -65,7 +65,7 @@ void setup()
     myservo.write(SERVO_CENTER);
 
     for(int i = 0; i < NUM_SENSORS; i++){
-        pinMode(FIRST_SENSOR_PIN + i, INPUT_PULLUP);
+        pinMode(SENSOR_PINS[i], INPUT_PULLUP);
     }
 
     //Turn on light
@@ -102,7 +102,7 @@ float readSensors(){
     int total = 0;
     int count = 0;
     for(int i = 0; i < NUM_SENSORS; i++){
-        bool switchVal = !digitalRead(FIRST_SENSOR_PIN + i);
+        bool switchVal = !digitalRead(SENSOR_PINS[i]);
         if (switchVal){
             total += i;
             count++;
