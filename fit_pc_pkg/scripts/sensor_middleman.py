@@ -32,8 +32,6 @@ class Arbiter:
         self.relwind = (0, 0)  # (direction, speed)
         self.truewind = (0, 0)  # (direction, speed)
 
-        self.initScalars()
-
         self.pos = self.grid.transformLocation(0, 0)
 
         self.initSubscribers()
