@@ -12,7 +12,7 @@ DEADZONE = 45 #deadzone off wind in degrees
 
 def angle_range(a):
 	""" limit angles to range of -180 to 180 """
-   	return (a + 180)%360 - 180
+	return (a + 180)%360 - 180
 
 def subtract_angles(a, b):
 	""" subtract angles while keeping them in range -180 to 180 """
