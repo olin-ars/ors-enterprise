@@ -26,7 +26,7 @@ class Arbiter:
         self.setupSubscribers(RC_MODE)
 
     def setupSubscribers(self, mode):
-        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:None, TEST_MODE:"test_mode"}
+        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE: 'auto_mode', TEST_MODE:"test_mode"}
         currentNamespace = namespaces[mode]
 
         #input

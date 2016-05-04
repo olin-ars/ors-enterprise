@@ -34,6 +34,9 @@
 * `test_mode/`
  * `rc_mode/rudder/set_point`
  * `rc_mode/sail/set_point` etc...
+* `auto_mode/`
+ * `auto_mode/rudder/set_point`
+ * `auto_mode/sail/set_point`
 
 #### Each teensy has it's own namespace:
 * `rc/` for the teensy recieveing RC signals
