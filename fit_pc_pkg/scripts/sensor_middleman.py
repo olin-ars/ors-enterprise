@@ -17,9 +17,7 @@ class Arbiter:
         self.speed = 0.0
         self.track = 0.0
 
-        self.initScalars()
-
-        self.pos = self.transformLocation(home[0], home[1])
+        self.pos = self.grid.transformLocation(0, 0)
 
         self.initSubscribers()
         self.initPublishers()
