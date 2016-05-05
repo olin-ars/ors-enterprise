@@ -2,7 +2,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16
-from fit_pc_pkg import wp_list
+from fit_pc_pkg.msg import wp_list
 import math
 
 #angles in world coordinates are measured clockwise from north,
@@ -41,7 +41,7 @@ class RudderThought():
 
 		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
 
-		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queuesize=1)
+		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
 
 		self.pose = [0, 0] # east, north
 
@@ -61,7 +61,7 @@ class RudderThought():
 		r = rospy.Rate(1)
 		while not rospy.is_shutdown():
 			err = int(self.think())
-			self.heading_err_pub(err)
+			self.heading_err_pub.publish(err)
 			r.sleep()
 
 	def think(self):
@@ -152,11 +152,13 @@ class RudderThought():
 
 	def waypoints_callback(self, msg):
 		""" save the next waypoint as the target location """
-		self.target_pose = [msg[0].x, msg[0].y]
+		wps = msg.WaypointArray
+		if wps != []:
+			self.target_pose = [wps[0].x, wps[0].y]
 
 if __name__ == '__main__':
 	rud = RudderThought()
 	r = rospy.Rate(1)
 	while not rospy.is_shutdown():
-		print rud.think()
+		rud.run()
 		r.sleep()

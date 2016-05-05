@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import rospy
 import math
 from GPStoMeters import SetHome
