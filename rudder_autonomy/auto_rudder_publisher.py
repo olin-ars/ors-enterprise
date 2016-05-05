@@ -7,13 +7,25 @@ class autonomousRudderPublisher:#needs a topic to read in waypoint angle from
 		rospy.init_node('rudder_publisher')
 		self.rudderPub = rospy.Publisher('auto_mode/rudder/set_point', Int16)
 		self.heading = 0
+		self.integralError = 0 # integrating error over time to account for larger adjustments
+		self.integralMin = -15
+		self.integralMax = 15
+		self.ki = .1
 		def callback(angle):
 			self.heading = angle
 		self.waypointAngleListener = rospy.Subscriber('heading_error', Int16, callback) #needs somewhere to get waypoint
 	def calculateRudderPosition(self, headingError):#calculate position rudder needs to be at to direct self at current waypoint angle, relative to bow of the boat as 0 degrees, positive is starboard and negative is port
 		#currently nobody has defined rudder controls
 		#rudder messages currently range from -45 to 45, assuming positive is starboard and negative is port
-		turnAngle = headingError / 2 if abs(headingError) < 90 else 45 if(headingError > 0) else -45 
+		# turnAngle = headingError / 2 if abs(headingError) < 90 else 45 if(headingError > 0) else -45
+
+		self.integralError += headingError 
+		if self.integralError > self.integralMax:
+			self.integralError = self.integralMax
+		elif self.integralError < self.integralMin:
+			self.integralError = self.integralMin
+		self.ki = self.ki * self.integralError
+		turnAngle = (headingError + self.integralError) / 2 if abs(headingError + self.integralError) < 90 else 45 if((headingError + self.integralError) > 0) else -45
 		return turnAngle
 
 	def run(self):
