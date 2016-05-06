@@ -133,7 +133,7 @@ class RudderThought():
 	def location_callback(self, data):
 		""" unpack location message and find angle to target """
 		self.pose = [data.x, data.y] # position in (east, north)
-		self.heading = data.theta #heading
+		self.heading = angle_range(data.theta) #heading
 
 		#get angle to target
 		delta_e = self.target_pose[0] - self.pose[0]
