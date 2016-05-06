@@ -114,7 +114,7 @@
   // Rudder subscriber
   var listenrudder = new ROSLIB.Topic({
     ros : ros,
-    name : '/rudder/pos',
+    name : '/rudder/set_point',
     messageType : 'std_msgs/Int16'
   });
 
@@ -331,6 +331,13 @@
 <div style="background-position: -32px 0px;" id="sensorsstatus" class="statuslight"></div>
 <!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
 <script>setup_watchdog('/location', 'geometry_msgs/Pose2D', $('#sensorsstatus'))</script>
+</div>
+
+<div class="statusRow">   
+<br>Rudder_thinking:  
+<div style="background-position: -32px 0px;" id="rudderthinkingstatus" class="statuslight"></div>
+<!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
+<script>setup_watchdog('/heading_err', 'std_msgs/Int16', $('#rudderthinkingstatus'))</script>
 </div>
 
 </body>
