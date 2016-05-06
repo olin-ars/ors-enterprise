@@ -72,6 +72,7 @@ class RudderThought():
 		positive error means boat should turn clockwise
 		"""
 		print '\n'
+		self.tacking_pub.publish(self.Tacking)
 		if self.Tacking:
 			print 'tack'
 			err = subtract_angles(self.true_wind_angle, (DEADZONE-5)*self.tack)
@@ -95,7 +96,6 @@ class RudderThought():
 				self.tack *= -1
 				self.Tacking = True
 			return self.target_err()
-		self.tacking_pub.publish(self.Tacking)
 
 
 	def is_target_upwind(self):
