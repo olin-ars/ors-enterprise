@@ -49,7 +49,7 @@ void power_callback(const std_msgs::Int16& msg){power = msg.data;}
 ros::Subscriber<std_msgs::Int16> center_sub("/rudder/powerconstant", &power_callback);
 
 void trim_callback(const std_msgs::Int16& msg){POT_OFFSET += msg.data * 1/gear_ratio;}
-ros::Subscriber<std_msgs::Int16> center_sub("/rudder/trim", &trim_callback);
+ros::Subscriber<std_msgs::Int16> trim_sub("/rudder/trim", &trim_callback);
 
 void setupROS(){
 	nh.initNode();
@@ -57,6 +57,7 @@ void setupROS(){
 	nh.advertise(dir_pub);
 	nh.subscribe(command_sub);
 	nh.subscribe(center_sub);
+	nh.subscribe(trim_sub);
 }
 
 void setup()
