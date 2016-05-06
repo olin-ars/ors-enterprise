@@ -33,9 +33,11 @@ class Arbiter:
         currentNamespace = namespaces[mode]
 
         #input
-        if self.rudderSub:
+        try:
             self.rudderSub.unregister();
             self.sailsSub.unregister();
+        except:
+            pass
 
         if not currentNamespace:
             return
