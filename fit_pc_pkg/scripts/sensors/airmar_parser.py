@@ -42,8 +42,8 @@ class airmar_parser:
         self.speed = 0
         self.track = 0
         self.mag_dir = 0
-        self.rel_wind = Vector3()
-        self.true_wind = Vector3()
+        self.rel_wind = Pose2D()
+        self.true_wind = Pose2D()
 
     def init_serial(self):
         #serial reader to receive input via USB

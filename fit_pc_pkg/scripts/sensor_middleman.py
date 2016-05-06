@@ -61,18 +61,18 @@ class Arbiter:
                                          self.onTrack)
 
         # Airmar subscribers
-        self.relWindSub = rospy.Subscriber('airmar/relative_wind', Vector3,
+        self.relWindSub = rospy.Subscriber('airmar/relative_wind', Pose2D,
                                            self.onRelWind)
-        self.trueWindSub = rospy.Subscriber('airmar/true_wind', Vector3,
+        self.trueWindSub = rospy.Subscriber('airmar/true_wind', Pose2D,
                                             self.onTrueWind)
 
     def onRelWind(self, msg):
-        self.relwind[0] = msg.x
-        self.relwind[1] = msg.y * knots
+        self.relwind[0] = msg.theta
+        self.relwind[1] = msg.x * knots
 
     def onTrueWind(self, msg):
-        self.truewind[0] = msg.x
-        self.truewind[1] = msg.y * knots
+        self.truewind[0] = msg.theta
+        self.truewind[1] = msg.x * knots
 
     def onPosition(self, msg):
         # Incomming messages are in decimal degrees
