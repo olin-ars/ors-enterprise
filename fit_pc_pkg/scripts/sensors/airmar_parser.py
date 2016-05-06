@@ -116,13 +116,13 @@ class airmar_parser:
             Gives wind speed and angle """
 
         def convert_angle(string, longitude=False):
-        if not longitude:
-            string = '0' + string
-        if not string:
-            return 0
-        degreepart = int(string[:3])
-        minutepart = float(string[3:])
-        return degreepart + minutepart/60
+            if not longitude:
+                string = '0' + string
+            if not string:
+                return 0
+            degreepart = int(string[:3])
+            minutepart = float(string[3:])
+            return degreepart + minutepart/60
 
         if msg[-1][0] == 'A': #A = valid, V = void
             self.position.x = convert_angle(msg[1]) #latitude (decimal minutes)
