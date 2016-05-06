@@ -53,14 +53,14 @@ class Arbiter:
 
     def initSubscribers(self):
         # Hemisphere subscribers
-        self.positionSub = rospy.Subscriber('/hemisphere/position', Pose2D,
-                                            self.onPosition)
         self.speedSub = rospy.Subscriber('/hemisphere/speed', Float32,
                                          self.onSpeed)
         self.trackSub = rospy.Subscriber('/hemisphere/track', Float32,
                                          self.onTrack)
 
         # Airmar subscribers
+        self.positionSub = rospy.Subscriber('/airmar/position', Pose2D,
+                                            self.onPosition)
         self.relWindSub = rospy.Subscriber('airmar/relative_wind', Pose2D,
                                            self.onRelWind)
         self.trueWindSub = rospy.Subscriber('airmar/true_wind', Pose2D,
