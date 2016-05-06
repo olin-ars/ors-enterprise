@@ -124,7 +124,7 @@ class airmar_parser:
             minutepart = float(string[3:])
             return degreepart + minutepart/60
 
-        if msg[-2][0] == 'A': #A = valid, V = void
+        if msg[-2][0] == 'A' or msg[-1][0] == 'A': #A = valid, V = void
             self.position.x = convert_angle(msg[1]) #latitude (decimal minutes)
             self.position.y = convert_angle(msg[3], True) #longitude
             print (self.position.x)
