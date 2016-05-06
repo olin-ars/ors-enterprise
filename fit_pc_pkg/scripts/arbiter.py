@@ -48,7 +48,7 @@ class Arbiter:
         self.rudderPub.publish(msg.data)
 
     def onRCSwitch(self,msg):
-        if msg.data is True:
+        if msg.data:
             self.setupSubscribers(RC_MODE)
 
     def onSail(self,msg):
