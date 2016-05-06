@@ -33,12 +33,13 @@ def find_rate(port):
 
 
 def find_device(port):
-    while True:
+    for _ in range(10):
         baud = find_rate(port)
         if baud == 4800:
             return 'airmar'
         elif baud == 19200:
             return 'hemisphere'
+    return 'unidentified'
 
 
 def find_all_devices():
@@ -54,15 +55,22 @@ if __name__ == '__main__':
 
     workingdir = os.path.dirname(os.path.realpath(__file__))
 
-    if "hemisphere" in sensors:
+    hemisphere_up = False
+    airmar_up = False
+
+    #while 'hemisphere' not in sensors or 'airmar' not in sensors
+    if "hemisphere" in sensors and not hemisphere_up:
         subprocess.Popen("python hemisphere_parser.py " + sensors["hemisphere"], cwd=workingdir, shell=True)
+        hemisphere_up = True
     else:
         print "Hemisphere not found."
 
-    if "airmar" in sensors:
+    if "airmar" in sensors and not airmar_up:
         subprocess.Popen("python airmar_parser.py " + sensors["airmar"], cwd=workingdir, shell=True)
+        airmar_up = True
     else:
         print "Airmar not found."
+    #sensors = find_all_devices()
 
     while True:
         time.sleep(1)
