@@ -2,6 +2,7 @@
 import rospy
 import math
 from GPStoMeters import SetHome
+from std_msgs.msg import Bool
 from geometry_msgs.msg import Pose2D, Vector3
 from fit_pc_pkg.msg import wp_list
 
@@ -20,6 +21,9 @@ class Waypoints():
 		""" initialize the coordinates in the correct location (TODO: location input) """
 		rospy.init_node('waypoint_handler')
 		wp_sub = rospy.Subscriber('raw_waypoints', Pose2D, self.new_wp_callback)
+		wp_sub = rospy.Subscriber('clear_waypoints', Bool, self.clear_wp_callback)
+		wp_sub = rospy.Subscriber('rm_waypoint', Bool, self.rm_wp_callback)
+		wp_sub = rospy.Subscriber('skip_waypoint', Bool, self.skip_wp_callback)
 		pose_sub = rospy.Subscriber('location', Pose2D, self.pos_callback)
 		self.wp_pub = rospy.Publisher('waypoints', wp_list, queue_size=1)
 		self.grid = SetHome()
@@ -37,6 +41,20 @@ class Waypoints():
 		new_wp.z = mode
 		self.wp_list.append(new_wp)
 		self.wp_pub.publish(self.wp_list)
+
+	def clear_wp_callback(self, msg):
+		if msg.data:
+			self.wp_list = []
+			self.wp_pub.publish(self.wp_list)
+
+	def rm_wp_callback(self, msg):
+		if msg.data:
+			self.wp_list.pop()
+			self.wp_pub.publish(self.wp_list)
+	def skip_wp_callback(self, msg):
+		if msg.data:
+			self.wp_list.pop(0)
+			self.wp_pub.publish(self.wp_list)
 
 	def pos_callback(self, msg):
 		""" update the position of the boat """

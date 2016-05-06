@@ -77,6 +77,17 @@
 * `sail/powerconstant` max power applied to motor (default: 20)
   * Int16 (sub) - range 0...255
 
+#### Waypoints:
+* `raw_waypoints` input topic for new waypoints (Pose2D)
+* `waypoints` list of current waypoints for boat (Vector3[])
+* `clear_waypoints` True clears waypoint list (Bool)
+* `rm_waypoint` True removes most recently added waypoint (Bool)
+* `skip_waypoint` True removes the current target waypoint (Bool)
+
+#### rudder_thinking
+* `heading_err` angle error between current and desired heading
+* `tacking` wheather or not the boat is currently tacking (Bool)
+
 ### Information Flow
 
 1. The RC teensy gets information from the RC controller and sends that information to the FitPC over rostopics outlined above.

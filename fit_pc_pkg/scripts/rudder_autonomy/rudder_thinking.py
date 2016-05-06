@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose2D
-from std_msgs.msg import Int16
+from std_msgs.msg import Int16, Bool
 from fit_pc_pkg.msg import wp_list
 import math
 
@@ -42,6 +42,7 @@ class RudderThought():
 		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
 
 		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
+		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
 
 		self.pose = [0, 0] # east, north
 
@@ -94,6 +95,7 @@ class RudderThought():
 				self.tack *= -1
 				self.Tacking = True
 			return self.target_err()
+		self.tacking_pub.publish(self.Tacking)
 
 
 	def is_target_upwind(self):
@@ -117,6 +119,7 @@ class RudderThought():
 		if not self.is_in_bounds():
 			self.tack *= -1
 			self.Tacking = True
+
 		return subtract_angles(self.rel_wind_angle, DEADZONE*self.tack)
 
 	def target_err(self):
@@ -158,7 +161,7 @@ class RudderThought():
 
 if __name__ == '__main__':
 	rud = RudderThought()
-	r = rospy.Rate(1)
+	r = rospy.Rate(5)
 	while not rospy.is_shutdown():
 		rud.run()
 		r.sleep()
