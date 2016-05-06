@@ -31,19 +31,6 @@ class RudderThought():
 	def __init__(self):
 		rospy.init_node('rudder_thinking')
 
-		location_sub = rospy.Subscriber('location', Pose2D, self.location_callback)
-
-		true_wind_sub = rospy.Subscriber('true_wind', Pose2D, self.true_wind_callback)
-
-		rel_wind_sub = rospy.Subscriber('relative_wind', Pose2D, self.rel_wind_callback)
-
-		global_wind_sub = rospy.Subscriber('global_wind', Pose2D, self.global_wind_callback)
-
-		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
-
-		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
-		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
-
 		self.pose = [0, 0] # east, north
 
 		self.target_pose = [0, 0] # east, north
@@ -57,6 +44,19 @@ class RudderThought():
 
 		self.Tacking = False
 		self.tack = 1 # 1 = starboard, -1 = port
+
+		location_sub = rospy.Subscriber('location', Pose2D, self.location_callback)
+
+		true_wind_sub = rospy.Subscriber('true_wind', Pose2D, self.true_wind_callback)
+
+		rel_wind_sub = rospy.Subscriber('relative_wind', Pose2D, self.rel_wind_callback)
+
+		global_wind_sub = rospy.Subscriber('global_wind', Pose2D, self.global_wind_callback)
+
+		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
+
+		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
+		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
 
 	def run(self):
 		r = rospy.Rate(1)
