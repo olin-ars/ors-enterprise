@@ -26,11 +26,12 @@ class Arbiter:
 
         self.switchSub = rospy.Subscriber('rc/switch_in', Bool, self.onRCSwitch)
         #for further expansion
-        self.setupSubscribers(RC_MODE)
+        self.mode = RC_MODE
+        self.setupSubscribers()
 
-    def setupSubscribers(self, mode):
+    def setupSubscribers(self):
         namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode"}
-        currentNamespace = namespaces[mode]
+        currentNamespace = namespaces[self.mode]
 
         #input
         try:
@@ -51,15 +52,16 @@ class Arbiter:
 
     def onRCSwitch(self,msg):
         if msg.data:
-            self.setupSubscribers(RC_MODE)
+            self.mode = RC_MODE
+            self.setupSubscribers()
 
     def onSail(self,msg):
         self.sail=msg.data
         self.sailPub.publish(msg.data)
 
     def onOpMode(self,msg):
-        self.opMode = msg.data
-        self.setupSubscribers(msg.data)
+        self.mode = msg.data
+        self.setupSubscribers()
 
     def spin(self):
         rospy.spin()
