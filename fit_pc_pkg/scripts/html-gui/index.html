@@ -302,14 +302,14 @@
 <br>Hemisphere (+parsing): 
 <div style="background-position: -32px 0px;" id="hemispherestatus" class="statuslight"></div>
 <!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
-<script>setup_watchdog('/hemisphere/vel', 'geometry_msgs/Twist', $('#hemispherestatus'))</script>
+<script>setup_watchdog('/hemisphere/fullmsg', 'std_msgs/String', $('#hemispherestatus'))</script>
 </div>
 
 <div class="statusRow">   
 <br>Airmar (+parsing): 
 <div style="background-position: -32px 0px;" id="airmarstatus" class="statuslight"></div>
 <!-- I'd really like these to live in the onload event of their respective elements, but it wasn't working. -->
-<script>setup_watchdog('/Airmar/status', 'std_msgs/Bool', $('#airmarstatus'))</script>
+<script>setup_watchdog('/airmar/fullmsg', 'std_msgs/String', $('#airmarstatus'))</script>
 </div>
 
 <div class="statusRow">   
