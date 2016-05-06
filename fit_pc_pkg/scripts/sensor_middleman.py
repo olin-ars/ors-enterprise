@@ -29,8 +29,8 @@ class Arbiter:
         self.speed = 0.0
         self.track = 0.0
 
-        self.relwind = (0, 0)  # (direction, speed)
-        self.truewind = (0, 0)  # (direction, speed)
+        self.relwind = [0, 0]  # (direction, speed)
+        self.truewind = [0, 0]  # (direction, speed)
 
         self.pos = self.grid.transformLocation(0, 0)
 
