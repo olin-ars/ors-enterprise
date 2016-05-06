@@ -126,7 +126,7 @@ class airmar_parser:
 
         if msg[-1][0] == 'A': #A = valid, V = void
             self.position.x = convert_angle(msg[1]) #latitude (decimal minutes)
-            self.position.y = convert_angle(msg[3]) #longitude
+            self.position.y = convert_angle(msg[3], True) #longitude
             #convert S and W to negatives for lat lon
             if msg[2] == 'S':
                 self.position.x *= -1
