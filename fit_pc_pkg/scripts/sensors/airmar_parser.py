@@ -114,9 +114,19 @@ class airmar_parser:
     def parse_GPGLL(self, msg):
         """ Parse the WIMWV message from the airmar
             Gives wind speed and angle """
+
+        def convert_angle(string, longitude=False):
+        if not longitude:
+            string = '0' + string
+        if not string:
+            return 0
+        degreepart = int(string[:3])
+        minutepart = float(string[3:])
+        return degreepart + minutepart/60
+
         if msg[-1][0] == 'A': #A = valid, V = void
-            self.position.x = float(msg[1]) #latitude (decimal minutes)
-            self.position.y = float(msg[3]) #longitude
+            self.position.x = convert_angle(msg[1]) #latitude (decimal minutes)
+            self.position.y = convert_angle(msg[3]) #longitude
             #convert S and W to negatives for lat lon
             if msg[2] == 'S':
                 self.position.x *= -1
