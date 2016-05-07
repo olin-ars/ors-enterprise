@@ -59,7 +59,7 @@ class Arbiter:
                                          self.onTrack)
 
         # Airmar subscribers
-        self.positionSub = rospy.Subscriber('/airmar/position', Pose2D,
+        self.positionSub = rospy.Subscriber('/hemisphere/position', Pose2D,
                                             self.onPosition)
         self.relWindSub = rospy.Subscriber('airmar/relative_wind', Pose2D,
                                            self.onRelWind)
