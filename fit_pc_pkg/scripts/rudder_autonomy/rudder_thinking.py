@@ -124,7 +124,7 @@ class RudderThought():
 
 	def target_err(self):
 		""" return angle between boat's heading and bearing to target """
-		return subtract_angles(self.angle_to_target, self.heading)
+		return -subtract_angles(self.angle_to_target, self.heading)
 
 	def is_in_bounds(self):
 		""" corridor code """
