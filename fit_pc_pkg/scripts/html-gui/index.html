@@ -95,7 +95,7 @@
   // Sail subscriber(s)
   var listensail = new ROSLIB.Topic({
     ros : ros,
-    name : '/sail/pos',
+    name : '/sail/set_point',
     messageType : 'std_msgs/Float32'
   });
 
@@ -149,7 +149,7 @@
 
   var listenglobalwind = new ROSLIB.Topic({
     ros : ros,
-    name : '/true_wind',
+    name : '/global_wind',
     messageType : 'geometry_msgs/Pose2D'
   });
 
