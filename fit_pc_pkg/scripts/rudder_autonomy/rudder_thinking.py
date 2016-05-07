@@ -63,6 +63,7 @@ class RudderThought():
 		while not rospy.is_shutdown():
 			err = int(self.think())
 			self.heading_err_pub.publish(err)
+			print 'target:', self.angle_to_target
 			r.sleep()
 
 	def think(self):
@@ -156,8 +157,10 @@ class RudderThought():
 	def waypoints_callback(self, msg):
 		""" save the next waypoint as the target location """
 		wps = msg.WaypointArray
+		print 'got waypoint'
 		if wps != []:
 			self.target_pose = [wps[0].x, wps[0].y]
+			print self.target_pose
 
 if __name__ == '__main__':
 	rud = RudderThought()
