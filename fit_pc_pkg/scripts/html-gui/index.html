@@ -95,7 +95,7 @@
   // Sail subscriber(s)
   var listensail = new ROSLIB.Topic({
     ros : ros,
-    name : '/sail/set_point',
+    name : '/sail/pos',
     messageType : 'std_msgs/Float32'
   });
 
@@ -114,7 +114,7 @@
   // Rudder subscriber
   var listenrudder = new ROSLIB.Topic({
     ros : ros,
-    name : '/rudder/set_point',
+    name : '/rudder/pos',
     messageType : 'std_msgs/Int16'
   });
 
@@ -131,6 +131,8 @@
 
 
   // Wind subscribers
+
+    // True wind
   var listentruewind = new ROSLIB.Topic({
     ros : ros,
     name : '/true_wind',
@@ -139,14 +141,11 @@
 
   listentruewind.subscribe(function(message) {
     var string=message.x.toFixed(2)+"@"+message.theta.toFixed(2);
-    //console.log('Received Rudder : ' + string);
 
     $("#true_wind").text(string);
-
-//     var angle=message.data;
-//     $("#rudderVis").attr("Transform","rotate("+angle+")")
   });  
 
+    // Global wind
   var listenglobalwind = new ROSLIB.Topic({
     ros : ros,
     name : '/global_wind',
@@ -162,6 +161,28 @@
      var angle=message.theta;
      $("#windVector1").attr("Transform","rotate("+angle+")")
   });
+
+
+  // Autonomy internals
+  // Note the use of an anonymous function to scope the topic variable locally
+  (function() { 
+    var topic = new ROSLIB.Topic({
+      ros : ros,
+      name : '/tacking',
+      messageType : 'std_msgs/Bool'
+    });
+
+    topic.subscribe(function(message) {
+      var string = ""+message.data;
+
+      $("#is_tacking").text(string);
+    });
+  })();
+
+
+
+
+
 
   // Watchdog timers
   var setup_watchdog = function(topic, msgtype, element, validfunc) {
@@ -234,8 +255,8 @@
         transform=""
         id="windVector1">
           <line x1="0" y1="0" 
-            x2="0" y2="40"/>
-            <!-- This line points in the direction the wind is going, not from whence it comes -->
+            x2="0" y2="-40"/>
+            <!-- This line points in the direction comes from, not where it is going -->
         </g>
       </g>
     </g>
@@ -274,6 +295,13 @@
 
     </g>
   </svg>
+
+  <hr>
+  <h2>Autonomy Internals</h2>
+
+  <div>Boat is tacking: <span class="numdisplay" id="is_tacking">[data missing]</span></div>
+  
+  
 
   <hr>
   <h2>Status</h2>

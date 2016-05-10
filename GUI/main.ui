@@ -525,6 +525,10 @@
       </layout>
      </widget>
     </widget>
+    <zorder>gridLayoutWidget_2</zorder>
+    <zorder>verticalLayoutWidget_4</zorder>
+    <zorder>grp_Attitude</zorder>
+    <zorder>TravelGroup</zorder>
    </widget>
    <widget class="QGroupBox" name="Mode">
     <property name="geometry">
@@ -697,6 +701,67 @@
      <property name="text">
       <string>Launch Boat</string>
      </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="TravelGroup">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>360</y>
+      <width>181</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Travel</string>
+    </property>
+    <widget class="QWidget" name="verticalLayoutWidget_6">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>161</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_6">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLabel" name="label_17">
+          <property name="text">
+           <string>X :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="xTravelLabel">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QLabel" name="label_24">
+          <property name="text">
+           <string>Y :</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="yTravelLabel">
+          <property name="text">
+           <string>--</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>

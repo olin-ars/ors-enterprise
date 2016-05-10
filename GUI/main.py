@@ -67,7 +67,8 @@ class ORSWindow(QMainWindow):
                 #'hemisphere/errors' : String,
                 #'hemisphere/fullmsg' : String,
                 'operating_mode' : Int16,
-            }
+                'test/travel' : Pose2D #theta not used
+            } 
         for msg in msgs:
             self.sub[msg] = rospy.Subscriber(msg,msgs[msg],partial(self.fetchData,msg_type=msg))
 
@@ -121,6 +122,9 @@ class ORSWindow(QMainWindow):
                 self.ui.mode_autoRBtn.setChecked(True);
             elif msg_data == TEST_MODE:
                 self.ui.mode_testRBtn.setChecked(True);
+        elif msg_type == 'test/travel':
+            self.ui.xTravelLabel.setText(str(msg.x))
+            self.ui.yTravelLabel.setText(str(msg.y))
         else:
             print "Unknown message recieved: {}".format(msg_type)
             # Message received not currently handled
@@ -132,9 +136,10 @@ class ORSWindow(QMainWindow):
         webbrowser.open("http://giphy.com/embed/UgAvyUi9mXBiE")
 
     def onLaunchBoat(self):
+        pass
         #should not launch boat.
         #QProcess.startDetached("roslaunch fit_pc_pkg RC_code.launch")
-
+    
     def onPublish(self):
         #try:
         #    self.proc.close()
