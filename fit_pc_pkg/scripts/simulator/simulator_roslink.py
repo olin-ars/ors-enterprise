@@ -50,7 +50,7 @@ class ROShandler():
 
         w = model.wind
         self.true_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading-b.heading-math.pi/2)))
-        self.global_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading)))
+        self.global_windPub.publish(Pose2D(w.windspeed, 0, angleconvert(w.windheading + math.pi)))
 
         (wvx, wvy) = (w.windspeed * math.cos(w.windheading), w.windspeed * math.sin(w.windheading))
         (wvx, wvy) = (wvx - b.vx, wvy - b.vy)
