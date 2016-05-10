@@ -56,7 +56,7 @@ class ROShandler():
         (wvx, wvy) = (wvx - b.vx, wvy - b.vy)
 
         self.relative_windPub.publish(Pose2D(math.sqrt(wvx**2 + wvy**2), 0,
-                                      angleconvert(math.atan2(wvy, wvx) - b.heading+math.pi/2)))
+                                      angleconvert(math.atan2(wvy, wvx) - b.heading + 3*math.pi/2)))
 
         self.sailPub.publish(Float32(model.boat1.MainPos*6))
         self.rudderPub.publish(Int16(model.boat1.RudderPos*90))
@@ -72,7 +72,7 @@ class ROShandler():
         self.model.boat1.MainSuggestion = msg.data * 1.0/6
 
 if __name__ == '__main__':
-    model = sim.WorldModel(3, -math.pi/4)  # initial windspeed, the direction the wind is going (not coming from)
+    model = sim.WorldModel(20, -math.pi/4)  # initial windspeed, the direction the wind is going (not coming from)
     roshandler = ROShandler(model)
 
     r = rospy.Rate(10)
