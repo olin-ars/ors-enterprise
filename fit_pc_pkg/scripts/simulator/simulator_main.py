@@ -70,7 +70,7 @@ class Boat:
         self.wind_over_port = True 
         self.log_coefficient = 0.01 #was 0.1
         self.lambda_1 = 0.1 #can't be named lambda, reserved
-        self.lambda_2 = 1.2 #decay rate for angular velocity, to zero, way of encoding drag
+        self.lambda_2 = 4 #decay rate for angular velocity, to zero, way of encoding drag
         #self.strength_Main = 0.65
         #self.strength_Jib = 1-self.strength_Main
         self.debug_list = (0,0)

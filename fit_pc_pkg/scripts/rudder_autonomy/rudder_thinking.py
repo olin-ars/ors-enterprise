@@ -4,6 +4,7 @@ from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16, Bool
 from fit_pc_pkg.msg import wp_list
 import math
+import numpy as np
 
 #angles in world coordinates are measured clockwise from north,
 # to get angle from coordinats, take atan2(deast, dnorth)
@@ -30,6 +31,8 @@ def sign(a):
 class RudderThought():
 	def __init__(self):
 		rospy.init_node('rudder_thinking')
+
+		self.MultiTack = True
 
 		self.pose = [0, 0] # east, north
 
@@ -131,7 +134,25 @@ class RudderThought():
 
 	def is_in_bounds(self):
 		""" corridor code """
-		return True
+		if not self.MultiTack:
+			return True
+		wp_dx = self.pose[0] - self.target_pose[0]
+		wp_dy = self.pose[1] - self.target_pose[1]
+
+		wp_coords = np.array([wp_dx, wp_dy])
+		theta = self.global_wind*math.pi/180.
+		rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
+		wind_coords = np.dot(rotation, wp_coords)
+		return wind_coords[0]*self.tack > self.bound_func(wind_coords[1])
+
+	def bound_func(self, y):
+		""" function in form m*y+b
+			m is the slope of the coridor boundary line (0 is parallel to wind)
+			b is the minimum size of the corridor
+		"""
+		slope = 0.1
+		min_width = 10
+		return slope*y-min_width
 
 	def location_callback(self, data):
 		""" unpack location message and find angle to target """
