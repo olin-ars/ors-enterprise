@@ -57,6 +57,7 @@ class RudderThought():
 
 		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
 		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
+		self.upwind_pub = rospy.Publisher('going_upwind', Bool, queue_size=1)
 
 	def run(self):
 		r = rospy.Rate(1)
@@ -73,6 +74,8 @@ class RudderThought():
 		"""
 		print '\n'
 		self.tacking_pub.publish(self.Tacking)
+		self.upwind_pub.publish(self.is_target_upwind())
+
 		if self.Tacking:
 			print 'tack'
 			err = subtract_angles(self.true_wind_angle, (DEADZONE-5)*self.tack)

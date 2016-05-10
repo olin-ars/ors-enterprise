@@ -182,8 +182,22 @@
   (function() { 
     var topic = new ROSLIB.Topic({
       ros : ros,
+      name : '/going_upwind',
+      messageType : 'std_msgs/Bool'
+    });
+
+    topic.subscribe(function(message) {
+      var string = ""+message.data;
+
+      $("#is_upwind").text(string);
+    });
+  })();
+
+  (function() { 
+    var topic = new ROSLIB.Topic({
+      ros : ros,
       name : '/heading_err',
-      messageType : 'std_msgs/Float32'
+      messageType : 'std_msgs/Int16'
     });
 
     topic.subscribe(function(message) {
@@ -312,6 +326,7 @@
   <h2>Autonomy Internals</h2>
 
   <div>Boat is tacking: <span class="numdisplay" id="is_tacking">[data missing]</span></div>
+  <div>Target is upwind: <span class="numdisplay" id="is_upwind">[data missing]</span></div>
   <div>Heading error: <span class="numdisplay" id="heading_err">[data missing]</span></div>
   
   
