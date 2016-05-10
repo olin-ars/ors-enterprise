@@ -34,7 +34,7 @@ class ROShandler():
 
     def publish(self):
         def angleconvert(valin):
-            angle = -valin*180/math.pi + 90
+            angle = -valin * 180 / math.pi + 90
             while (angle < 0):
                 angle += 360
             while (angle >= 360):
@@ -58,7 +58,7 @@ class ROShandler():
         self.relative_windPub.publish(Pose2D(math.sqrt(wvx**2 + wvy**2), 0,
                                       angleconvert(math.atan2(wvy, wvx) - b.heading+math.pi/2)))
 
-        self.sailPub.publish(Float32(model.boat1.MainPos*90))
+        self.sailPub.publish(Float32(model.boat1.MainPos*6))
         self.rudderPub.publish(Int16(model.boat1.RudderPos*90))
 
     def onRudder(self, msg):
