@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import Pose2D
+from std_msgs.msg import Int16, Bool
+from fit_pc_pkg.msg import wp_list
 import math
 
 #angles in world coordinates are measured clockwise from north,
@@ -29,17 +31,9 @@ class RudderThought():
 	def __init__(self):
 		rospy.init_node('rudder_thinking')
 
-		location_sub = rospy.Subscriber('location', Pose2D, self.location_callback)
+		self.pose = [0, 0] # east, north
 
-		true_wind_sub = rospy.Subscriber('true_wind', Pose2D, self.true_wind_callback)
-
-		rel_wind_sub = rospy.Subscriber('relative_wind', Pose2D, self.rel_wind_callback)
-
-		global_wind_sub = rospy.Subscriber('global_wind', Pose2D, self.global_wind_callback)
-
-		self.pose = [0, -5] # east, north
-
-		self.target_pose = [0, 100] # east, north
+		self.target_pose = [0, 0] # east, north
 		self.angle_to_target = 0 # compass heading to target
 
 		self.heading = 90 #degrees clockwise from north
@@ -51,6 +45,26 @@ class RudderThought():
 		self.Tacking = False
 		self.tack = 1 # 1 = starboard, -1 = port
 
+		location_sub = rospy.Subscriber('location', Pose2D, self.location_callback)
+
+		true_wind_sub = rospy.Subscriber('true_wind', Pose2D, self.true_wind_callback)
+
+		rel_wind_sub = rospy.Subscriber('relative_wind', Pose2D, self.rel_wind_callback)
+
+		global_wind_sub = rospy.Subscriber('global_wind', Pose2D, self.global_wind_callback)
+
+		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
+
+		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
+		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
+
+	def run(self):
+		r = rospy.Rate(1)
+		while not rospy.is_shutdown():
+			err = int(self.think())
+			self.heading_err_pub.publish(err)
+			r.sleep()
+
 	def think(self):
 		""" 
 		decide which direction the boat should go
@@ -58,9 +72,7 @@ class RudderThought():
 		positive error means boat should turn clockwise
 		"""
 		print '\n'
-		print 'angle to target', self.angle_to_target
-		print 'steering angle to wind', self.wind_err()
-
+		self.tacking_pub.publish(self.Tacking)
 		if self.Tacking:
 			print 'tack'
 			err = subtract_angles(self.true_wind_angle, (DEADZONE-5)*self.tack)
@@ -70,13 +82,16 @@ class RudderThought():
 			return err
 
 		elif self.is_target_upwind():
+			print 'wind', self.global_wind
+			print 'target', self.angle_to_target
 			print 'upwind'
 			return self.wind_err()
 
 		else:
 			print 'direct'
 			self.tack = sign(self.true_wind_angle)
-			print "current tack direction:", self.tack
+			print self.tack
+			print self.angle_to_target
 			if self.is_target_accross_wind():
 				self.tack *= -1
 				self.Tacking = True
@@ -85,8 +100,8 @@ class RudderThought():
 
 	def is_target_upwind(self):
 		""" return if we should be in 'tacking mode' """
-		off_wind = abs(subtract_angles(self.angle_to_target, self.global_wind + 180))
-		print 'off_wind', off_wind
+		off_wind = abs(subtract_angles(self.angle_to_target, self.global_wind))
+		print 'wind', off_wind
 		return off_wind <= DEADZONE + 5
 
 	def is_target_accross_wind(self):
@@ -104,11 +119,12 @@ class RudderThought():
 		if not self.is_in_bounds():
 			self.tack *= -1
 			self.Tacking = True
-		return subtract_angles(self.rel_wind_angle, (180-DEADZONE)*self.tack)
+
+		return subtract_angles(self.rel_wind_angle, DEADZONE*self.tack)
 
 	def target_err(self):
 		""" return angle between boat's heading and bearing to target """
-		return subtract_angles(self.angle_to_target, self.heading)
+		return -subtract_angles(self.angle_to_target, self.heading)
 
 	def is_in_bounds(self):
 		""" corridor code """
@@ -117,7 +133,7 @@ class RudderThought():
 	def location_callback(self, data):
 		""" unpack location message and find angle to target """
 		self.pose = [data.x, data.y] # position in (east, north)
-		self.heading = data.theta #heading
+		self.heading = angle_range(data.theta) #heading
 
 		#get angle to target
 		delta_e = self.target_pose[0] - self.pose[0]
@@ -135,11 +151,17 @@ class RudderThought():
 	def global_wind_callback(self, data):
 		""" get relative wind angle in range -180 to 180 """
 		self.global_wind = angle_range(data.theta)
-		#print 'got wind', data.theta
+		print 'got wind', data.theta
+
+	def waypoints_callback(self, msg):
+		""" save the next waypoint as the target location """
+		wps = msg.WaypointArray
+		if wps != []:
+			self.target_pose = [wps[0].x, wps[0].y]
 
 if __name__ == '__main__':
 	rud = RudderThought()
-	r = rospy.Rate(1)
+	r = rospy.Rate(5)
 	while not rospy.is_shutdown():
-		print "Final desired turn amount", rud.think()
+		rud.run()
 		r.sleep()

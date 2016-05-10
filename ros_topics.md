@@ -7,9 +7,11 @@
 * `velocity` The boat's smoothed current velocity, relative to location
   * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from North)
 * `true_wind` The motion of the wind relative to the fixed local coordinate system, smoothed.
-  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from boat heading)
 * `relative_wind` The motion of the wind relative to the boat, smoothed.
-  * Pose2D (pub from simulator for now) (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from boat heading)
+* `global_wind` The motion of the wind relative to the world, smoothed.
+  * Pose2D (x is speed, in m/s; theta is angle, in deg CW from North)
 
 #### Arbiter:
 * `operating_mode` Controls boat's operating mode
@@ -34,6 +36,9 @@
 * `test_mode/`
  * `rc_mode/rudder/set_point`
  * `rc_mode/sail/set_point` etc...
+* `auto_mode/`
+ * `auto_mode/rudder/set_point`
+ * `auto_mode/sail/set_point`
 
 #### Each teensy has it's own namespace:
 * `rc/` for the teensy recieveing RC signals
@@ -57,6 +62,10 @@
   * Int16 (pub)
 * `rudder/set_point` set point for rudder in degrees
   * Int16 (sub)
+* `rudder/powerconstant` max power applied to motor (default: 20)
+  * Int16 (sub) - range 0...255
+* `rudder/trim` each publish moves the rudder trim point that many degrees
+  * Int16 (sub) - range -45...45
 
 #### Sail topics:
 * `sail/pos` magnet sensor position
@@ -65,6 +74,19 @@
   * Int16 (pub)
 * `sail/set_point` set point for linear actuator
   * Float32 (sub)
+* `sail/powerconstant` max power applied to motor (default: 20)
+  * Int16 (sub) - range 0...255
+
+#### Waypoints:
+* `raw_waypoints` input topic for new waypoints (Pose2D)
+* `waypoints` list of current waypoints for boat (Vector3[])
+* `clear_waypoints` True clears waypoint list (Bool)
+* `rm_waypoint` True removes most recently added waypoint (Bool)
+* `skip_waypoint` True removes the current target waypoint (Bool)
+
+#### rudder_thinking
+* `heading_err` angle error between current and desired heading
+* `tacking` wheather or not the boat is currently tacking (Bool)
 
 ### Information Flow
 

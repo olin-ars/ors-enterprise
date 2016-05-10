@@ -3,11 +3,13 @@
 #pip install pyserial
 import rospy
 import serial
+import sys
 from std_msgs.msg import Int16, Float32, Bool, String
 from geometry_msgs.msg import Pose2D, Vector3
 
 class airmar_parser:
-    def __init__(self):
+    def __init__(self, port = "/dev/ttyUSB0"):
+        self.port = port
         self.init_serial()
         self.init_ros_node()
         self.init_ros_msgs()
@@ -24,9 +26,9 @@ class airmar_parser:
         #track made good (relative to true north)
         self.TrackPub = rospy.Publisher('airmar/track', Float32, queue_size=10)
         #relative wind speed and direction
-        self.RelWindPub = rospy.Publisher('airmar/relative_wind', Vector3, queue_size = 5)
+        self.RelWindPub = rospy.Publisher('airmar/relative_wind', Pose2D, queue_size = 5)
         #true wind speed and direction
-        self.TrueWindPub = rospy.Publisher('airmar/true_wind', Vector3, queue_size = 5)
+        self.TrueWindPub = rospy.Publisher('airmar/true_wind', Pose2D, queue_size = 5)
         #compass heading? ????
         self.MagneticDirectionPub = rospy.Publisher('airmar/magnetic_direction', Float32, queue_size=2) #NSEW
         #error strings we want to see
@@ -40,13 +42,13 @@ class airmar_parser:
         self.speed = 0
         self.track = 0
         self.mag_dir = 0
-        self.rel_wind = Vector3()
-        self.true_wind = Vector3()
+        self.rel_wind = Pose2D()
+        self.true_wind = Pose2D()
 
     def init_serial(self):
         #serial reader to receive input via USB
         self.ser = serial.Serial()
-        self.ser.port = "/dev/ttyUSB0"
+        self.ser.port = self.port
         self.ser.baudrate = 4800
         self.ser.open()
 
@@ -89,11 +91,11 @@ class airmar_parser:
         if msg[-1][0] == 'A': #A = valid, V = void
             self.status = True
             if(msg[2] == 'R'): #relative wind
-                self.rel_wind.x = float(msg[1]) #wind direction (knots?)
-                self.rel_wind.y = float(msg[3]) #wind speed
+                self.rel_wind.theta = float(msg[1]) #wind direction (knots?)
+                self.rel_wind.x = float(msg[3]) #wind speed
             else: #msg[2] == 'T' for true wind
-                self.true_wind.x = float(msg[1]) #wind direction (knots?)
-                self.true_wind.y = float(msg[3]) #wind speed
+                self.true_wind.theta = float(msg[1]) #wind direction (knots?)
+                self.true_wind.x = float(msg[3]) #wind speed
         else:
             self.status = False
 
@@ -112,9 +114,20 @@ class airmar_parser:
     def parse_GPGLL(self, msg):
         """ Parse the WIMWV message from the airmar
             Gives wind speed and angle """
-        if msg[-1][0] == 'A': #A = valid, V = void
-            self.position.x = float(msg[1]) #latitude (decimal minutes)
-            self.position.y = float(msg[3]) #longitude
+
+        def convert_angle(string, longitude=False):
+            if not longitude:
+                string = '0' + string
+            if not string:
+                return 0
+            degreepart = int(string[:3])
+            minutepart = float(string[3:])
+            return degreepart + minutepart/60
+
+        if msg[-2][0] == 'A' or msg[-1][0] == 'A': #A = valid, V = void
+            self.position.x = convert_angle(msg[1]) #latitude (decimal minutes)
+            self.position.y = convert_angle(msg[3], True) #longitude
+            print (self.position.x)
             #convert S and W to negatives for lat lon
             if msg[2] == 'S':
                 self.position.x *= -1
@@ -140,7 +153,8 @@ class airmar_parser:
 
 if __name__ == '__main__':
     try:
-        core = airmar_parser()
+        port = sys.argv[1]
+        core = airmar_parser(port)
         core.run()
     except rospy.ROSInterruptException:
         print 'ahh'
