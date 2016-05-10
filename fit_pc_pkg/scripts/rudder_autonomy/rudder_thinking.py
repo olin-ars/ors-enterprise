@@ -95,7 +95,7 @@ class RudderThought():
 			if self.is_target_accross_wind():
 				self.tack *= -1
 				self.Tacking = True
-			return self.target_err()
+			return -self.target_err()
 
 
 	def is_target_upwind(self):
