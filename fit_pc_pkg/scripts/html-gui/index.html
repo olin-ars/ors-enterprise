@@ -95,7 +95,7 @@
   // Sail subscriber(s)
   var listensail = new ROSLIB.Topic({
     ros : ros,
-    name : '/sail/set_point',
+    name : '/sail/pos',
     messageType : 'std_msgs/Float32'
   });
 
@@ -114,7 +114,7 @@
   // Rudder subscriber
   var listenrudder = new ROSLIB.Topic({
     ros : ros,
-    name : '/rudder/set_point',
+    name : '/rudder/pos',
     messageType : 'std_msgs/Int16'
   });
 
