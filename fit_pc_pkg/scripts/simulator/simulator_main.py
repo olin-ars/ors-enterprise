@@ -70,12 +70,13 @@ class Boat:
         self.wind_over_port = True 
         self.log_coefficient = 0.01 #was 0.1
         self.lambda_1 = 0.1 #can't be named lambda, reserved
-        self.lambda_2 = 0.4 #decay rate for angular velocity, to zero, way of encoding drag
+        self.lambda_2 = 1.2 #decay rate for angular velocity, to zero, way of encoding drag
         #self.strength_Main = 0.65
         #self.strength_Jib = 1-self.strength_Main
         self.debug_list = (0,0)
         self.main_angle = 0
         #self.jib_angle = 0
+        self.motorboat = 3 # Predefined speed of boat, or False to disable
         
         self.k = 2 #velocity scaling for the wind
         self.kw = 0.3 #angular velocity scaling for the torque from the rudder
@@ -146,6 +147,8 @@ class Boat:
         Dr = drag_ratio(self.RudderPos)
         Vmax = Vtmax(model.relwindcomp, self.k) * PrMain*Dr
         self.forward_speed += self.lambda_1*(Vmax-self.forward_speed)*dt  #decay to the max, acceleration term
+        if self.motorboat is not False:
+            self.forward_speed = self.motorboat
         
         self.debug_list = (Ts, angular_drag, Vtmax(model.relwindcomp,self.k), Vmax)
 
