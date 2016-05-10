@@ -21,6 +21,7 @@ class Waypoints():
 		""" initialize the coordinates in the correct location (TODO: location input) """
 		rospy.init_node('waypoint_handler')
 		wp_sub = rospy.Subscriber('raw_waypoints', Pose2D, self.new_wp_callback)
+		wp_sub = rospy.Subscriber('local_waypoints', Pose2D, self.local_wp_callback)
 		wp_sub = rospy.Subscriber('clear_waypoints', Bool, self.clear_wp_callback)
 		wp_sub = rospy.Subscriber('rm_waypoint', Bool, self.rm_wp_callback)
 		wp_sub = rospy.Subscriber('skip_waypoint', Bool, self.skip_wp_callback)
@@ -34,6 +35,17 @@ class Waypoints():
 	def new_wp_callback(self, msg):
 		""" add a waypoint to the queue """
 		north, east = self.grid.transformLocation(msg.x, msg.y)
+		mode = msg.theta
+		new_wp = Vector3()
+		new_wp.x = east
+		new_wp.y = north
+		new_wp.z = mode
+		self.wp_list.append(new_wp)
+		self.wp_pub.publish(self.wp_list)
+
+	def local_wp_callback(self, msg):
+		""" add a waypoint to the queue """
+		east, north = msg.x, msg.y
 		mode = msg.theta
 		new_wp = Vector3()
 		new_wp.x = east
