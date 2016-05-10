@@ -179,7 +179,19 @@
     });
   })();
 
+  (function() { 
+    var topic = new ROSLIB.Topic({
+      ros : ros,
+      name : '/heading_err',
+      messageType : 'std_msgs/Float32'
+    });
 
+    topic.subscribe(function(message) {
+      var string = ""+message.data.toFixed(2);
+
+      $("#heading_err").text(string);
+    });
+  })();
 
 
 
@@ -300,6 +312,7 @@
   <h2>Autonomy Internals</h2>
 
   <div>Boat is tacking: <span class="numdisplay" id="is_tacking">[data missing]</span></div>
+  <div>Heading error: <span class="numdisplay" id="heading_err">[data missing]</span></div>
   
   
 
