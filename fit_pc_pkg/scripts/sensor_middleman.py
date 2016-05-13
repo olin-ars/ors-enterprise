@@ -99,8 +99,8 @@ class Arbiter:
         # Be warned, there could be a negative mistake in the following code.
         # Review needed.
         self.globalWindPub.publish(
-            Pose2D(self.relwind[1], 0.0,
-                   subtract_angles(self.relwind[0], self.heading)))
+            Pose2D(self.truewind[1], 0.0,
+                   angle_range(self.truewind[0] + self.heading)))
 
     def run(self):
         rate = rospy.Rate(10)  # 10hz

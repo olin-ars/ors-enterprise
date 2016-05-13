@@ -2,6 +2,8 @@
 # to use IP addresses for communicating instead. To do this manually, use 
 # ifconfig or ipconfig to find the hostname.
 
+# this script must be run using source, otherwise it won't work
+
 # Note that I think this script needs to be run in each terminal window you want to use.
 export ROS_IP=$(hostname --all-ip-addresses)
 
