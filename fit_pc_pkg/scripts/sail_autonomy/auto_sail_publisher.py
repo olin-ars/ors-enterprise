@@ -4,7 +4,11 @@ from std_msgs.msg import Int16, Float32
 from geometry_msgs.msg import Pose2D
 
 # define angle cutoffs for each switch position
-BORDER_ANGLES = [0, 50, 60, 70, 78, 85, 95, 110]
+BORDER_ANGLES = [0, 50, 60, 72, 85, 100, 115]
+
+def angle_range(a):
+    """ limit angles to range of -180 to 180 """
+    return (a + 180) % 360 - 180
 
 class autonomousSailPublisher:
 	def __init__(self):
@@ -15,12 +19,12 @@ class autonomousSailPublisher:
 	
 	def callback(self, data):
 		self.speed = data.x
-		self.windAngle = data.theta
+		self.windAngle = angle_range(data.theta)
 
 	def calculateSailPosition(self, windAngle):# calculate sail position from wind angle
 		# assuming sail positions will not be given in the dead zone and rudders will navigate away
 		# sail goes from positions 0 to 6
-		sailPos = (	6 if BORDER_ANGLES[6] < abs(windAngle) < BORDER_ANGLES[7] else 
+		sailPos = (	6 if BORDER_ANGLES[6] < abs(windAngle) else 
 					5 if BORDER_ANGLES[5] < abs(windAngle) < BORDER_ANGLES[6] else 
 					4 if BORDER_ANGLES[4] < abs(windAngle) < BORDER_ANGLES[5] else 
 					3 if BORDER_ANGLES[3] < abs(windAngle) < BORDER_ANGLES[4] else 
