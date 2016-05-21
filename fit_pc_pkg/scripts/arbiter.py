@@ -5,8 +5,9 @@ from std_msgs.msg import Int16, Float32, Bool
 DEFAULT = 0
 RC_MODE = 1
 AUTO_MODE = 2
-TEST_MODE = 3
-Modes = [DEFAULT, RC_MODE, AUTO_MODE, TEST_MODE]
+SEMI_AUTO = 3
+TEST_MODE = 4
+Modes = [DEFAULT, RC_MODE, AUTO_MODE, SEMI_AUTO, TEST_MODE]
 
 
 class Arbiter:
@@ -30,8 +31,10 @@ class Arbiter:
         self.setupSubscribers()
 
     def setupSubscribers(self):
-        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode"}
-        currentNamespace = namespaces[self.mode]
+        rud_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"rc_mode", TEST_MODE:"test_mode"}
+        sail_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"auto_mode", TEST_MODE:"test_mode"}
+        rud_currentNamespace = rud_namespaces[self.mode]
+        sail_currentNamespace = sail_namespaces[self.mode]
 
         #input
         try:
@@ -40,11 +43,11 @@ class Arbiter:
         except:
             pass
 
-        if not currentNamespace:
+        if not rud_currentNamespace or not sail_currentNamespace:
             return
 
-        self.rudderSub = rospy.Subscriber(currentNamespace + '/rudder/set_point', Int16, self.onRudder) #listening to rudder_in
-        self.sailsSub = rospy.Subscriber(currentNamespace + '/sail/set_point', Float32, self.onSail) #listening to sails_in
+        self.rudderSub = rospy.Subscriber(rud_currentNamespace + '/rudder/set_point', Int16, self.onRudder) #listening to rudder_in
+        self.sailsSub = rospy.Subscriber(sail_currentNamespace + '/sail/set_point', Float32, self.onSail) #listening to sails_in
     
     def onRudder(self,msg):
         self.rudder=msg.data
