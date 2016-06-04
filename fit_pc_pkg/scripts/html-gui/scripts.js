@@ -5,6 +5,8 @@
 var ros = setupROS('ws://' + prompt('ROS IP address', '192.168.17.130') + ':9090')
 
 function setupROS(rosIP) {
+    console.log('Attempting to initiate ROS connection to ' + rosIP);
+
     var ros = new ROSLIB.Ros({
         url : rosIP
     });
@@ -50,16 +52,18 @@ function setupROS(rosIP) {
 //   });
 //   cmdVel.publish(twist);
 
+function setup_publishers(ros) {
+    
+}
+
 function setup_subscribers(ros) {
     
     // Location subscriber (handles local position)
-    var listenloc = new ROSLIB.Topic({
+    (new ROSLIB.Topic({
         ros : ros,
         name : '/location',
         messageType : 'geometry_msgs/Pose2D'
-    });
-
-    listenloc.subscribe(function(message) {
+    })).subscribe(function(message) {
         var string=message.x.toFixed(2) +",\t\t"+ message.y.toFixed(2) +",\t\t"+ message.theta.toFixed(2);
         //console.log('Received location : ' + string);
 
