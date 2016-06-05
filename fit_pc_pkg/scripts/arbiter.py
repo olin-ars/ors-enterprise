@@ -28,10 +28,13 @@ class Arbiter:
         #for further expansion
         self.mode = RC_MODE
         self.setupSubscribers()
+        self.RC_OVERRIDE = False
 
     def setupSubscribers(self):
         namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode"}
         currentNamespace = namespaces[self.mode]
+        if self.RC_OVERRIDE:
+            currentNamespace = "rc_mode"
 
         #input
         try:
@@ -51,8 +54,11 @@ class Arbiter:
         self.rudderPub.publish(msg.data)
 
     def onRCSwitch(self,msg):
-        if msg.data and self.mode != RC_MODE:
-            self.mode = RC_MODE
+        if msg.data and not self.RC_OVERRIDE:
+            self.RC_OVERRIDE = True
+            self.setupSubscribers()
+        elif self.RC_OVERRIDE and not msg.data
+            self.RC_OVERRIDE = False
             self.setupSubscribers()
 
     def onSail(self,msg):
