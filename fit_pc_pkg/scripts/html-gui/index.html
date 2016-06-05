@@ -17,6 +17,16 @@
 <body>
   <h1>ORS Mission Control</h1>
   <hr>
+  <h2>Commands</h2>
+  <select id="boatmode">
+    <option value="1">RC Mode</option>
+    <option value="2">Auto Mode</option>
+    <option value="4">Hybrid Mode</option>
+  </select>
+  <button onclick="sendBoatMode()">Change Mode</button>
+
+
+  <hr>
   <h2>Internal state visualizations</h2>
   <div>Local position: <span class="numdisplay" id="local_pos">[data missing]</span></div>
   <div>Sail position: <span class="numdisplay" id="sail_angle">[data missing]</span></div>

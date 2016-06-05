@@ -14,6 +14,7 @@ function setupROS(rosIP) {
     ros.on('connection', function() {
         console.log('Connected to websocket server.');
         setup_subscribers(ros);
+        setup_publishers(ros);
     });
 
     ros.on('error', function(error) {
@@ -53,7 +54,18 @@ function setupROS(rosIP) {
 //   cmdVel.publish(twist);
 
 function setup_publishers(ros) {
-    
+    var opmodePublisher = new ROSLIB.Topic({
+        ros : ros,
+        name : '/operating_mode',
+        messageType : 'std_msgs/Int16'
+    });
+
+    window.sendBoatMode = function() {
+        var mode = parseInt($('#boatmode').val());
+        var message = new ROSLIB.Message({data : mode});
+        opmodePublisher.publish(message);
+        console.log('sent mode: ' + mode)
+    }
 }
 
 function setup_subscribers(ros) {
