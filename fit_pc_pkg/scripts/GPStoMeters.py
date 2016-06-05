@@ -3,7 +3,7 @@ import math
 class SetHome():
     """ Takes in a home location and has a method to convert from lat lon
     to m relative to home """
-    def __init__(self, home=(42.293441, -71.263970)):
+    def __init__(self, home=(44.220954, -76.485424)):
         """ sets home location and scaling factors """
         self.initScalars(home[0])
         self.home = home

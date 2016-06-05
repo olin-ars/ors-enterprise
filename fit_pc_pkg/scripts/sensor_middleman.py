@@ -19,7 +19,7 @@ def subtract_angles(a, b):
 
 
 class Arbiter:
-    def __init__(self, home=(42.293441, -71.263970)):
+    def __init__(self, home=(44.220954, -76.485424)):
         """home defines the center of translation. It should
         be within a few hundred km of our location. Default is the center
         of the Oval"""
