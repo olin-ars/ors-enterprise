@@ -6,8 +6,9 @@ DEFAULT = 0
 RC_MODE = 1
 AUTO_MODE = 2
 SEMI_AUTO = 3
-TEST_MODE = 4
-Modes = [DEFAULT, RC_MODE, AUTO_MODE, SEMI_AUTO, TEST_MODE]
+STATION_KEEP = 4
+TEST_MODE = 5
+Modes = [DEFAULT, RC_MODE, AUTO_MODE, SEMI_AUTO, STATION_KEEP, TEST_MODE]
 
 
 class Arbiter:
@@ -32,8 +33,8 @@ class Arbiter:
         self.setupSubscribers()
 
     def setupSubscribers(self):
-        rud_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"rc_mode", TEST_MODE:"test_mode"}
-        sail_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"auto_mode", TEST_MODE:"test_mode"}
+        rud_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"rc_mode", TEST_MODE:"test_mode", STATION_KEEP:"auto_mode"}
+        sail_namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", SEMI_AUTO:"auto_mode", TEST_MODE:"test_mode", STATION_KEEP:"auto_mode"}
         rud_currentNamespace = rud_namespaces[self.mode]
         sail_currentNamespace = sail_namespaces[self.mode]
         if self.RC_OVERRIDE:

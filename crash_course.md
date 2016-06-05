@@ -24,6 +24,7 @@
     - 1: RC
     - 2: auto
     - 3: semi-auto (autonomous sails, rc rudder)
+    - 4: station keep
 
 ## set waypoint
 
