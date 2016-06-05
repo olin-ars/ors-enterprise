@@ -15,6 +15,7 @@
     <node name="rudder_thinking" pkg="fit_pc_pkg" type="rudder_thinking.py" />
     <node name="rudder_publisher" pkg="fit_pc_pkg" type="auto_rudder_publisher.py" />
     <node name="sail_thinking" pkg="fit_pc_pkg" type="auto_sail_publisher.py" />
+    <node name="station_keeping" pkg="fit_pc_pkg" type="station_keep.py"/>
     
     <node name="websockets" pkg="rosbridge_server" type="rosbridge_websocket.py" />
 </launch>

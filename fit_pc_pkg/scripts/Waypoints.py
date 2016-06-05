@@ -27,6 +27,7 @@ class Waypoints():
 		wp_sub = rospy.Subscriber('skip_waypoint', Bool, self.skip_wp_callback)
 		pose_sub = rospy.Subscriber('location', Pose2D, self.pos_callback)
 		self.wp_pub = rospy.Publisher('waypoints', wp_list, queue_size=1)
+		self.success_pub = rospy.Publisher('hit_wp', Bool, queue_size=1)
 		self.grid = SetHome()
 		self.wp_list = []
 		self.wp_modes = {1: 'goto'}
@@ -81,6 +82,7 @@ class Waypoints():
 				if dist_to_wp < RADIUS:
 					self.wp_list.pop(0)
 					self.wp_pub.publish(self.wp_list)
+					self.success_pub.publish(True)
 			r.sleep()
 
 if __name__ == '__main__':

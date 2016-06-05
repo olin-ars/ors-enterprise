@@ -6,6 +6,7 @@ DEFAULT = 0
 RC_MODE = 1
 AUTO_MODE = 2
 TEST_MODE = 3
+STATION_KEEP = 4
 Modes = [DEFAULT, RC_MODE, AUTO_MODE, TEST_MODE]
 
 
@@ -30,7 +31,7 @@ class Arbiter:
         self.setupSubscribers()
 
     def setupSubscribers(self):
-        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode"}
+        namespaces = {DEFAULT: None, RC_MODE: "rc_mode", AUTO_MODE:"auto_mode", TEST_MODE:"test_mode", STATION_KEEP:"auto_mode"}
         currentNamespace = namespaces[self.mode]
 
         #input
