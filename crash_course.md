@@ -18,7 +18,7 @@
   - for running simulator, change that to `localhost`
 
 ## change mode
-- `rostopic pub /opperating_mode std_msgs/Int16 "data: #"
+- `rostopic pub /operating_mode std_msgs/Int16 "data: #"
   - key:
     - 0: testing
     - 1: RC
@@ -28,21 +28,25 @@
 ## set waypoint
 
 ### waypoint using lat-lon
-- ```
-rostopic pub /raw_waypoints geometry_msgs/Pose2D "x: lat
-y: lon
+- use this command:
+``` 
+rostopic pub /raw_waypoints geometry_msgs/Pose2D "x: lat 
+y: lon 
 theta: 1"
-'''
+```
 - ps. use tab-complete
 
 ### waypoint using local coordinates
-- '''
+- use this command:
+```
 rostopic pub /local_waypoints geometry_msgs/Pose2D "x: east
 y: north
 theta: 1"
-'''
-- ps. use tab-grom	
+```
+- ps. use tab-complete
+
 ### other waypoint things
-- publish true to `/clear_waypoints` to clear waypoints
-- publish true to `/rm_waypoint` to remove the most recently added waypoint
-- publish true to `/skip_waypoint` to skip the next waypoint set for the boat
+- boolean publishers follow the format `rostopic pub <topic> std_msgs/Bool "data: <true/flase>"`
+- publish `true` to `/clear_waypoints` to clear waypoints
+- publish `true` to `/rm_waypoint` to remove the most recently added waypoint
+- publish `true` to `/skip_waypoint` to skip the next waypoint set for the boat
