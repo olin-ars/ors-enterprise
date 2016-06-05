@@ -26,6 +26,7 @@
     - 3: semi-auto (autonomous sails, rc rudder)
 
 ## set waypoint
+
 ### waypoint using lat-lon
 - ```
 rostopic pub /raw_waypoints geometry_msgs/Pose2D "x: lat
@@ -33,10 +34,15 @@ y: lon
 theta: 1"
 '''
 - ps. use tab-complete
+
 ### waypoint using local coordinates
 - '''
 rostopic pub /local_waypoints geometry_msgs/Pose2D "x: east
 y: north
 theta: 1"
 '''
-- ps. use tab-complete
+- ps. use tab-grom	
+### other waypoint things
+- publish true to `/clear_waypoints` to clear waypoints
+- publish true to `/rm_waypoint` to remove the most recently added waypoint
+- publish true to `/skip_waypoint` to skip the next waypoint set for the boat
