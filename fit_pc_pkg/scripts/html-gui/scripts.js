@@ -30,6 +30,22 @@ function setupROS(rosIP) {
     return ros;
 }
 
+function global_transform(object, coords) {
+    // Given a jQuery object and the Local coordinates of a position, 
+    // moves that object to the desired position
+
+    var mapOrigin = [0, 5]; // Local coords of top left of map image
+    var mapWidth  = 30; // Side length of map image, in meters
+
+    var mapPixWidth = $("#globalmapimage").width();
+
+    var pixCoords = [(coords[0]-mapOrigin[0]) * mapPixWidth/mapWidth, 
+            (coords[1]-mapOrigin[1]) * mapPixWidth/mapWidth]
+
+
+    object.attr("transform","translate("+pixCoords[0]+","+pixCoords[1]+")")
+}
+
 // Publishing a Topic
 // ------------------
 
@@ -87,6 +103,8 @@ function setup_subscribers(ros) {
         var tx = ((message.x*scale+250)%500+500)%500
         var ty = ((-message.y*scale+250)%500+500)%500
         $("#localboatmap").attr("transform","translate("+tx+","+ty+"), rotate("+message.theta+")")
+
+        global_transform($("#globalboatmap"), [message.x, message.y])
     });
 
 

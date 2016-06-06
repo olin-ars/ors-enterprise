@@ -24,7 +24,33 @@
     <option value="4">Hybrid Mode</option>
   </select>
   <button onclick="sendBoatMode()">Change Mode</button>
+  
 
+  <br>
+
+
+  <svg
+   width="500"
+   height="500"
+   id="globalmapimage"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
+   <g 
+    transform="translate(0,0)">
+      <!-- Global map view -->
+      <rect fill="#ddd" x="0" y="0" width="500" height="500"/>
+      <g
+       transform=""
+       id="globalboatmap">
+      <!-- Small boat for map view -->
+        <path
+           d="m 250,145 c 0,0 -29.27113,25.76104 -27.85714,102.14285 l 55,1e-5 C 278.80151,165.27089 250,145 250,145 z"
+           transform="translate(-250,-210)"
+           />
+         <circle style="fill:red;stroke:none", r="5px"/>
+      </g>
+    </g>
+
+  </svg>
 
   <hr>
   <h2>Internal state visualizations</h2>
