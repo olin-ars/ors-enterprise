@@ -26,7 +26,7 @@ class Station_Keep():
 			self.timer()
 
 	def timer(self):
-		minutes = 1
+		minutes = 4.5
 		seconds = minutes*60
 		rospy.sleep(seconds)
 		self.wp_publisher.publish(self.home)

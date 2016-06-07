@@ -6,6 +6,7 @@
 
 ## start code
 - use `roslaunch fit_pc_pkg auto_code.launch`
+  - actually maybe `screen -dmSL cheesecake roslaunch fit_pc_pkg auto_code.launch` to keep the code from stopping if we lose connection
   - use this for either auto or rc things (it runs the most up to date code)
 - for simulator: `roslaunch fit_pc_pkg simulator_auto.launch`
 
@@ -19,6 +20,7 @@
 
 ## change mode
 - `rostopic pub /operating_mode std_msgs/Int16 "data: #"
+- or go to `ors-git-repo/shell_scripts` and run `sh op_mode.sh #`
   - key:
     - 0: testing
     - 1: RC
@@ -36,6 +38,7 @@ y: lon
 theta: 1"
 ```
 - ps. use tab-complete
+- alternately, go to `ors-git-repo/shell_scripts` and run `make_gps_wp.sh lat lon`
 
 ### waypoint using local coordinates
 - use this command:
@@ -45,6 +48,7 @@ y: north
 theta: 1"
 ```
 - ps. use tab-complete
+- alternately, go to `ors-git-repo/shell_scripts` and run `make_local_wp.sh east north`
 
 ### other waypoint things
 - boolean publishers follow the format `rostopic pub <topic> std_msgs/Bool "data: <true/flase>"`
