@@ -40,7 +40,7 @@ function global_transform(object, coords) {
     var mapPixWidth = $("#globalmapimage").width();
 
     var pixCoords = [(coords[0]-mapOrigin[0]) * mapPixWidth/mapWidth, 
-            (coords[1]-mapOrigin[1]) * mapPixWidth/mapWidth]
+            -(coords[1]-mapOrigin[1]) * mapPixWidth/mapWidth]
 
 
     object.attr("transform","translate("+pixCoords[0]+","+pixCoords[1]+")")
@@ -81,6 +81,43 @@ function setup_publishers(ros) {
         var message = new ROSLIB.Message({data : mode});
         opmodePublisher.publish(message);
         console.log('sent mode: ' + mode)
+    }
+
+    var addWaypointPub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/local_waypoints',
+        messageType : 'geometry_msgs/Pose2D'
+    });
+
+    window.addWaypoint = function() {
+        var x = parseInt($('#x').val());
+        var y = parseInt($('#y').val());
+        var message = new ROSLIB.Message({x : x, y : y});
+        addWaypointPub.publish(message);
+    }
+
+    var clearWaypointsPub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/clear_waypoints',
+        messageType : 'std_msgs/Bool'
+    });
+
+    window.clearWaypoints = function() {
+        var message = new ROSLIB.Message({data : true});
+        clearWaypointsPub.publish(message);
+        console.log('Cleared Waypoints')
+    }
+
+    var removeWaypointPub = new ROSLIB.Topic({
+        ros : ros,
+        name : '/rm_waypoint',
+        messageType : 'std_msgs/Bool'
+    });
+
+    window.removeWaypoint = function() {
+        var message = new ROSLIB.Message({data : true});
+        removeWaypointPub.publish(message);
+        console.log('Removed Waypoint')
     }
 }
 

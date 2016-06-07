@@ -24,6 +24,13 @@
     <option value="4">Hybrid Mode</option>
   </select>
   <button onclick="sendBoatMode()">Change Mode</button>
+  <br><br>
+  <button onclick="clearWaypoints()">Clear Waypoints</button>
+  <button onclick="removeWaypoint()">Remove Waypoint</button>
+  <br>
+  <input id="x">x</input>
+  <input id="y">y</input>
+  <button onclick="addWaypoint()">Add Waypoint</button>
   
 
   <br>
@@ -37,7 +44,7 @@
    <g 
     transform="translate(0,0)">
       <!-- Global map view -->
-      <rect fill="#ddd" x="0" y="0" width="500" height="500"/>
+      <image xlink:href="map.jpg" x="0" y="0" height="500" width="500"/>
       <g
        transform=""
        id="globalboatmap">
