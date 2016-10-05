@@ -5,14 +5,14 @@
 - connect to bat with `./connect_to_fitpc.sh`
 
 ## start code
-- use `roslaunch fit_pc_pkg auto_code.launch`
-  - actually maybe `screen -dmSL cheesecake roslaunch fit_pc_pkg auto_code.launch` to keep the code from stopping if we lose connection
+- use `roslaunch ors_2015_pkg auto_code.launch`
+  - actually maybe `screen -dmSL cheesecake roslaunch ors_2015_pkg auto_code.launch` to keep the code from stopping if we lose connection
   - use this for either auto or rc things (it runs the most up to date code)
-- for simulator: `roslaunch fit_pc_pkg simulator_auto.launch`
+- for simulator: `roslaunch ors_2015_pkg simulator_auto.launch`
 
 ## launch webpage thing
 - cd to `ors-git-repo/fit_pc_pkg/scritps/html-gui`
-  - alternately, from anywhere `roscd fit_pc_pg/scripts/html-gui`
+  - alternately, from anywhere `roscd ors_2015_pkg/scripts/html-gui`
 - use a web browser to open `index.html`
   - (in my case `chromium-web-browser index.html`)
 - there is a prompt, the default number is correct for connecting to the boat

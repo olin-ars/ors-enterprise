@@ -1,6 +1,6 @@
 <launch>
   <arg name="olin_robotics" default="false" />
   <env name="ROS_IP" value="192.168.17.130" if="$(arg olin_robotics)"/>
-  <node name="setup" pkg="fit_pc_pkg" type="rosserial_wrapper.py" />
-  <node name="command_center" pkg="fit_pc_pkg" type="publish_test_rudderCommands.py" />
+  <node name="setup" pkg="ors_2015_pkg" type="rosserial_wrapper.py" />
+  <node name="command_center" pkg="ors_2015_pkg" type="publish_test_rudderCommands.py" />
 </launch>

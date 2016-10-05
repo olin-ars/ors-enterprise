@@ -2,7 +2,7 @@
 import rospy
 from geometry_msgs.msg import Pose2D
 from std_msgs.msg import Int16, Bool
-from fit_pc_pkg.msg import wp_list
+from ors_2015_pkg.msg import wp_list
 import math
 import numpy as np
 

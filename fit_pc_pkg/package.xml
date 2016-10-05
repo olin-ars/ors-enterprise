@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>fit_pc_pkg</name>
+  <name>ors_2015_pkg</name>
   <version>0.0.0</version>
-  <description>The fit_pc_pkg package</description>
+  <description>The ORS package from 2015-2016</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->

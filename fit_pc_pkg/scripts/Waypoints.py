@@ -4,7 +4,7 @@ import math
 from GPStoMeters import SetHome
 from std_msgs.msg import Bool
 from geometry_msgs.msg import Pose2D, Vector3
-from fit_pc_pkg.msg import wp_list
+from ors_2015_pkg.msg import wp_list
 
 RADIUS = 3 #acceptable wp radius in meters
 

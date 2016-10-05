@@ -1,21 +1,21 @@
 <launch>
     <arg name="olin_robotics" default="false" />
     <env name="ROS_IP" value="192.168.17.130" if="$(arg olin_robotics)"/>
-    <!-- <node name="setup" pkg="fit_pc_pkg" type="rosserial_wrapper.py" /> -->
-    <node name="arbiter" pkg="fit_pc_pkg" type="arbiter.py" />
-    <node name="RC_master" pkg="fit_pc_pkg" type="RC-control-master.py" />
+    <!-- <node name="setup" pkg="ors_2015_pkg" type="rosserial_wrapper.py" /> -->
+    <node name="arbiter" pkg="ors_2015_pkg" type="arbiter.py" />
+    <node name="RC_master" pkg="ors_2015_pkg" type="RC-control-master.py" />
 
 
-    <node name="simulator" pkg="fit_pc_pkg" type="simulator_roslink.py" />
+    <node name="simulator" pkg="ors_2015_pkg" type="simulator_roslink.py" />
     <!-- More things need to be started here to run auto code -->
 
-    <node name="test_master" pkg="fit_pc_pkg" type="publish_test_rudderCommands.py" />
+    <node name="test_master" pkg="ors_2015_pkg" type="publish_test_rudderCommands.py" />
 
-    <node name="waypoint_handler" pkg="fit_pc_pkg" type="Waypoints.py" />
-    <node name="rudder_thinking" pkg="fit_pc_pkg" type="rudder_thinking.py" />
-    <node name="rudder_publisher" pkg="fit_pc_pkg" type="auto_rudder_publisher.py" />
-    <node name="sail_thinking" pkg="fit_pc_pkg" type="auto_sail_publisher.py" />
-    <node name="station_keeping" pkg="fit_pc_pkg" type="station_keep.py"/>
+    <node name="waypoint_handler" pkg="ors_2015_pkg" type="Waypoints.py" />
+    <node name="rudder_thinking" pkg="ors_2015_pkg" type="rudder_thinking.py" />
+    <node name="rudder_publisher" pkg="ors_2015_pkg" type="auto_rudder_publisher.py" />
+    <node name="sail_thinking" pkg="ors_2015_pkg" type="auto_sail_publisher.py" />
+    <node name="station_keeping" pkg="ors_2015_pkg" type="station_keep.py"/>
     
     <node name="websockets" pkg="rosbridge_server" type="rosbridge_websocket.py" />
 </launch>
