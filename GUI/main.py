@@ -13,21 +13,21 @@ from mainUI import *
 
 #torpedo
 import webbrowser
-class IgnoreMouseFilter(QObject):
+class IgnoreMouseFilter(QObject): #IgnoreMouseFilter - what does that mean?
     def eventFilter(self,obj,event):
-        if event.type() == QEvent.KeyPress:
+        if event.type() == QEvent.KeyPress: #if a key is pressed
             print("Key Pressed")
             return True
         return False
 
-class ORSWindow(QMainWindow):
-    updated = pyqtSignal()
+class ORSWindow(QMainWindow): #ORSWindow
+    updated = pyqtSignal() #what is a pyqtSignal?
     def __init__(self,parent=None):
         #INITIALIZE UI
         QMainWindow.__init__(self,parent)
         self.ui =  Ui_ORS_GUI()
         self.ui.setupUi(self)
-        rospy.init_node('ORS_GUI',anonymous=True)
+        rospy.init_node('ORS_GUI',anonymous=True) #this looks like it's initializing ROS integration
         self.mode_rBtn = [
                 self.ui.mode_dfRBtn,
                 self.ui.mode_rcRBtn,
