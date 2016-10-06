@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 from math import *
 
 def getPoint(r, theta): #in angle
+#returns an x and y coordinate based on polar coordinates
     theta = radians(theta);
     return QPointF(r*sin(theta),-r*cos(theta));
 
@@ -31,11 +32,14 @@ class CompassWidget(QWidget):
                 self.smallNotch.addPolygon(QPolygonF([p0,pL,pM,pR,p0]));
     
     def setValue(self,value):
+        #values above the max value loop to the min value
+        #values below the min value loop to the max value
         value = int(value);
         if value < self.minVal or value > self.maxVal:
             value = value % (self.maxVal - self.minVal);
         self.value = value;
     def drawBk(self,p):
+        #draws the background of a compass?
         bkBrush = QBrush(QColor.fromRgbF(0,0,0,0.8), style = Qt.SolidPattern);
         bkPen = QPen(QColor.fromRgbF(0.7,0.7,0.7,1.0));
         bkPen.setWidthF(0.03);
