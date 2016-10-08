@@ -4,6 +4,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
 class MapWidget(QFrame):
+	#commented by Gretchen and Will 2016
     """Map Widget : Coordinates from -1.0 to 1.0"""
     def __init__(self,parent=None):
         QFrame.__init__(self,parent); #creating map frame
