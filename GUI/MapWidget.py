@@ -30,13 +30,13 @@ class MapWidget(QFrame):
         p.scale(self.width()/2,self.height()/2); #viewport from -1~1 ->sets the size of the window
         self.drawBK(p); #calling previous function to draw background map
         self.drawLocation(p); #calling previous function to put point on image
-        QFrame.paintEvent(self,event); #
-    def mousePressEvent(self,event):
+        QFrame.paintEvent(self,event); #paints the whole image 
+    def mousePressEvent(self,event): #nothing happens in this function
         pass
 
 if __name__ == "__main__":
     global app;
-    app = QApplication(sys.argv);
+    app = QApplication(sys.argv); #starts the GUI
     w = MapWidget();
-    w.show();
+    w.show(); #actually shows the image
     sys.exit(app.exec_());
