@@ -25,9 +25,11 @@ class RCmaster(object):
 
         rospy.init_node('command_center', anonymous=True)
         
+        #sets up a publisher for rudder position and sail position
         self.rudderPub = rospy.Publisher('rc_mode/rudder/set_point', Int16)
         self.sailPub = rospy.Publisher('rc_mode/sail/set_point', Float32)
 
+        #sets up subscribers to get rudder and sail position
         self.sailSub = rospy.Subscriber('rc/sails_in', Float32, self.update_sail)
         self.rudderSub = rospy.Subscriber('rc/rudder_in', Float32, self.update_rudder)
 
