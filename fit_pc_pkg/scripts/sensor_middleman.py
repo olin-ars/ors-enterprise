@@ -5,8 +5,13 @@ from GPStoMeters import SetHome
 from std_msgs.msg import Float32
 from geometry_msgs.msg import Pose2D, Vector3
 
-knots = 0.514444  # 1 knot in m/s
+'''
+This is a sensor middleman, just as the title states.  It just Subscribes to sensor stuff 
+and publishes after processing things to make sure angle ranges are correct and everything is in
+knots.
+'''
 
+knots = 0.514444  # 1 knot in m/s  !!!THIS IS A CONVERSION
 
 def angle_range(a):
     """ limit angles to range of -180 to 180 """
@@ -41,19 +46,19 @@ class Arbiter:
     def initPublishers(self):
         queue = 1
 
-        self.posPub = rospy.Publisher('location', Pose2D, queue_size=queue)
-        self.velPub = rospy.Publisher('velocity', Pose2D, queue_size=queue)
+        self.posPub = rospy.Publisher('location', Pose2D, queue_size=queue) #Publish the position
+        self.velPub = rospy.Publisher('velocity', Pose2D, queue_size=queue) #Publish the velocity
 
         self.relWindPub = rospy.Publisher(
-            'relative_wind', Pose2D, queue_size=queue)
+            'relative_wind', Pose2D, queue_size=queue) #Publish the relative wind
         self.trueWindPub = rospy.Publisher(
-            'true_wind', Pose2D, queue_size=queue)
+            'true_wind', Pose2D, queue_size=queue) #Publish the true Wind
         self.globalWindPub = rospy.Publisher(
-            'global_wind', Pose2D, queue_size=queue)
+            'global_wind', Pose2D, queue_size=queue) #Publish the Global Wind
 
     def initSubscribers(self):
         # Hemisphere subscribers
-        self.speedSub = rospy.Subscriber('/hemisphere/speed', Float32,
+        self.speedSub = rospy.Subscriber('/hemisphere/speed', Float32, 
                                          self.onSpeed)
         self.trackSub = rospy.Subscriber('/hemisphere/track', Float32,
                                          self.onTrack)
@@ -66,6 +71,7 @@ class Arbiter:
         self.trueWindSub = rospy.Subscriber('airmar/true_wind', Pose2D,
                                             self.onTrueWind)
 
+    #List of callback functions for the subscribers
     def onRelWind(self, msg):
         self.relwind[0] = msg.theta
         self.relwind[1] = msg.x * knots
@@ -87,6 +93,8 @@ class Arbiter:
         # Incomming messages are in degrees clockwise of North
         self.track = msg.data
 
+
+    #Publish everything.
     def publish(self):
         self.posPub.publish(Pose2D(self.pos[1], self.pos[0], self.heading))
         self.velPub.publish(Pose2D(self.speed, 0.0, self.track))
