@@ -6,15 +6,23 @@ from ors_2015_pkg.msg import wp_list
 import math
 import numpy as np
 
+"""
+	This class handles calculating the correct rudder position
+	for the boat to move toward the current waypoint.
+"""
+
 #angles in world coordinates are measured clockwise from north,
 # to get angle from coordinats, take atan2(deast, dnorth)
 # tan(angle) = east/north
 
+""" Define constants """
 degrees = 180/math.pi
 DEADZONE = 45 #deadzone off wind in degrees
 
+""" Utility functions """
 def angle_range(a):
-	""" limit angles to range of -180 to 180 """
+	""" Convert a to its corresponding angle in the system
+	range of -180 to 180 """
 	return (a + 180)%360 - 180
 
 def subtract_angles(a, b):
@@ -22,32 +30,39 @@ def subtract_angles(a, b):
 	return angle_range(a - b)
 
 def sign(a):
-	""" get the sign of a number """
+	""" Returns 1 if a < 0, -1 otherwise. """
 	if a == 0:
 		return 1
 	return a/abs(a)
 
-
 class RudderThought():
+
+	""" Initialize everything """
 	def __init__(self):
 		rospy.init_node('rudder_thinking')
 
 		self.MultiTack = True
 
-		self.pose = [0, 0] # east, north
+		""" Initialize coordinates of boat (standard Cartesian) """
+		self.pose = [0, 0] # (0,0) (x=east, y=north)
 
-		self.target_pose = [0, 0] # east, north
-		self.angle_to_target = 0 # compass heading to target
+		""" Initialize coordinates of and angle to target """
+		self.target_pose = [0, 0] # (0,0) (x=east, y=north)
+		self.angle_to_target = 0 # compass heading to target (degrees)
 
+		""" Set heading and wind angle """
 		self.heading = 90 #degrees clockwise from north
 
 		self.true_wind_angle = 90
 		self.rel_wind_angle = 90
-		self.global_wind=180
+		self.global_wind = 180
 
+		""" Initialize tacking status to "not tacking" """
 		self.Tacking = False
 		self.tack = 1 # 1 = starboard, -1 = port
 
+		""" Initialize message subscribers so appropriate functions are
+			called when messages are received over ROS. """
 		location_sub = rospy.Subscriber('location', Pose2D, self.location_callback)
 
 		true_wind_sub = rospy.Subscriber('true_wind', Pose2D, self.true_wind_callback)
@@ -58,19 +73,31 @@ class RudderThought():
 
 		waypoint_sub = rospy.Subscriber('waypoints', wp_list, self.waypoints_callback)
 
+		""" Initialize message publishers and specify message data type.
+	 	queue_size here makes it so the sending of messages to registered
+		recipients happens asynchronously, and the value of 1 means that
+	 	it will only hold one value in the queue at a time (i.e., if one
+	 	message is queued but hasn't been sent yet when a new value is
+	  	published, the old queued value will be dropped and the new one
+	  	will replace it). """
 		self.heading_err_pub = rospy.Publisher('heading_err', Int16, queue_size=1)
 		self.tacking_pub = rospy.Publisher('tacking', Bool, queue_size=1)
 		self.upwind_pub = rospy.Publisher('going_upwind', Bool, queue_size=1)
 
+	""" Loop to run through continuously while system is active """
 	def run(self):
-		r = rospy.Rate(1)
+		# Initialize sleep time to 1 second (but don't actually sleep yet)
+		r = rospy.Rate(1) # 1 Hz
 		while not rospy.is_shutdown():
+			# Calculate boat course error
 			err = int(self.think())
+			# Tell ye mateys! We're off course! (i.e. send the message out to all subscribed systems)
 			self.heading_err_pub.publish(err)
+			# Sleep for one second, then repeat loop
 			r.sleep()
 
 	def think(self):
-		""" 
+		"""
 		decide which direction the boat should go
 		return appropriate error
 		positive error means boat should turn clockwise
@@ -136,10 +163,12 @@ class RudderThought():
 		""" corridor code """
 		if not self.MultiTack:
 			return True
+
+		""" Calculate target displacement vector relative to boat """
 		wp_dx = self.pose[0] - self.target_pose[0]
 		wp_dy = self.pose[1] - self.target_pose[1]
-
 		wp_coords = np.array([wp_dx, wp_dy])
+
 		theta = self.global_wind*math.pi/180.
 		rotation = np.array([[np.cos(theta), -np.sin(theta)], [np.sin(theta), np.cos(theta)]])
 		wind_coords = np.dot(rotation, wp_coords)
@@ -159,7 +188,7 @@ class RudderThought():
 		self.pose = [data.x, data.y] # position in (east, north)
 		self.heading = angle_range(data.theta) #heading
 
-		#get angle to target
+		"""" get angle to target """
 		delta_e = self.target_pose[0] - self.pose[0]
 		delta_n = self.target_pose[1] - self.pose[1]
 		self.angle_to_target = degrees*math.atan2(delta_e, delta_n)
@@ -183,6 +212,7 @@ class RudderThought():
 		if wps != []:
 			self.target_pose = [wps[0].x, wps[0].y]
 
+""" Start the program this was called directly (not if it was imported by another file) """
 if __name__ == '__main__':
 	rud = RudderThought()
 	r = rospy.Rate(5)
