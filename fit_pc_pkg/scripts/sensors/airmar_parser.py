@@ -37,6 +37,7 @@ class airmar_parser:
         self.FullMsgPub = rospy.Publisher('airmar/fullmsg', String, queue_size=1)
 
     def init_ros_msgs(self):
+        #sets the initial ros messages
         self.position = Pose2D()
         self.status = False
         self.speed = 0
@@ -100,6 +101,7 @@ class airmar_parser:
             self.status = False
 
     def publish_WIMWV(self):
+        #publishes the wind readings
         self.RelWindPub.publish(self.rel_wind)
         self.TrueWindPub.publish(self.true_wind)
 
