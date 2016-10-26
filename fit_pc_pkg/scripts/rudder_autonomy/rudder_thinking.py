@@ -212,7 +212,7 @@ class RudderThought():
 		if wps != []:
 			self.target_pose = [wps[0].x, wps[0].y]
 
-""" Start the program this was called directly (not if it was imported by another file) """
+""" Start the program if this was called directly (not if it was imported by another file) """
 if __name__ == '__main__':
 	rud = RudderThought()
 	r = rospy.Rate(5)
