@@ -115,6 +115,8 @@ qtcreator-*
 # Catkin custom files
 CATKIN_IGNORE
 
+# PyCharm stuff
+.idea
 
 ### Processing ###
 .DS_Store
